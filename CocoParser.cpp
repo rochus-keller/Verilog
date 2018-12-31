@@ -113,47 +113,47 @@ void Parser::translation_unit() {
 }
 
 void Parser::identifier() {
-		Expect(_TIdent,__func__);
+        Expect(_TIdent,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::system_name() {
-		Expect(_TSysName,__func__);
+        Expect(_TSysName,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::real_number() {
-		Expect(_TRealnum,__func__);
+        Expect(_TRealnum,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::natural_number() {
-		Expect(_TNatural,__func__);
+        Expect(_TNatural,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::sizedbased_number() {
-		Expect(_TSizedBased,__func__);
+        Expect(_TSizedBased,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::based_number() {
-		Expect(_TBasedInt,__func__);
+        Expect(_TBasedInt,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::base_format() {
-		Expect(_TBaseFormat,__func__);
+        Expect(_TBaseFormat,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::base_value() {
-		Expect(_TBaseValue,__func__);
+        Expect(_TBaseValue,__FUNCTION__);
 		addTerminal(); 
 }
 
 void Parser::string() {
-		Expect(_TString,__func__);
+        Expect(_TString,__FUNCTION__);
 		addTerminal(); 
 }
 
@@ -214,7 +214,7 @@ void Parser::unary_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(201,__func__); break;
+        default: SynErr(201,__FUNCTION__); break;
 		}
 }
 
@@ -345,7 +345,7 @@ void Parser::binary_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(202,__func__); break;
+        default: SynErr(202,__FUNCTION__); break;
 		}
 }
 
@@ -396,7 +396,7 @@ void Parser::unary_module_path_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(203,__func__); break;
+        default: SynErr(203,__FUNCTION__); break;
 		}
 }
 
@@ -447,7 +447,7 @@ void Parser::binary_module_path_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(204,__func__); break;
+        default: SynErr(204,__FUNCTION__); break;
 		}
 }
 
@@ -468,63 +468,63 @@ void Parser::module_declaration() {
 					list_of_port_declarations();
 				}
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(3)) {
 			module_item();
 		}
-		Expect(_Tendmodule,__func__);
+        Expect(_Tendmodule,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::udp_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tprimitive,__func__);
+        Expect(_Tprimitive,__FUNCTION__);
 		addTerminal(); 
 		udp_identifier();
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TIdent) {
 			udp_port_list();
 		} else if (la->kind == _Toutput) {
 			udp_declaration_port_list();
-		} else SynErr(205,__func__);
-		Expect(_TRpar,__func__);
+        } else SynErr(205,__FUNCTION__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		while (la->kind == _Tinput || la->kind == _Toutput || la->kind == _Treg) {
 			udp_port_declaration();
 		}
 		udp_body();
-		Expect(_Tendprimitive,__func__);
+        Expect(_Tendprimitive,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::config_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_config_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tconfig,__func__);
+        Expect(_Tconfig,__FUNCTION__);
 		addTerminal(); 
 		config_identifier();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		design_statement();
 		while (la->kind == _Tcell || la->kind == _Tdefault || la->kind == _Tinstance) {
 			config_rule_statement();
 		}
-		Expect(_Tendconfig,__func__);
+        Expect(_Tendconfig,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::library_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_library_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tlibrary,__func__);
+        Expect(_Tlibrary,__FUNCTION__);
 		addTerminal(); 
 		library_identifier();
 		file_path_spec();
@@ -536,7 +536,7 @@ void Parser::library_declaration() {
 		if (la->kind == _TMinus) {
 			Get();
 			addTerminal(); 
-			Expect(_Tincdir,__func__);
+            Expect(_Tincdir,__FUNCTION__);
 			addTerminal(); 
 			file_path_spec();
 			while (la->kind == _TComma) {
@@ -545,17 +545,17 @@ void Parser::library_declaration() {
 				file_path_spec();
 			}
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::include_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_include_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinclude,__func__);
+        Expect(_Tinclude,__FUNCTION__);
 		addTerminal(); 
 		file_path_spec();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -570,7 +570,7 @@ void Parser::file_path_spec() {
 			identifier();
 		} else if (la->kind == _TString) {
 			string();
-		} else SynErr(206,__func__);
+        } else SynErr(206,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -581,7 +581,7 @@ void Parser::module_keyword() {
 		} else if (la->kind == _Tmacromodule) {
 			Get();
 			addTerminal(); 
-		} else SynErr(207,__func__);
+        } else SynErr(207,__FUNCTION__);
 }
 
 void Parser::module_identifier() {
@@ -590,9 +590,9 @@ void Parser::module_identifier() {
 
 void Parser::module_parameter_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_parameter_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__func__);
+        Expect(_THash,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		parameter_declaration();
 		while (la->kind == _TComma) {
@@ -600,7 +600,7 @@ void Parser::module_parameter_port_list() {
 			addTerminal(); 
 			parameter_declaration();
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -632,16 +632,16 @@ void Parser::list_of_port_declarations() {
 void Parser::module_item() {
 		if (la->kind == _Tinout || la->kind == _Tinput || la->kind == _Toutput) {
 			port_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (StartOf(4)) {
 			non_port_module_item();
-		} else SynErr(208,__func__);
+        } else SynErr(208,__FUNCTION__);
 }
 
 void Parser::parameter_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tparameter,__func__);
+        Expect(_Tparameter,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TLbrack || la->kind == _Tsigned || la->kind == _TIdent) {
 			if (la->kind == _Tsigned) {
@@ -653,7 +653,7 @@ void Parser::parameter_declaration() {
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(209,__func__);
+        } else SynErr(209,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
@@ -666,14 +666,14 @@ void Parser::port() {
 			Get();
 			addTerminal(); 
 			port_identifier();
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			if (la->kind == _TLbrace || la->kind == _TIdent) {
 				port_expression();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(210,__func__);
+        } else SynErr(210,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -684,7 +684,7 @@ void Parser::port_declaration() {
 			input_declaration();
 		} else if (la->kind == _Toutput) {
 			output_declaration();
-		} else SynErr(211,__func__);
+        } else SynErr(211,__FUNCTION__);
 }
 
 void Parser::port_expression() {
@@ -700,9 +700,9 @@ void Parser::port_expression() {
 				addTerminal(); 
 				port_reference();
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(212,__func__);
+        } else SynErr(212,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -717,7 +717,7 @@ void Parser::port_reference() {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -746,7 +746,7 @@ void Parser::constant_range_expression() {
 
 void Parser::inout_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_inout_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinout,__func__);
+        Expect(_Tinout,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(6)) {
 			net_type();
@@ -764,7 +764,7 @@ void Parser::inout_declaration() {
 
 void Parser::input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__func__);
+        Expect(_Tinput,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(6)) {
 			net_type();
@@ -782,7 +782,7 @@ void Parser::input_declaration() {
 
 void Parser::output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__func__);
+        Expect(_Toutput,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(7)) {
 			if (StartOf(6)) {
@@ -810,7 +810,7 @@ void Parser::output_declaration() {
 		} else if (la->kind == _Tinteger || la->kind == _Ttime) {
 			output_variable_type();
 			list_of_variable_port_identifiers();
-		} else SynErr(213,__func__);
+        } else SynErr(213,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -823,11 +823,11 @@ void Parser::non_port_module_item() {
 			specify_block();
 		} else if (la->kind == _Tparameter) {
 			parameter_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tspecparam) {
 			specparam_declaration();
-		} else SynErr(214,__func__);
+        } else SynErr(214,__FUNCTION__);
 }
 
 void Parser::module_or_generate_item() {
@@ -838,7 +838,7 @@ void Parser::module_or_generate_item() {
 		}
 		case _Tlocalparam: {
 			local_parameter_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -874,7 +874,7 @@ void Parser::module_or_generate_item() {
 			conditional_generate_construct();
 			break;
 		}
-		default: SynErr(215,__func__); break;
+        default: SynErr(215,__FUNCTION__); break;
 		}
 }
 
@@ -920,13 +920,13 @@ void Parser::module_or_generate_item_declaration() {
 			function_declaration();
 			break;
 		}
-		default: SynErr(216,__func__); break;
+        default: SynErr(216,__FUNCTION__); break;
 		}
 }
 
 void Parser::local_parameter_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_local_parameter_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tlocalparam,__func__);
+        Expect(_Tlocalparam,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TLbrack || la->kind == _Tsigned || la->kind == _TIdent) {
 			if (la->kind == _Tsigned) {
@@ -938,24 +938,24 @@ void Parser::local_parameter_declaration() {
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(217,__func__);
+        } else SynErr(217,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
 
 void Parser::parameter_override() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_override, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdefparam,__func__);
+        Expect(_Tdefparam,__FUNCTION__);
 		addTerminal(); 
 		list_of_defparam_assignments();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::continuous_assign() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_continuous_assign, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tassign,__func__);
+        Expect(_Tassign,__FUNCTION__);
 		addTerminal(); 
 		if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Thighz0 || peek(2) == _Tpull1 || peek(2) == _Thighz1 || peek(2) == _Tweak1 || peek(2) == _Tsupply1 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Tweak0 || peek(2) == _Tsupply0 ) ) {
 			drive_strength();
@@ -964,7 +964,7 @@ void Parser::continuous_assign() {
 			delay3();
 		}
 		list_of_net_assignments();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -983,7 +983,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				cmos_switch_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1001,7 +1001,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				enable_gate_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1016,7 +1016,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				mos_switch_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1034,7 +1034,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				n_input_gate_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1052,7 +1052,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				n_output_gate_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1067,7 +1067,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				pass_enable_switch_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1079,7 +1079,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				pass_switch_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1095,7 +1095,7 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				pull_gate_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -1111,11 +1111,11 @@ void Parser::gate_instantiation() {
 				addTerminal(); 
 				pull_gate_instance();
 			}
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(218,__func__); break;
+        default: SynErr(218,__FUNCTION__); break;
 		}
 		d_stack.pop(); 
 }
@@ -1135,14 +1135,14 @@ void Parser::module_or_udp_instantiation() {
 			addTerminal(); 
 			module_or_udp_instance();
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::initial_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_initial_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinitial,__func__);
+        Expect(_Tinitial,__FUNCTION__);
 		addTerminal(); 
 		statement();
 		d_stack.pop(); 
@@ -1150,7 +1150,7 @@ void Parser::initial_construct() {
 
 void Parser::always_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_always_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Talways,__func__);
+        Expect(_Talways,__FUNCTION__);
 		addTerminal(); 
 		statement();
 		d_stack.pop(); 
@@ -1158,18 +1158,18 @@ void Parser::always_construct() {
 
 void Parser::loop_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_loop_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfor,__func__);
+        Expect(_Tfor,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		genvar_initialization();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		genvar_expression();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		genvar_iteration();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		generate_block();
 		d_stack.pop(); 
@@ -1180,7 +1180,7 @@ void Parser::conditional_generate_construct() {
 			if_generate_construct();
 		} else if (la->kind == _Tcase) {
 			case_generate_construct();
-		} else SynErr(219,__func__);
+        } else SynErr(219,__FUNCTION__);
 }
 
 void Parser::net_declaration() {
@@ -1190,7 +1190,7 @@ void Parser::net_declaration() {
 		} else if (la->kind == _Ttrireg) {
 			Get();
 			addTerminal(); 
-		} else SynErr(220,__func__);
+        } else SynErr(220,__FUNCTION__);
 		if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Thighz0 || peek(2) == _Tpull1 || peek(2) == _Thighz1 || peek(2) == _Tweak1 || peek(2) == _Tsupply1 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Tweak0 || peek(2) == _Tsupply0 ) ) {
 			drive_strength();
 		}
@@ -1217,14 +1217,14 @@ void Parser::net_declaration() {
 			delay3();
 		}
 		list_of_net_decl_assignments_or_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__func__);
+        Expect(_Treg,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tsigned) {
 			Get();
@@ -1234,74 +1234,74 @@ void Parser::reg_declaration() {
 			range();
 		}
 		list_of_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::integer_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_integer_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinteger,__func__);
+        Expect(_Tinteger,__FUNCTION__);
 		addTerminal(); 
 		list_of_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::real_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_real_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treal,__func__);
+        Expect(_Treal,__FUNCTION__);
 		addTerminal(); 
 		list_of_real_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::time_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_time_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttime,__func__);
+        Expect(_Ttime,__FUNCTION__);
 		addTerminal(); 
 		list_of_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::realtime_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_realtime_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Trealtime,__func__);
+        Expect(_Trealtime,__FUNCTION__);
 		addTerminal(); 
 		list_of_real_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::event_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tevent,__func__);
+        Expect(_Tevent,__FUNCTION__);
 		addTerminal(); 
 		list_of_event_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::genvar_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tgenvar,__func__);
+        Expect(_Tgenvar,__FUNCTION__);
 		addTerminal(); 
 		list_of_genvar_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::task_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_task_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttask,__func__);
+        Expect(_Ttask,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tautomatic) {
 			Get();
@@ -1314,23 +1314,23 @@ void Parser::task_declaration() {
 			if (la->kind == _Tinout || la->kind == _Tinput || la->kind == _Toutput) {
 				task_port_list();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(9)) {
 			task_item_declaration();
 		}
 		statement_or_null();
-		Expect(_Tendtask,__func__);
+        Expect(_Tendtask,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::function_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_function_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfunction,__func__);
+        Expect(_Tfunction,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tautomatic) {
 			Get();
@@ -1344,53 +1344,53 @@ void Parser::function_declaration() {
 			Get();
 			addTerminal(); 
 			function_port_list();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(11)) {
 			function_item_declaration();
 		}
 		function_statement();
-		Expect(_Tendfunction,__func__);
+        Expect(_Tendfunction,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::generate_region() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_generate_region, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tgenerate,__func__);
+        Expect(_Tgenerate,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(8)) {
 			module_or_generate_item();
 		}
-		Expect(_Tendgenerate,__func__);
+        Expect(_Tendgenerate,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::specify_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specify_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tspecify,__func__);
+        Expect(_Tspecify,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(12)) {
 			specify_item();
 		}
-		Expect(_Tendspecify,__func__);
+        Expect(_Tendspecify,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::specparam_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specparam_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tspecparam,__func__);
+        Expect(_Tspecparam,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TLbrack) {
 			range();
 		}
 		list_of_specparam_assignments();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1410,17 +1410,17 @@ void Parser::config_identifier() {
 
 void Parser::design_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_design_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdesign,__func__);
+        Expect(_Tdesign,__FUNCTION__);
 		addTerminal(); 
 		while (la->kind == _TIdent) {
 			if (la->kind == _TIdent) {
 				library_identifier();
-				Expect(_TDot,__func__);
+                Expect(_TDot,__FUNCTION__);
 				addTerminal(); 
 			}
 			cell_identifier();
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1433,13 +1433,13 @@ void Parser::config_rule_statement() {
 			inst_clause();
 		} else if (la->kind == _Tcell) {
 			cell_clause();
-		} else SynErr(221,__func__);
+        } else SynErr(221,__FUNCTION__);
 		if (la->kind == _Tliblist) {
 			liblist_clause();
 		} else if (la->kind == _Tuse) {
 			use_clause();
-		} else SynErr(222,__func__);
-		Expect(_TSemi,__func__);
+        } else SynErr(222,__FUNCTION__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1450,14 +1450,14 @@ void Parser::cell_identifier() {
 
 void Parser::default_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_default_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdefault,__func__);
+        Expect(_Tdefault,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::inst_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_inst_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinstance,__func__);
+        Expect(_Tinstance,__FUNCTION__);
 		addTerminal(); 
 		inst_name();
 		d_stack.pop(); 
@@ -1465,11 +1465,11 @@ void Parser::inst_clause() {
 
 void Parser::cell_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_cell_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tcell,__func__);
+        Expect(_Tcell,__FUNCTION__);
 		addTerminal(); 
 		if (peek(1) == _TIdent && peek(2) == _TDot ) {
 			library_identifier();
-			Expect(_TDot,__func__);
+            Expect(_TDot,__FUNCTION__);
 			addTerminal(); 
 		}
 		cell_identifier();
@@ -1478,7 +1478,7 @@ void Parser::cell_clause() {
 
 void Parser::liblist_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_liblist_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tliblist,__func__);
+        Expect(_Tliblist,__FUNCTION__);
 		addTerminal(); 
 		while (la->kind == _TIdent) {
 			library_identifier();
@@ -1488,18 +1488,18 @@ void Parser::liblist_clause() {
 
 void Parser::use_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_use_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tuse,__func__);
+        Expect(_Tuse,__FUNCTION__);
 		addTerminal(); 
 		if (peek(1) == _TIdent && peek(2) == _TDot ) {
 			library_identifier();
-			Expect(_TDot,__func__);
+            Expect(_TDot,__FUNCTION__);
 			addTerminal(); 
 		}
 		cell_identifier();
 		if (la->kind == _TColon) {
 			Get();
 			addTerminal(); 
-			Expect(_Tconfig,__func__);
+            Expect(_Tconfig,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -1526,13 +1526,13 @@ void Parser::instance_identifier() {
 
 void Parser::range() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_range, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLbrack,__func__);
+        Expect(_TLbrack,__FUNCTION__);
 		addTerminal(); 
 		msb_constant_expression();
-		Expect(_TColon,__func__);
+        Expect(_TColon,__FUNCTION__);
 		addTerminal(); 
 		lsb_constant_expression();
-		Expect(_TRbrack,__func__);
+        Expect(_TRbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1550,13 +1550,13 @@ void Parser::parameter_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(223,__func__);
+        } else SynErr(223,__FUNCTION__);
 }
 
 void Parser::list_of_param_assignments() {
 		param_assignment();
 		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__func__);
+            Expect(_TComma,__FUNCTION__);
 			addTerminal(); 
 			param_assignment();
 		}
@@ -1628,14 +1628,14 @@ void Parser::net_type() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(224,__func__); break;
+        default: SynErr(224,__FUNCTION__); break;
 		}
 }
 
 void Parser::list_of_port_identifiers() {
 		port_identifier();
 		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__func__);
+            Expect(_TComma,__FUNCTION__);
 			addTerminal(); 
 			port_identifier();
 		}
@@ -1650,7 +1650,7 @@ void Parser::list_of_variable_port_identifiers() {
 			constant_expression();
 		}
 		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__func__);
+            Expect(_TComma,__FUNCTION__);
 			addTerminal(); 
 			port_identifier();
 			if (la->kind == _TEq) {
@@ -1669,7 +1669,7 @@ void Parser::output_variable_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(225,__func__);
+        } else SynErr(225,__FUNCTION__);
 }
 
 void Parser::list_of_event_identifiers() {
@@ -1739,13 +1739,13 @@ void Parser::net_identifier() {
 
 void Parser::dimension() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dimension, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLbrack,__func__);
+        Expect(_TLbrack,__FUNCTION__);
 		addTerminal(); 
 		dimension_constant_expression();
-		Expect(_TColon,__func__);
+        Expect(_TColon,__FUNCTION__);
 		addTerminal(); 
 		dimension_constant_expression();
-		Expect(_TRbrack,__func__);
+        Expect(_TRbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1764,7 +1764,7 @@ void Parser::expression() {
 
 void Parser::drive_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_drive_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
@@ -1776,8 +1776,8 @@ void Parser::drive_strength() {
 		} else if (la->kind == _Thighz1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(226,__func__);
-		Expect(_TComma,__func__);
+        } else SynErr(226,__FUNCTION__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(16)) {
 			strength1();
@@ -1789,15 +1789,15 @@ void Parser::drive_strength() {
 		} else if (la->kind == _Thighz0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(227,__func__);
-		Expect(_TRpar,__func__);
+        } else SynErr(227,__FUNCTION__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::charge_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_charge_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tsmall) {
 			Get();
@@ -1808,8 +1808,8 @@ void Parser::charge_strength() {
 		} else if (la->kind == _Tlarge) {
 			Get();
 			addTerminal(); 
-		} else SynErr(228,__func__);
-		Expect(_TRpar,__func__);
+        } else SynErr(228,__FUNCTION__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1838,7 +1838,7 @@ void Parser::real_type() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(229,__func__);
+        } else SynErr(229,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -1869,7 +1869,7 @@ void Parser::variable_type() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(230,__func__);
+        } else SynErr(230,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -1890,7 +1890,7 @@ void Parser::strength0() {
 		} else if (la->kind == _Tweak0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(231,__func__);
+        } else SynErr(231,__FUNCTION__);
 }
 
 void Parser::strength1() {
@@ -1906,12 +1906,12 @@ void Parser::strength1() {
 		} else if (la->kind == _Tweak1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(232,__func__);
+        } else SynErr(232,__FUNCTION__);
 }
 
 void Parser::delay() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_delay, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__func__);
+        Expect(_THash,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(17)) {
 			delay_value();
@@ -1925,7 +1925,7 @@ void Parser::delay() {
 				addTerminal(); 
 				mintypmax_expression();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			while (StartOf(14)) {
 				expression_nlr();
@@ -1939,7 +1939,7 @@ void Parser::delay_value() {
 			unsigned_or_real_number();
 		} else if (la->kind == _TIdent) {
 			identifier();
-		} else SynErr(233,__func__);
+        } else SynErr(233,__FUNCTION__);
 }
 
 void Parser::mintypmax_expression() {
@@ -1949,7 +1949,7 @@ void Parser::mintypmax_expression() {
 			Get();
 			addTerminal(); 
 			expression();
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			expression();
 		}
@@ -1964,10 +1964,10 @@ void Parser::expression_nlr() {
 			Get();
 			addTerminal(); 
 			expression();
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			expression();
-		} else SynErr(234,__func__);
+        } else SynErr(234,__FUNCTION__);
 }
 
 void Parser::delay2() {
@@ -1981,7 +1981,7 @@ void Parser::unsigned_or_real_number() {
 void Parser::defparam_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_defparam_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		hierarchical_parameter_identifier();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		constant_mintypmax_expression();
 		d_stack.pop(); 
@@ -1994,7 +1994,7 @@ void Parser::event_identifier() {
 void Parser::param_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_param_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		parameter_identifier();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		constant_mintypmax_expression();
 		d_stack.pop(); 
@@ -2004,12 +2004,12 @@ void Parser::specparam_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specparam_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		if (la->kind == _TIdent) {
 			specparam_identifier();
-			Expect(_TEq,__func__);
+            Expect(_TEq,__FUNCTION__);
 			addTerminal(); 
 			constant_mintypmax_expression();
 		} else if (la->kind == _TPathPulse) {
 			pulse_control_specparam();
-		} else SynErr(235,__func__);
+        } else SynErr(235,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2024,7 +2024,7 @@ void Parser::constant_mintypmax_expression() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			constant_expression();
 		}
@@ -2041,11 +2041,11 @@ void Parser::specparam_identifier() {
 
 void Parser::pulse_control_specparam() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pulse_control_specparam, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TPathPulse,__func__);
+        Expect(_TPathPulse,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reject_limit_value();
 		if (la->kind == _TComma) {
@@ -2053,7 +2053,7 @@ void Parser::pulse_control_specparam() {
 			addTerminal(); 
 			error_limit_value();
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2104,7 +2104,7 @@ void Parser::function_range_or_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(236,__func__);
+        } else SynErr(236,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2126,9 +2126,9 @@ void Parser::function_item_declaration() {
 			block_item_declaration();
 		} else if (la->kind == _Tinput) {
 			tf_input_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(237,__func__);
+        } else SynErr(237,__FUNCTION__);
 }
 
 void Parser::function_statement() {
@@ -2163,23 +2163,23 @@ void Parser::block_item_declaration() {
 		}
 		case _Tlocalparam: {
 			local_parameter_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
 		case _Tparameter: {
 			parameter_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(238,__func__); break;
+        default: SynErr(238,__FUNCTION__); break;
 		}
 }
 
 void Parser::tf_input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__func__);
+        Expect(_Tinput,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
 			if (la->kind == _Treg) {
@@ -2195,7 +2195,7 @@ void Parser::tf_input_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(239,__func__);
+        } else SynErr(239,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
@@ -2218,17 +2218,17 @@ void Parser::task_item_declaration() {
 			block_item_declaration();
 		} else if (la->kind == _Tinput) {
 			tf_input_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Toutput) {
 			tf_output_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tinout) {
 			tf_inout_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(240,__func__);
+        } else SynErr(240,__FUNCTION__);
 }
 
 void Parser::statement_or_null() {
@@ -2239,7 +2239,7 @@ void Parser::statement_or_null() {
 
 void Parser::tf_output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__func__);
+        Expect(_Toutput,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
 			if (la->kind == _Treg) {
@@ -2255,14 +2255,14 @@ void Parser::tf_output_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(241,__func__);
+        } else SynErr(241,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
 
 void Parser::tf_inout_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_inout_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinout,__func__);
+        Expect(_Tinout,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
 			if (la->kind == _Treg) {
@@ -2278,7 +2278,7 @@ void Parser::tf_inout_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(242,__func__);
+        } else SynErr(242,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
@@ -2290,7 +2290,7 @@ void Parser::task_port_item() {
 			tf_output_declaration();
 		} else if (la->kind == _Tinout) {
 			tf_inout_declaration();
-		} else SynErr(243,__func__);
+        } else SynErr(243,__FUNCTION__);
 }
 
 void Parser::task_port_type() {
@@ -2306,12 +2306,12 @@ void Parser::task_port_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(244,__func__);
+        } else SynErr(244,__FUNCTION__);
 }
 
 void Parser::block_reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__func__);
+        Expect(_Treg,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tsigned) {
 			Get();
@@ -2321,47 +2321,47 @@ void Parser::block_reg_declaration() {
 			range();
 		}
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_integer_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_integer_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinteger,__func__);
+        Expect(_Tinteger,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_time_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_time_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttime,__func__);
+        Expect(_Ttime,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_real_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_real_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treal,__func__);
+        Expect(_Treal,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_real_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_realtime_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_realtime_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Trealtime,__func__);
+        Expect(_Trealtime,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_real_identifiers();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2409,7 +2409,7 @@ void Parser::cmos_switchtype() {
 		} else if (la->kind == _Trcmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(245,__func__);
+        } else SynErr(245,__FUNCTION__);
 }
 
 void Parser::cmos_switch_instance() {
@@ -2417,19 +2417,19 @@ void Parser::cmos_switch_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		ncontrol_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		pcontrol_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2447,7 +2447,7 @@ void Parser::enable_gatetype() {
 		} else if (la->kind == _Tnotif1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(246,__func__);
+        } else SynErr(246,__FUNCTION__);
 }
 
 void Parser::enable_gate_instance() {
@@ -2455,16 +2455,16 @@ void Parser::enable_gate_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2482,7 +2482,7 @@ void Parser::mos_switchtype() {
 		} else if (la->kind == _Trpmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(247,__func__);
+        } else SynErr(247,__FUNCTION__);
 }
 
 void Parser::mos_switch_instance() {
@@ -2490,16 +2490,16 @@ void Parser::mos_switch_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2536,7 +2536,7 @@ void Parser::n_input_gatetype() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(248,__func__); break;
+        default: SynErr(248,__FUNCTION__); break;
 		}
 }
 
@@ -2545,10 +2545,10 @@ void Parser::n_input_gate_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
 		while (la->kind == _TComma) {
@@ -2556,7 +2556,7 @@ void Parser::n_input_gate_instance() {
 			addTerminal(); 
 			input_terminal();
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2568,7 +2568,7 @@ void Parser::n_output_gatetype() {
 		} else if (la->kind == _Tnot) {
 			Get();
 			addTerminal(); 
-		} else SynErr(249,__func__);
+        } else SynErr(249,__FUNCTION__);
 }
 
 void Parser::n_output_gate_instance() {
@@ -2576,7 +2576,7 @@ void Parser::n_output_gate_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		input_or_output_terminal();
 		while (la->kind == _TComma) {
@@ -2584,7 +2584,7 @@ void Parser::n_output_gate_instance() {
 			addTerminal(); 
 			input_or_output_terminal();
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2602,7 +2602,7 @@ void Parser::pass_en_switchtype() {
 		} else if (la->kind == _Trtranif0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(250,__func__);
+        } else SynErr(250,__FUNCTION__);
 }
 
 void Parser::pass_enable_switch_instance() {
@@ -2610,16 +2610,16 @@ void Parser::pass_enable_switch_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2631,7 +2631,7 @@ void Parser::pass_switchtype() {
 		} else if (la->kind == _Trtran) {
 			Get();
 			addTerminal(); 
-		} else SynErr(251,__func__);
+        } else SynErr(251,__FUNCTION__);
 }
 
 void Parser::pass_switch_instance() {
@@ -2639,26 +2639,26 @@ void Parser::pass_switch_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pulldown_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pulldown_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(252,__func__);
+        } else SynErr(252,__FUNCTION__);
 		if (la->kind == _TComma) {
 			Get();
 			addTerminal(); 
@@ -2666,9 +2666,9 @@ void Parser::pulldown_strength() {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(253,__func__);
+            } else SynErr(253,__FUNCTION__);
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2678,23 +2678,23 @@ void Parser::pull_gate_instance() {
 		if (la->kind == _TIdent) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pullup_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pullup_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(254,__func__);
+        } else SynErr(254,__FUNCTION__);
 		if (la->kind == _TComma) {
 			Get();
 			addTerminal(); 
@@ -2702,9 +2702,9 @@ void Parser::pullup_strength() {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(255,__func__);
+            } else SynErr(255,__FUNCTION__);
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2775,23 +2775,23 @@ void Parser::net_lvalue() {
 				addTerminal(); 
 				net_lvalue();
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(256,__func__);
+        } else SynErr(256,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::named_parameter_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_named_parameter_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TDot,__func__);
+        Expect(_TDot,__FUNCTION__);
 		addTerminal(); 
 		parameter_identifier();
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(23)) {
 			mintypmax_expression();
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2812,7 +2812,7 @@ void Parser::genvar_identifier() {
 void Parser::genvar_initialization() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_initialization, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		genvar_identifier();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
 		d_stack.pop(); 
@@ -2831,7 +2831,7 @@ void Parser::genvar_expression() {
 void Parser::genvar_iteration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_iteration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		genvar_identifier();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		genvar_expression();
 		d_stack.pop(); 
@@ -2852,9 +2852,9 @@ void Parser::generate_block() {
 			while (StartOf(8)) {
 				module_or_generate_item();
 			}
-			Expect(_Tend,__func__);
+            Expect(_Tend,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(257,__func__);
+        } else SynErr(257,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2872,7 +2872,7 @@ void Parser::genvar_expression_nlr() {
 				Get();
 				addTerminal(); 
 				genvar_expression();
-				Expect(_TColon,__func__);
+                Expect(_TColon,__FUNCTION__);
 				addTerminal(); 
 				genvar_expression();
 				genvar_expression_nlr();
@@ -2889,7 +2889,7 @@ void Parser::constant_primary() {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TIdent || la->kind == _TSysName) {
 			if (la->kind == _TIdent) {
@@ -2902,7 +2902,7 @@ void Parser::constant_primary() {
 					Get();
 					addTerminal(); 
 					constant_range_expression();
-					Expect(_TRbrack,__func__);
+                    Expect(_TRbrack,__FUNCTION__);
 					addTerminal(); 
 				} else {
 					Get();
@@ -2913,7 +2913,7 @@ void Parser::constant_primary() {
 						addTerminal(); 
 						constant_expression();
 					}
-					Expect(_TRpar,__func__);
+                    Expect(_TRpar,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
@@ -2940,23 +2940,23 @@ void Parser::constant_primary() {
 						addTerminal(); 
 						constant_expression();
 					}
-					Expect(_TRbrace,__func__);
+                    Expect(_TRbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(258,__func__);
+        } else SynErr(258,__FUNCTION__);
 }
 
 void Parser::if_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_if_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tif,__func__);
+        Expect(_Tif,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		generate_block_or_null();
 		if (la->kind == _Telse) {
@@ -2969,18 +2969,18 @@ void Parser::if_generate_construct() {
 
 void Parser::case_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_case_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tcase,__func__);
+        Expect(_Tcase,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		case_generate_item();
 		while (StartOf(24)) {
 			case_generate_item();
 		}
-		Expect(_Tendcase,__func__);
+        Expect(_Tendcase,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2991,7 +2991,7 @@ void Parser::generate_block_or_null() {
 		} else if (la->kind == _TSemi) {
 			Get();
 			addTerminal(); 
-		} else SynErr(259,__func__);
+        } else SynErr(259,__FUNCTION__);
 }
 
 void Parser::case_generate_item() {
@@ -3003,7 +3003,7 @@ void Parser::case_generate_item() {
 				addTerminal(); 
 				constant_expression();
 			}
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			generate_block_or_null();
 		} else if (la->kind == _Tdefault) {
@@ -3014,7 +3014,7 @@ void Parser::case_generate_item() {
 				addTerminal(); 
 			}
 			generate_block_or_null();
-		} else SynErr(260,__func__);
+        } else SynErr(260,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3029,7 +3029,7 @@ void Parser::udp_identifier() {
 void Parser::udp_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		output_port_identifier();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		input_port_identifier();
 		while (la->kind == _TComma) {
@@ -3043,7 +3043,7 @@ void Parser::udp_port_list() {
 void Parser::udp_declaration_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_declaration_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		udp_output_declaration();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		udp_input_declaration();
 		while (la->kind == _TComma) {
@@ -3057,17 +3057,17 @@ void Parser::udp_declaration_port_list() {
 void Parser::udp_port_declaration() {
 		if (la->kind == _Toutput) {
 			udp_output_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tinput) {
 			udp_input_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Treg) {
 			udp_reg_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(261,__func__);
+        } else SynErr(261,__FUNCTION__);
 }
 
 void Parser::udp_body() {
@@ -3075,13 +3075,13 @@ void Parser::udp_body() {
 		if (la->kind == _Tinitial) {
 			udp_initial_statement();
 		}
-		Expect(_Ttable,__func__);
+        Expect(_Ttable,__FUNCTION__);
 		addTerminal(); 
 		sequential_or_combinatorial_entry();
 		while (StartOf(26)) {
 			sequential_or_combinatorial_entry();
 		}
-		Expect(_Tendtable,__func__);
+        Expect(_Tendtable,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3096,7 +3096,7 @@ void Parser::input_port_identifier() {
 
 void Parser::udp_output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__func__);
+        Expect(_Toutput,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Treg) {
 			Get();
@@ -3113,7 +3113,7 @@ void Parser::udp_output_declaration() {
 
 void Parser::udp_input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__func__);
+        Expect(_Tinput,__FUNCTION__);
 		addTerminal(); 
 		list_of_port_identifiers();
 		d_stack.pop(); 
@@ -3121,7 +3121,7 @@ void Parser::udp_input_declaration() {
 
 void Parser::udp_reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__func__);
+        Expect(_Treg,__FUNCTION__);
 		addTerminal(); 
 		variable_identifier();
 		d_stack.pop(); 
@@ -3129,13 +3129,13 @@ void Parser::udp_reg_declaration() {
 
 void Parser::udp_initial_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_initial_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinitial,__func__);
+        Expect(_Tinitial,__FUNCTION__);
 		addTerminal(); 
 		output_port_identifier();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		init_val();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3152,20 +3152,20 @@ void Parser::sequential_or_combinatorial_entry() {
 			if (StartOf(28)) {
 				level_symbol();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
 		while (StartOf(27)) {
 			level_or_edge_symbol();
 		}
-		Expect(_TColon,__func__);
+        Expect(_TColon,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(28)) {
 			level_symbol();
 		} else if (la->kind == _TMinus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(262,__func__);
+        } else SynErr(262,__FUNCTION__);
 		if (la->kind == _TColon) {
 			Get();
 			addTerminal(); 
@@ -3174,9 +3174,9 @@ void Parser::sequential_or_combinatorial_entry() {
 			} else if (la->kind == _TMinus) {
 				Get();
 				addTerminal(); 
-			} else SynErr(263,__func__);
+            } else SynErr(263,__FUNCTION__);
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3196,7 +3196,7 @@ void Parser::level_or_edge_symbol() {
 		} else if (la->kind == _TStar) {
 			Get();
 			addTerminal(); 
-		} else SynErr(264,__func__);
+        } else SynErr(264,__FUNCTION__);
 }
 
 void Parser::level_symbol() {
@@ -3207,7 +3207,7 @@ void Parser::level_symbol() {
 		} else if (la->kind == _TQmark) {
 			Get();
 			addTerminal(); 
-		} else SynErr(265,__func__);
+        } else SynErr(265,__FUNCTION__);
 }
 
 void Parser::number() {
@@ -3225,7 +3225,7 @@ void Parser::number() {
 						base_value();
 					} else if (la->kind == _TNatural) {
 						natural_number();
-					} else SynErr(266,__func__);
+                    } else SynErr(266,__FUNCTION__);
 				}
 			}
 		} else if (la->kind == _TSizedBased) {
@@ -3238,8 +3238,8 @@ void Parser::number() {
 				base_value();
 			} else if (la->kind == _TNatural) {
 				natural_number();
-			} else SynErr(267,__func__);
-		} else SynErr(268,__func__);
+            } else SynErr(267,__FUNCTION__);
+        } else SynErr(268,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3249,7 +3249,7 @@ void Parser::edge_descriptor() {
 			identifier();
 		} else if (StartOf(18)) {
 			number();
-		} else SynErr(269,__func__);
+        } else SynErr(269,__FUNCTION__);
 		if (StartOf(17)) {
 			if (la->kind == _TIdent) {
 				identifier();
@@ -3276,7 +3276,7 @@ void Parser::list_of_net_assignments() {
 void Parser::net_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_net_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		net_lvalue();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		expression();
 		d_stack.pop(); 
@@ -3314,7 +3314,7 @@ void Parser::statement() {
 		}
 		case _Tassign: case _Tdeassign: case _Tforce: case _Trelease: {
 			procedural_continuous_assignments();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
@@ -3339,7 +3339,7 @@ void Parser::statement() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(270,__func__); break;
+        default: SynErr(270,__FUNCTION__); break;
 		}
 }
 
@@ -3357,21 +3357,21 @@ void Parser::procedural_continuous_assignments() {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-			Expect(_TEq,__func__);
+            Expect(_TEq,__FUNCTION__);
 			addTerminal(); 
 			expression();
 		} else if (la->kind == _Trelease) {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-		} else SynErr(271,__func__);
+        } else SynErr(271,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::variable_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_variable_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		variable_lvalue();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		expression();
 		d_stack.pop(); 
@@ -3390,9 +3390,9 @@ void Parser::variable_lvalue() {
 				addTerminal(); 
 				variable_lvalue();
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(272,__func__);
+        } else SynErr(272,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3409,15 +3409,15 @@ void Parser::variable_or_net_lvalue() {
 				addTerminal(); 
 				variable_or_net_lvalue();
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(273,__func__);
+        } else SynErr(273,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::par_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_par_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfork,__func__);
+        Expect(_Tfork,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TColon) {
 			Get();
@@ -3430,7 +3430,7 @@ void Parser::par_block() {
 		while (StartOf(22)) {
 			statement();
 		}
-		Expect(_Tjoin,__func__);
+        Expect(_Tjoin,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3441,7 +3441,7 @@ void Parser::block_identifier() {
 
 void Parser::seq_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_seq_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tbegin,__func__);
+        Expect(_Tbegin,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TColon) {
 			Get();
@@ -3454,7 +3454,7 @@ void Parser::seq_block() {
 		while (StartOf(22)) {
 			statement();
 		}
-		Expect(_Tend,__func__);
+        Expect(_Tend,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3471,7 +3471,7 @@ void Parser::blocking_or_nonblocking_assignment_or_task_enable() {
 				addTerminal(); 
 				expression();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
 		if (la->kind == _TEq || la->kind == _TLeq) {
@@ -3489,7 +3489,7 @@ void Parser::blocking_or_nonblocking_assignment_or_task_enable() {
 				expression();
 			}
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3503,13 +3503,13 @@ void Parser::delay_or_event_control() {
 		} else if (la->kind == _Trepeat) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			event_control();
-		} else SynErr(274,__func__);
+        } else SynErr(274,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3518,57 +3518,57 @@ void Parser::case_statement() {
 		if (la->kind == _Tcase) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			case_item();
 			while (StartOf(24)) {
 				case_item();
 			}
-			Expect(_Tendcase,__func__);
+            Expect(_Tendcase,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tcasez) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			case_item();
 			while (StartOf(24)) {
 				case_item();
 			}
-			Expect(_Tendcase,__func__);
+            Expect(_Tendcase,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tcasex) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			case_item();
 			while (StartOf(24)) {
 				case_item();
 			}
-			Expect(_Tendcase,__func__);
+            Expect(_Tendcase,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(275,__func__);
+        } else SynErr(275,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::conditional_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_conditional_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tif,__func__);
+        Expect(_Tif,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		expression();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		statement_or_null();
 		if (la->kind == _Telse) {
@@ -3581,22 +3581,22 @@ void Parser::conditional_statement() {
 
 void Parser::disable_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_disable_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdisable,__func__);
+        Expect(_Tdisable,__FUNCTION__);
 		addTerminal(); 
 		hierarchical_task_or_block_identifier();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::event_trigger() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_trigger, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TMinus,__func__);
+        Expect(_TMinus,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TGt,__func__);
+        Expect(_TGt,__FUNCTION__);
 		addTerminal(); 
 		hierarchical_identifier_range();
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3610,37 +3610,37 @@ void Parser::loop_statement() {
 		} else if (la->kind == _Trepeat) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
 		} else if (la->kind == _Twhile) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
 		} else if (la->kind == _Tfor) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			variable_assignment();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 			variable_assignment();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
-		} else SynErr(276,__func__);
+        } else SynErr(276,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3667,22 +3667,22 @@ void Parser::system_task_enable() {
 					expression();
 				}
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::wait_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_wait_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Twait,__func__);
+        Expect(_Twait,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		expression();
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		statement_or_null();
 		d_stack.pop(); 
@@ -3694,7 +3694,7 @@ void Parser::delay_control() {
 
 void Parser::event_control() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_control, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TAt,__func__);
+        Expect(_TAt,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _TLpar) {
 			Get();
@@ -3704,15 +3704,15 @@ void Parser::event_control() {
 			} else if (la->kind == _TStar) {
 				Get();
 				addTerminal(); 
-			} else SynErr(277,__func__);
-			Expect(_TRpar,__func__);
+            } else SynErr(277,__FUNCTION__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TStar) {
 			Get();
 			addTerminal(); 
 		} else if (la->kind == _TIdent) {
 			hierarchical_event_identifier();
-		} else SynErr(278,__func__);
+        } else SynErr(278,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3727,7 +3727,7 @@ void Parser::hierarchical_identifier() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		while (la->kind == _TDot) {
@@ -3738,7 +3738,7 @@ void Parser::hierarchical_identifier() {
 				Get();
 				addTerminal(); 
 				constant_expression();
-				Expect(_TRbrack,__func__);
+                Expect(_TRbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -3760,7 +3760,7 @@ void Parser::event_expression() {
 			addTerminal(); 
 			expression();
 			event_expression_nlr();
-		} else SynErr(279,__func__);
+        } else SynErr(279,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3780,14 +3780,14 @@ void Parser::hierarchical_identifier_range() {
 					Get();
 					addTerminal(); 
 					range_expression();
-					Expect(_TRbrack,__func__);
+                    Expect(_TRbrack,__FUNCTION__);
 					addTerminal(); 
 				}
 			} else {
 				Get();
 				addTerminal(); 
 				range_expression();
-				Expect(_TRbrack,__func__);
+                Expect(_TRbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -3815,7 +3815,7 @@ void Parser::procedural_timing_control() {
 			delay_control();
 		} else if (la->kind == _TAt) {
 			event_control();
-		} else SynErr(280,__func__);
+        } else SynErr(280,__FUNCTION__);
 }
 
 void Parser::case_item() {
@@ -3827,7 +3827,7 @@ void Parser::case_item() {
 				addTerminal(); 
 				expression();
 			}
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			statement_or_null();
 		} else if (la->kind == _Tdefault) {
@@ -3838,7 +3838,7 @@ void Parser::case_item() {
 				addTerminal(); 
 			}
 			statement_or_null();
-		} else SynErr(281,__func__);
+        } else SynErr(281,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3857,7 +3857,7 @@ void Parser::specify_item() {
 			path_declaration();
 		} else if (StartOf(30)) {
 			system_timing_check();
-		} else SynErr(282,__func__);
+        } else SynErr(282,__FUNCTION__);
 }
 
 void Parser::pulsestyle_declaration() {
@@ -3866,15 +3866,15 @@ void Parser::pulsestyle_declaration() {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tpulsestyle_ondetect) {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(283,__func__);
+        } else SynErr(283,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3884,28 +3884,28 @@ void Parser::showcancelled_declaration() {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tnoshowcancelled) {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(284,__func__);
+        } else SynErr(284,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::path_declaration() {
 		if (la->kind == _TLpar) {
 			simple_or_edge_sensitive_path_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _Tif || la->kind == _Tifnone) {
 			state_dependent_path_declaration();
-			Expect(_TSemi,__func__);
+            Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(285,__func__);
+        } else SynErr(285,__FUNCTION__);
 }
 
 void Parser::system_timing_check() {
@@ -3958,7 +3958,7 @@ void Parser::system_timing_check() {
 			dlr_nochange_timing_check();
 			break;
 		}
-		default: SynErr(286,__func__); break;
+        default: SynErr(286,__FUNCTION__); break;
 		}
 }
 
@@ -3973,7 +3973,7 @@ void Parser::list_of_path_outputs() {
 
 void Parser::simple_or_edge_sensitive_path_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_edge_sensitive_path_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tnegedge || la->kind == _Tposedge) {
 			edge_identifier();
@@ -3994,7 +3994,7 @@ void Parser::simple_or_edge_sensitive_path_declaration() {
 			if (la->kind == _TIdent) {
 				list_of_path_outputs();
 			}
-		} else SynErr(287,__func__);
+        } else SynErr(287,__FUNCTION__);
 		if (la->kind == _TLpar) {
 			Get();
 			addTerminal(); 
@@ -4008,14 +4008,14 @@ void Parser::simple_or_edge_sensitive_path_declaration() {
 			} else if (la->kind == _TMinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(288,__func__);
+            } else SynErr(288,__FUNCTION__);
 			data_source_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		path_delay_value();
 		d_stack.pop(); 
@@ -4026,26 +4026,26 @@ void Parser::state_dependent_path_declaration() {
 		if (la->kind == _Tif) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			module_path_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			simple_or_edge_sensitive_path_description();
-			Expect(_TEq,__func__);
+            Expect(_TEq,__FUNCTION__);
 			addTerminal(); 
 			path_delay_value();
 		} else if (la->kind == _Tifnone) {
 			Get();
 			addTerminal(); 
 			simple_path_declaration();
-		} else SynErr(289,__func__);
+        } else SynErr(289,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::parallel_or_full_path_description() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parallel_or_full_path_description, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		list_of_path_inputs();
 		if (la->kind == _TPlus || la->kind == _TMinus) {
@@ -4059,8 +4059,8 @@ void Parser::parallel_or_full_path_description() {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-		} else SynErr(290,__func__);
-		Expect(_TRpar,__func__);
+        } else SynErr(290,__FUNCTION__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -4081,7 +4081,7 @@ void Parser::polarity_operator() {
 		} else if (la->kind == _TMinus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(291,__func__);
+        } else SynErr(291,__FUNCTION__);
 }
 
 void Parser::specify_output_terminal_descriptor() {
@@ -4091,7 +4091,7 @@ void Parser::specify_output_terminal_descriptor() {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4100,7 +4100,7 @@ void Parser::specify_output_terminal_descriptor() {
 void Parser::simple_path_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_path_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		parallel_or_full_path_description();
-		Expect(_TEq,__func__);
+        Expect(_TEq,__FUNCTION__);
 		addTerminal(); 
 		path_delay_value();
 		d_stack.pop(); 
@@ -4127,7 +4127,7 @@ void Parser::specify_input_terminal_descriptor() {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4169,7 +4169,7 @@ void Parser::edge_identifier() {
 		} else if (la->kind == _Tnegedge) {
 			Get();
 			addTerminal(); 
-		} else SynErr(292,__func__);
+        } else SynErr(292,__FUNCTION__);
 }
 
 void Parser::data_source_expression() {
@@ -4178,7 +4178,7 @@ void Parser::data_source_expression() {
 
 void Parser::simple_or_edge_sensitive_path_description() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_edge_sensitive_path_description, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _Tnegedge || la->kind == _Tposedge) {
 			edge_identifier();
@@ -4199,7 +4199,7 @@ void Parser::simple_or_edge_sensitive_path_description() {
 			if (la->kind == _TIdent) {
 				list_of_path_outputs();
 			}
-		} else SynErr(293,__func__);
+        } else SynErr(293,__FUNCTION__);
 		if (la->kind == _TLpar) {
 			Get();
 			addTerminal(); 
@@ -4213,12 +4213,12 @@ void Parser::simple_or_edge_sensitive_path_description() {
 			} else if (la->kind == _TMinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(294,__func__);
+            } else SynErr(294,__FUNCTION__);
 			data_source_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -4235,15 +4235,15 @@ void Parser::module_path_expression() {
 
 void Parser::dlr_setup_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_setup_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSetup,__func__);
+        Expect(_TSetup,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4253,24 +4253,24 @@ void Parser::dlr_setup_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_hold_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_hold_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THold,__func__);
+        Expect(_THold,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4280,27 +4280,27 @@ void Parser::dlr_hold_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_setuphold_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_setuphold_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSetupHold,__func__);
+        Expect(_TSetupHold,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4338,24 +4338,24 @@ void Parser::dlr_setuphold_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_recovery_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_recovery_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRecovery,__func__);
+        Expect(_TRecovery,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4365,24 +4365,24 @@ void Parser::dlr_recovery_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_removal_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_removal_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRemoval,__func__);
+        Expect(_TRemoval,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4392,27 +4392,27 @@ void Parser::dlr_removal_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_recrem_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_recrem_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRecrem,__func__);
+        Expect(_TRecrem,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4450,24 +4450,24 @@ void Parser::dlr_recrem_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_skew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_skew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSkew,__func__);
+        Expect(_TSkew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4477,24 +4477,24 @@ void Parser::dlr_skew_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_timeskew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_timeskew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TTimeSkew,__func__);
+        Expect(_TTimeSkew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4518,27 +4518,27 @@ void Parser::dlr_timeskew_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_fullskew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_fullskew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TFullSkew,__func__);
+        Expect(_TFullSkew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4562,21 +4562,21 @@ void Parser::dlr_fullskew_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_period_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_period_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TPeriod,__func__);
+        Expect(_TPeriod,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		controlled_reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4586,21 +4586,21 @@ void Parser::dlr_period_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_width_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_width_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TWidth,__func__);
+        Expect(_TWidth,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		controlled_reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
 		if (la->kind == _TComma) {
@@ -4613,27 +4613,27 @@ void Parser::dlr_width_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_nochange_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_nochange_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TNoChange,__func__);
+        Expect(_TNoChange,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		start_edge_offset();
-		Expect(_TComma,__func__);
+        Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		end_edge_offset();
 		if (la->kind == _TComma) {
@@ -4643,9 +4643,9 @@ void Parser::dlr_nochange_timing_check() {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__func__);
+        Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -4681,7 +4681,7 @@ void Parser::delayed_reference() {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4694,7 +4694,7 @@ void Parser::delayed_data() {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4731,7 +4731,7 @@ void Parser::controlled_timing_check_event() {
 		if (la->kind == _T2Amp) {
 			Get();
 			addTerminal(); 
-			Expect(_TAmp,__func__);
+            Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4747,7 +4747,7 @@ void Parser::timing_check_event() {
 		if (la->kind == _T2Amp) {
 			Get();
 			addTerminal(); 
-			Expect(_TAmp,__func__);
+            Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4767,7 +4767,7 @@ void Parser::timing_check_event_control() {
 			addTerminal(); 
 		} else if (la->kind == _Tedge) {
 			edge_control_specifier();
-		} else SynErr(295,__func__);
+        } else SynErr(295,__FUNCTION__);
 }
 
 void Parser::specify_terminal_descriptor() {
@@ -4780,9 +4780,9 @@ void Parser::timing_check_condition() {
 
 void Parser::edge_control_specifier() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_edge_control_specifier, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tedge,__func__);
+        Expect(_Tedge,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLbrack,__func__);
+        Expect(_TLbrack,__FUNCTION__);
 		addTerminal(); 
 		edge_descriptor();
 		while (la->kind == _TComma) {
@@ -4790,7 +4790,7 @@ void Parser::edge_control_specifier() {
 			addTerminal(); 
 			edge_descriptor();
 		}
-		Expect(_TRbrack,__func__);
+        Expect(_TRbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -4802,7 +4802,7 @@ void Parser::specify_input_or_output_terminal_descriptor() {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__func__);
+            Expect(_TRbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4841,10 +4841,10 @@ void Parser::constant_expression_nlr() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(296,__func__);
+        } else SynErr(296,__FUNCTION__);
 }
 
 void Parser::width_constant_expression() {
@@ -4867,7 +4867,7 @@ void Parser::primary() {
 					addTerminal(); 
 					expression();
 				}
-				Expect(_TRpar,__func__);
+                Expect(_TRpar,__FUNCTION__);
 				addTerminal(); 
 			}
 		} else if (StartOf(18)) {
@@ -4878,7 +4878,7 @@ void Parser::primary() {
 			Get();
 			addTerminal(); 
 			mintypmax_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TLbrace) {
 			Get();
@@ -4903,13 +4903,13 @@ void Parser::primary() {
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRbrace,__func__);
+                    Expect(_TRbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(297,__func__);
+        } else SynErr(297,__FUNCTION__);
 }
 
 void Parser::module_path_primary() {
@@ -4930,14 +4930,14 @@ void Parser::module_path_primary() {
 					addTerminal(); 
 					expression();
 				}
-				Expect(_TRpar,__func__);
+                Expect(_TRpar,__FUNCTION__);
 				addTerminal(); 
 			}
 		} else if (la->kind == _TLpar) {
 			Get();
 			addTerminal(); 
 			module_path_mintypmax_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TLbrace) {
 			Get();
@@ -4962,13 +4962,13 @@ void Parser::module_path_primary() {
 						addTerminal(); 
 						module_path_expression();
 					}
-					Expect(_TRbrace,__func__);
+                    Expect(_TRbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(298,__func__);
+        } else SynErr(298,__FUNCTION__);
 }
 
 void Parser::module_path_expression_nlr() {
@@ -4981,7 +4981,7 @@ void Parser::module_path_expression_nlr() {
 				Get();
 				addTerminal(); 
 				module_path_expression();
-				Expect(_TColon,__func__);
+                Expect(_TColon,__FUNCTION__);
 				addTerminal(); 
 				module_path_expression();
 				module_path_expression_nlr();
@@ -4996,7 +4996,7 @@ void Parser::module_path_mintypmax_expression() {
 			Get();
 			addTerminal(); 
 			module_path_expression();
-			Expect(_TColon,__func__);
+            Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			module_path_expression();
 		}
@@ -5040,14 +5040,14 @@ void Parser::hierarchical_identifier_range_const() {
 					Get();
 					addTerminal(); 
 					constant_range_expression();
-					Expect(_TRbrack,__func__);
+                    Expect(_TRbrack,__FUNCTION__);
 					addTerminal(); 
 				}
 			} else {
 				Get();
 				addTerminal(); 
 				constant_range_expression();
-				Expect(_TRbrack,__func__);
+                Expect(_TRbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -5056,12 +5056,12 @@ void Parser::hierarchical_identifier_range_const() {
 
 void Parser::parameter_value_assignment_or_delay2() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_value_assignment_or_delay2, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__func__);
+        Expect(_THash,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(17)) {
 			delay_value();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(23)) {
 			mintypmax_expression();
@@ -5077,8 +5077,8 @@ void Parser::parameter_value_assignment_or_delay2() {
 				addTerminal(); 
 				named_parameter_assignment();
 			}
-		} else SynErr(299,__func__);
-		Expect(_TRpar,__func__);
+        } else SynErr(299,__FUNCTION__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -5091,7 +5091,7 @@ void Parser::module_or_udp_instance() {
 		if (la->kind == _TLbrack) {
 			range();
 		}
-		Expect(_TLpar,__func__);
+        Expect(_TLpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(35)) {
 			port_connection_or_output_terminal();
@@ -5101,7 +5101,7 @@ void Parser::module_or_udp_instance() {
 				port_connection_or_output_terminal();
 			}
 		}
-		Expect(_TRpar,__func__);
+        Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -5112,18 +5112,18 @@ void Parser::port_connection_or_output_terminal() {
 			Get();
 			addTerminal(); 
 			port_identifier();
-			Expect(_TLpar,__func__);
+            Expect(_TLpar,__FUNCTION__);
 			addTerminal(); 
 			if (StartOf(23)) {
 				expression();
 			}
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (StartOf(36)) {
 			if (StartOf(23)) {
 				expression_2();
 			}
-		} else SynErr(300,__func__);
+        } else SynErr(300,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -5144,7 +5144,7 @@ void Parser::primary_2() {
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRpar,__func__);
+                    Expect(_TRpar,__FUNCTION__);
 					addTerminal(); 
 				} else {
 					Get();
@@ -5155,7 +5155,7 @@ void Parser::primary_2() {
 						addTerminal(); 
 						net_lvalue();
 					}
-					Expect(_TRbrace,__func__);
+                    Expect(_TRbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
@@ -5167,7 +5167,7 @@ void Parser::primary_2() {
 			Get();
 			addTerminal(); 
 			mintypmax_expression();
-			Expect(_TRpar,__func__);
+            Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TLbrace) {
 			Get();
@@ -5192,13 +5192,13 @@ void Parser::primary_2() {
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRbrace,__func__);
+                    Expect(_TRbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__func__);
+            Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(301,__func__);
+        } else SynErr(301,__FUNCTION__);
 }
 
 
@@ -5297,7 +5297,7 @@ void Parser::Parse() {
 	d_next = Vl::Token();
 	Get();
 	Verilog05();
-	Expect(0,__func__);
+    Expect(0,__FUNCTION__);
 }
 
 Parser::Parser(Vl::PpLexer *scanner, Vl::Errors* err) {
