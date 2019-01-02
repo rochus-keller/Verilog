@@ -75,6 +75,7 @@ bool Parser::parseFile(PpLexer* in, Errors* err)
 #endif
 }
 
+/* Not found by VC2013 linker unless inline
 QList<SynTree*> Parser::getResult(bool transfer)
 {
     QList<SynTree*> res = d_st;
@@ -82,6 +83,7 @@ QList<SynTree*> Parser::getResult(bool transfer)
         d_st.clear();
     return res;
 }
+*/
 
 void Parser::dumpTree(SynTree* node, int level)
 {
@@ -99,7 +101,7 @@ void Parser::dumpTree(SynTree* node, int level)
 
     }else
         str = SynTree::rToStr( node->d_tok.d_type );
-    str += QByteArray("\t\t\t\t\t") + QFileInfo(node->d_tok.d_sourcePath).fileName() +
+    str += QByteArray("\t\t\t\t\t") + QFileInfo(node->d_tok.d_sourcePath).fileName().toUtf8() +
             ":" + QByteArray::number(node->d_tok.d_lineNr);
     qDebug() << QByteArray(level*3, ' ').data() << str.data();
     foreach( SynTree* sub, node->d_children )

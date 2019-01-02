@@ -36,7 +36,13 @@ namespace Vl
 
         bool parseFile(Vl::PpLexer*, Errors* = 0 );
 
-        QList<SynTree*> getResult(bool transfer = true);
+        QList<SynTree*> getResult(bool transfer = true)
+        {
+            QList<SynTree*> res = d_st;
+            if( transfer )
+                d_st.clear();
+            return res;
+        }
 
         static void dumpTree( SynTree*, int level = 0 );
     protected:
