@@ -27,6 +27,10 @@
 #include "VlFrontend.h"
 #include "VlCrossRefModel.h"
 #include "VlFileCache.h"
+#include "VlPpLexer.h"
+#include "VlErrors.h"
+#include "VlParser.h"
+#include "VlPpSymbols.h"
 #include <QPlainTextEdit>
 
 static QStringList collectFiles( const QDir& dir )
@@ -49,35 +53,40 @@ static QStringList collectFiles( const QDir& dir )
 
 static bool readFile( const QString& path, bool resOnly )
 {
-    // qDebug() << "***** parsing" << path;
-//    QFile in( path );
-//    if( !in.open(QIODevice::ReadOnly) )
-//    {
-//        qDebug() << "**** cannot open file" << path;
-//        return false;
-//    }
 
-#ifdef LeserTest
-    Vl::Lexer lex;
-    lex.setStream( &in );
+#define LexerTest
+#ifdef LexerTest
+    qDebug() << "***** reading" << path;
+    QFile in( path );
+    if( !in.open(QIODevice::ReadOnly) )
+    {
+        qDebug() << "**** cannot open file" << path;
+        return false;
+    }
+    Vl::PpLexer lex;
+    Vl::PpSymbols s;
+    lex.setSyms(&s);
+    lex.setStream( &in, path );
 
-    Vl::Lexer::Token t = lex.nextToken();
+    Vl::Token t = lex.nextToken();
     while( true )
     {
         if( !resOnly )
-            qDebug() << t.getName() << t.d_line << t.d_col << QString::fromLatin1(t.d_val);
+            qDebug() << t.getName() << t.d_lineNr << t.d_colNr << QString::fromLatin1(t.d_val);
         if( t.isEof() )
         {
-            qDebug() << "OK" << lex.getLineNr();
+            qDebug() << "OK";
             return true;
         }
         if( !t.isValid() )
         {
-            qDebug() << "FAILED" << t.d_line << t.d_col << QString::fromLatin1(t.d_val);
+            qDebug() << "FAILED" << t.d_lineNr << t.d_colNr << QString::fromLatin1(t.d_val);
             return true;
         }
         t = lex.nextToken();
     }
+    in.close();
+    return true;
 #else
 
 //    QPlainTextEdit* edit = new QPlainTextEdit();
@@ -91,10 +100,21 @@ static bool readFile( const QString& path, bool resOnly )
 
     // mit PP braucht das gesamte Testverzeichnis (2k Verilog files) 1918 ms, ohne nur 718 ms
 
+#ifdef UseFrontend
     Vl::Frontend ff;
     const bool res = ff.process(path);
-#endif
     return res;
+#else
+    Vl::Errors e;
+    Vl::PpLexer lex;
+    Vl::PpSymbols s;
+    lex.setErrors(&e);
+    lex.setSyms(&s);
+    lex.setStream( path, true );
+    Vl::Parser p;
+    return p.parseFile( &lex, &e );
+#endif
+#endif
 }
 
 int main(int argc, char *argv[])

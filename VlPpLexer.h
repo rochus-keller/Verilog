@@ -84,8 +84,8 @@ namespace Vl
         Token processDefine();
         Token processAttribute();
         Token processCondition(Directive);
-        QList<Tokens> actualArgs( const Tokens& text, int& off );
-        QList<Tokens> actualArgs();
+        QList<Tokens> fetchActualArgsFromList( const Tokens& text, int& off );
+        QList<Tokens> fetchActualArgsFromStream();
         bool resolveAllMacroUses(const QByteArray& topId, Tokens& text );
         Token processMacroUse(const QByteArray&);
         void nextLine();

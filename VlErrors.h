@@ -43,7 +43,7 @@ namespace Vl
         typedef QSet<Entry> EntryList;
         typedef QHash<QString,EntryList> EntriesByFile;
 
-        explicit Errors(QObject *parent, bool threadExclusive = false );
+        explicit Errors(QObject *parent = 0, bool threadExclusive = false );
 
         void error( Source, const QString& file, int line, int col, const QString& msg );
         void warning( Source, const QString& file, int line, int col, const QString& msg );

@@ -1118,7 +1118,7 @@ void CrossRefModel::clearFile(Scope* global, const QString& file)
     global->d_children.clear();
     for( int i = 0; i < children.size(); i++ )
     {
-        if( children[i] != 0 )
+        if( children[i].constData() != 0 )
             global->d_children.append(children[i]);
     }
 }

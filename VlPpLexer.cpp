@@ -705,13 +705,13 @@ Token PpLexer::processCondition(Directive d)
     return Token();
 }
 
-static void replace( Tokens& inout, const QByteArray& name, const Tokens& arg )
+static void replaceFormalByActualArg( Tokens& inout, const QByteArray& formalArg, const Tokens& actualArg )
 {
     Tokens out;
     for( int i = 0; i < inout.size(); i++ )
     {
-        if( inout[i].d_type == Tok_Ident && inout[i].d_val == name )
-            out << arg;
+        if( inout[i].d_type == Tok_Ident && inout[i].d_val == formalArg )
+            out << actualArg;
         else
             out << inout[i];
     }
@@ -724,13 +724,13 @@ static QDebug& operator<<(QDebug& dbg, const Vl::Token& t)
     return dbg;
 }
 
-QList<Tokens> PpLexer::actualArgs( const Tokens& text, int& off )
+QList<Tokens> PpLexer::fetchActualArgsFromList( const Tokens& text, int& off )
 {
-    QList<Tokens> args;
+    QList<Tokens> result;
     if( off >= text.size() || text[off].d_type != Tok_Lpar )
     {
         error( "actual arguments expected" );
-        return args;
+        return result;
     }
     off++;
     Tokens toks;
@@ -744,7 +744,7 @@ QList<Tokens> PpLexer::actualArgs( const Tokens& text, int& off )
             if( parCount == 0 )
             {
                 // Klammern sind ausgeglichen, wir haben ein Argument fertig gelesen
-                args.append(toks);
+                result.append(toks);
                 toks.clear();
                 if( text[off].d_type == Tok_Rpar )
                 {
@@ -756,17 +756,17 @@ QList<Tokens> PpLexer::actualArgs( const Tokens& text, int& off )
             toks.append( text[off] );
         off++;
     }
-    return args;
+    return result;
 }
 
-QList<Tokens> PpLexer::actualArgs()
+QList<Tokens> PpLexer::fetchActualArgsFromStream()
 {
-    QList<Tokens> args;
+    QList<Tokens> result;
     Token t = nextTokenImp();
     if( t.d_type != Tok_Lpar )
     {
         error( "actual arguments expected" );
-        return args;
+        return result;
     }
 
     t = nextTokenImp();
@@ -781,7 +781,7 @@ QList<Tokens> PpLexer::actualArgs()
             if( parCount == 0 )
             {
                 // Klammern sind ausgeglichen, wir haben ein Argument fertig gelesen
-                args.append(toks);
+                result.append(toks);
                 toks.clear();
                 if( t.d_type == Tok_Rpar )
                 {
@@ -794,92 +794,96 @@ QList<Tokens> PpLexer::actualArgs()
 
         t = nextTokenImp();
     }
+    return result;
 }
 
-bool PpLexer::resolveAllMacroUses(const QByteArray& topId, Tokens& text)
+bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, Tokens& macroText)
 {
     while( true )
     {
-        Tokens out;
+        Tokens result;
         bool foundCodi = false;
-        for( int i = 0; i < text.size(); i++ )
+        for( int i = 0; i < macroText.size(); i++ )
         {
-            if( text[i].d_type == Tok_CoDi )
+            if( macroText[i].d_type == Tok_CoDi )
             {
                 foundCodi = true;
-                const QByteArray id = text[i].d_val;
-                if( matchDirective(id) != Cd_Invalid )
+                const QByteArray macroId = macroText[i].d_val;
+                if( matchDirective(macroId) != Cd_Invalid )
                 {
                     error( "macro text cannot contain other compiler directives than text macros" );
                     return false;
                 }
-                if( topId == id )
+                if( topMacroId == macroId )
                 {
                     error( "macro expands directly or indirectly to text containing another usage of itself" );
                     return false;
                 }
-                PpSymbols::Define def;
-                if( d_syms == 0 || !d_syms->contains(id) )
+                PpSymbols::Define macroDef;
+                if( d_syms == 0 || !d_syms->contains(macroId) )
                 {
-                    error( tr("unknown define '%1'").arg(id.data()));
+                    error( tr("unknown define '%1'").arg(macroId.data()));
                     return false;
                 }else
-                    def = d_syms->getSymbol(id);
+                    macroDef = d_syms->getSymbol(macroId);
 
-                Tokens makroText = def.d_toks;
+                Tokens makroText = macroDef.d_toks;
+                const QByteArrayList& formalArgs = macroDef.d_args;
 
-                if( !def.d_args.isEmpty() )
+                if( !formalArgs.isEmpty() )
                 {
-                    const QList<Tokens> args = actualArgs( text, ++i );
-                    if( def.d_args.size() != args.size() )
+                    const QList<Tokens> actualArgs = fetchActualArgsFromList( macroText, ++i );
+                    if( formalArgs.size() != actualArgs.size() )
                     {
-                        error( tr("wrong number of actual arguments in define '%1'").arg(id.data()));
+                        error( tr("wrong number of actual arguments in define '%1'").arg(macroId.data()));
                         return false;
                     }
-                    for( int j = 0; j < args.size(); j++ )
-                        replace( makroText, def.d_args[j], args[j] );
+                    for( int j = 0; j < actualArgs.size(); j++ )
+                        replaceFormalByActualArg( makroText, formalArgs[j], actualArgs[j] );
                 }
 
-                out << makroText;
+                result << makroText;
             }else
-                out << text[i];
+                result << macroText[i];
         }
-        text = out;
+        macroText = result;
         if( !foundCodi )
             return true;
     }
     return true;
 }
 
-Token PpLexer::processMacroUse(const QByteArray& id)
+Token PpLexer::processMacroUse(const QByteArray& makroId)
 {
-    PpSymbols::Define def;
-    if( d_syms == 0 || !d_syms->contains(id) )
+    PpSymbols::Define makroDef;
+    if( d_syms == 0 || !d_syms->contains(makroId) )
     {
-        warning( tr("unknown define '%1'").arg(id.data()));
+        warning( tr("unknown define '%1'").arg(makroId.data()));
         return nextTokenImp();
     }else
-        def = d_syms->getSymbol(id);
+        makroDef = d_syms->getSymbol(makroId);
 
-    Tokens makroText = def.d_toks;
+    Tokens makroText = makroDef.d_toks;
+    const QByteArrayList& formalArgs = makroDef.d_args;
 
-    if( !def.d_args.isEmpty() )
+    if( !formalArgs.isEmpty() )
     {
-        const QList<Tokens> args = actualArgs();
+        const QList<Tokens> actualArgs = fetchActualArgsFromStream();
 
-        if( def.d_args.size() != args.size() )
-            return error( tr("wrong number of actual arguments in define '%1'").arg(id.data()));
+        if( formalArgs.size() != actualArgs.size() )
+            return error( tr("wrong number of actual arguments in define '%1'").arg(makroId.data()));
 
-        for( int i = 0; i < args.size(); i++ )
-            replace( makroText, def.d_args[i], args[i] );
+        for( int i = 0; i < actualArgs.size(); i++ )
+            replaceFormalByActualArg( makroText, formalArgs[i], actualArgs[i] );
     }
-    resolveAllMacroUses( id, makroText );
+    resolveAllMacroUses( makroId, makroText );
     for( int i = 0; i < makroText.size(); i++ )
-        makroText[i].d_substituted = true;
+        makroText[i].d_substituted = true; // check: don't substitute in every case; provide option
     Token t = nextTokenImp();
     makroText.append(t);
     t = makroText.first();
     makroText = makroText.mid(1);
+    // return the first token immediately and the remaining ones via buffer
     d_buffer << makroText;
     return t;
 }
