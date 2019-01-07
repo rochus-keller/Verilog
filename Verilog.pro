@@ -36,6 +36,8 @@ CONFIG(debug, debug|release) {
         DEFINES += _DEBUG
 }
 
+QMAKE_CXXFLAGS += -Wno-reorder -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
+
 #CONFIG += c++11
 
 #include( ../../Libraries/antlr4/antlr4.pri )

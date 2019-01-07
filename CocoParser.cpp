@@ -42,7 +42,7 @@ void Parser::SynErr(int n, const char* ctx) {
 }
 
 void Parser::SemErr(const char* msg) {
-	if (errDist >= minErrDist) errors->error(Vl::Errors::Semantics,d_cur.d_sourcePath,d_cur.d_lineNr, d_cur.d_colNr, msg);
+    if (errDist >= minErrDist) errors->error(Vl::Errors::Semantics,d_cur.d_sourcePath,d_cur.d_lineNr, d_cur.d_colNr, msg);
 	errDist = 0;
 }
 
@@ -50,10 +50,33 @@ void Parser::Get() {
 	for (;;) {
 		d_cur = d_next;
 		d_next = scanner->nextToken();
-        if( d_next.d_type == Vl::Tok_Eof )
-            d_next.d_type = Vl::Tok_Invalid; // = _EOF
-        if( d_next.d_type != Vl::Tok_Comment && d_next.d_type != Vl::Tok_Attribute )
+        if( d_next.d_type == Vl::Tok_Invalid )
         {
+            SynErr( d_next.d_type, d_next.d_val );
+        }else if( d_next.d_type == Vl::Tok_Latt )
+        {
+            Vl::TokenList l;
+            for(;;)
+            {
+                Vl::Token t = scanner->nextToken();
+                if( t.d_type == Vl::Tok_Ratt )
+                {
+                    // reguläres Ende. TODO: was tun wir damit?
+                    break;
+                }else if( t.d_type == Vl::Tok_Eof || t.d_type == Vl::Tok_Latt )
+                {
+                    // irreguläres Ende
+                    d_cur = d_next;
+                    SemErr("non-terminated attribute");
+                    break;
+                }else
+                    l.append(t); // auch Vl::Tok_Invalid werden hier einfach mal gespeichert
+            }
+        }else if( d_next.d_type != Vl::Tok_Comment && d_next.d_type != Vl::Tok_Attribute )
+        {
+            if( d_next.d_type == Vl::Tok_Eof )
+                d_next.d_type = Vl::Tok_Invalid; // = _EOF
+
             la->kind = d_next.d_type;
             if (la->kind <= maxT)
             {

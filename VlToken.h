@@ -238,6 +238,7 @@ namespace Vl
         Tok_BaseFormat,     // nur decimal_base, binary_base, octal_base oder hex_base
         Tok_BaseValue,      // nur decimal_value, binary_value, octal_value oder hex_value
         Tok_Attribute,      // substitutes Lattr and Rattr and all between
+        Tok_MacroUsage,     // Redundant macro usage CoDi, followed by actual args if there, all d_prePp=true, followed by
         Tok_Comment,        // // or /**/
         Tok_LineCont,       // Line continuation in `define xxx backslash
         Tok_Eof
@@ -258,21 +259,31 @@ namespace Vl
 
     struct Token
     {
-        quint16 d_type; // TokenType
-        bool d_substituted;
-        bool d_hidden;
+#ifdef _DEBUG
+        union
+        {
+        int d_type; // TokenType
+        TokenType d_tokenType;
+        };
+#else
+        uint d_type : 16; // TokenType
+#endif
+        uint d_substituted : 1; // Token resultiert aus Auflösung MacroUsage
+        uint d_hidden : 1; // Token ist wegen IfDef ausgeblendet und wird nur zur Dokumentation geliefert
+        uint d_prePp: 1; // Token dokumentiert MacroUsage vor Auflösung durch Präprozessor
         quint32 d_lineNr;
         quint16 d_colNr, d_len;
         QByteArray d_val;
         QString d_sourcePath;
         Token(quint16 t = Tok_Invalid, quint32 line = 0, quint16 col = 0, quint16 len = 0, const QByteArray& val = QByteArray() ):
-            d_type(t),d_lineNr(line),d_colNr(col),d_len(len),d_val(val),d_substituted(false),d_hidden(false){}
+            d_type(t),d_lineNr(line),d_colNr(col),d_len(len),d_val(val),d_substituted(false),
+            d_hidden(false),d_prePp(false){}
         bool isValid() const;
         bool isEof() const;
         const char* getName() const;
     };
 
-    typedef QList<Token> Tokens;
+    typedef QList<Token> TokenList;
 
     enum Directive {
         Cd_Invalid,

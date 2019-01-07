@@ -24,6 +24,7 @@
 #include "VlPpSymbols.h"
 #include "VlPpLexer.h"
 #include "VlParser.h"
+#include "VlNumLex.h"
 #include <QtDebug>
 #include <QElapsedTimer>
 #include <QThread>
@@ -328,7 +329,7 @@ static void findTokensOnSameLine( QList<const SynTree*>& res, const SynTree* st,
 {
     foreach( const SynTree* sub, st->d_children )
     {
-        if( sub->d_tok.d_sourcePath == path && sub->d_tok.d_lineNr > line )
+        if( sub->d_tok.d_sourcePath == path && sub->d_tok.d_lineNr > quint32(line))
             return;
         if( sub->d_tok.d_type < SynTree::R_First )
             res << sub;
@@ -601,6 +602,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
 //            qDebug() << "parentAst" << SynTree::rToStr(parentAst->d_tok.d_type) << parentAst->d_tok.d_val;
 //            qDebug() << "superScope" << SynTree::rToStr(superScope->d_tok.d_type) << superScope->d_tok.d_val;
 //        }
+
         if( hasScope(child) )
         {
             Scope* curScope = new Scope();
@@ -626,6 +628,9 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             synPath.push_front(child);
             fillAst( curParent, superScope, synPath, err );
             synPath.pop_front();
+        }else if( child->d_tok.d_type == SynTree::R_number )
+        {
+            checkNumber( child, err );
         }else if( child->d_tok.d_type > SynTree::R_First )
         {
             // Gehe trotzdem runter da dort noch Idents sein können
@@ -758,6 +763,23 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                     slot = id;
             }
         }
+    }
+}
+
+void CrossRefModel::checkNumber(const SynTree* number, Errors* err)
+{
+    QByteArray str;
+    foreach( const SynTree* child, number->d_children )
+    {
+        if( !child->d_tok.d_prePp )
+            str += child->d_tok.d_val;
+    }
+
+    Vl::NumLex lex(str);
+    if( !lex.parse(true) )
+    {
+        err->error(Errors::Syntax, number->d_tok.d_sourcePath, number->d_tok.d_lineNr,number->d_tok.d_colNr,
+                      tr("number %1: %2").arg(str.data()).arg(lex.getError()) );
     }
 }
 

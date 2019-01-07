@@ -79,6 +79,7 @@ namespace Vl
         case Tok_BaseValue:
         case Tok_Comment:
         case Tok_Attribute:
+        case Tok_MacroUsage:
             return val;
         default:
             return tokenToString(t);
@@ -494,6 +495,8 @@ namespace Vl
             return "<continue>";
         case Tok_Attribute:
             return "<attribute>";
+        case Tok_MacroUsage:
+            return "<macro usage>";
         }
         return "";
     }
@@ -900,7 +903,9 @@ namespace Vl
             return "Tok_BaseValue";
         case Tok_Attribute:
             return "Tok_Attribute";
-        case Tok_Eof:
+        case Tok_MacroUsage:
+            return "Tok_MacroUsage";
+       case Tok_Eof:
             return "Tok_Eof";
         case Tok_Comment:
             return "Tok_Comment";
@@ -996,7 +1001,7 @@ namespace Vl
 
     bool tokenIsDelimiter(quint8 t)
     {
-        return t >= Tok_Plus && t <= Tok_MinusColon || t == Tok_LineCont;
+        return ( t >= Tok_Plus && t <= Tok_MinusColon ) || t == Tok_LineCont;
     }
 
     bool tokenIsType(quint8 t)
@@ -1036,7 +1041,7 @@ namespace Vl
 
     bool tokenIsOperator(quint8 t)
     {
-        return t >= Tok_Plus && t <= Tok_StarGt || t >= Tok_Comma && t <= Tok_MinusColon;
+        return ( t >= Tok_Plus && t <= Tok_StarGt ) || ( t >= Tok_Comma && t <= Tok_MinusColon );
     }
 
     bool tokenIsBracket(quint8 t)

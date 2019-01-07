@@ -84,10 +84,10 @@ namespace Vl
         Token processDefine();
         Token processAttribute();
         Token processCondition(Directive);
-        QList<Tokens> fetchActualArgsFromList( const Tokens& text, int& off );
-        QList<Tokens> fetchActualArgsFromStream();
-        bool resolveAllMacroUses(const QByteArray& topId, Tokens& text );
-        Token processMacroUse(const QByteArray&);
+        QList<TokenList> fetchActualArgsFromList( const TokenList& text, int* startFrom = 0 );
+        TokenList fetchLparToRpar();
+        bool resolveAllMacroUses(const QByteArray& topId, TokenList& text );
+        Token processMacroUse(const Token& tok);
         void nextLine();
 		void skipWhiteSpace();
 		char lookAhead( quint32 ) const;

@@ -26,7 +26,7 @@ PpSymbols::PpSymbols(QObject *parent) : QObject(parent)
 
 }
 
-void PpSymbols::addSymbol(const QByteArray& name, const Tokens& val, const QByteArrayList& args)
+void PpSymbols::addSymbol(const QByteArray& name, const TokenList& val, const QByteArrayList& args)
 {
     Define d;
     d.d_name = name;

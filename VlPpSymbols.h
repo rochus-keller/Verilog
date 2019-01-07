@@ -35,7 +35,7 @@ namespace Vl
         {
             QByteArray d_name;
             QByteArrayList d_args;
-            Tokens d_toks;
+            TokenList d_toks;
             QString d_sourcePath;
             quint32 d_lineNr;
             Define():d_lineNr(0) {}
@@ -44,7 +44,7 @@ namespace Vl
 
         explicit PpSymbols(QObject *parent = 0);
 
-        void addSymbol( const QByteArray& name, const Tokens& val,
+        void addSymbol( const QByteArray& name, const TokenList& val,
                         const QByteArrayList& args = QByteArrayList() );
         void addSymbol( const Define& );
         void addSymbol(const QByteArray&, const QByteArray&, TokenType type );

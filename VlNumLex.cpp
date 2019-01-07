@@ -23,15 +23,26 @@ using namespace Vl;
 
 NumLex::NumLex(const QByteArray& str, int start):
     d_str(str),d_start(start),d_off(start),d_kind(Unknown),d_signed(false),
-    d_hasSize(false),d_hasBaseFormat(false),d_hasValue(false)
+    d_hasSize(false),d_hasBaseFormat(false),d_hasValue(false),d_fullValidation(false)
 {
 }
 
-bool NumLex::parse()
+static bool inline checkOnlyDigits( const QByteArray& str )
+{
+    for( int i = 0; i < str.size(); i++ )
+    {
+        if( !::isdigit( str[i] ) && str[i] != '_' )
+            return false;
+    }
+    return true;
+}
+
+bool NumLex::parse(bool fullValidation)
 {
     d_off = 0;
     d_size.clear();
     d_val.clear();
+    d_fullValidation = fullValidation;
 
     if( lookAhead( d_off ) == '\'' )
     {
@@ -41,7 +52,11 @@ bool NumLex::parse()
         return basedValue();
     }else
     {
-        if( !unsignedNumber() )
+        // NOTE: bei alleinstehenden Tok_BaseValue könnten laut Norm auch Hexdigits kommen.
+        // Wir schränken hier vorerst willkürlich ein, dass als erstes in jedem Fall eine Zahl kommen muss,
+        // also im Falle von Hex eine vorstehende 0.
+
+        if( !unsignedNumber(true) )
             return false;
 
         char ch = lookAhead( d_off );
@@ -50,7 +65,7 @@ bool NumLex::parse()
             return real();
         }
 
-        const int oldOff = d_off;
+        //const int oldOff = d_off;
         skipWhiteSpace();
 
         ch = lookAhead( d_off );
@@ -60,9 +75,11 @@ bool NumLex::parse()
             d_size = d_val;
             d_hasSize = true;
             d_val.clear();
+            if( !checkOnlyDigits( d_size) )
+                return error( QLatin1String("size cannot include other than decimal digits") );
             Q_ASSERT( !d_size.isEmpty() );
             if( d_size[0] == '0' )
-                return error( QString(QLatin1String("invalid size '%1'")).arg(d_size.constData()) );
+                return error( QLatin1String("size cannot start with a '0' digit") );
             if( !baseFormat() )
                 return false;
             skipWhiteSpace();
@@ -70,6 +87,9 @@ bool NumLex::parse()
         }else
         {
             d_kind = Decimal;
+
+            if( d_fullValidation && !checkOnlyDigits(d_val) )
+                return error( QLatin1String("decimal number cannot include other than decimal digits") );
 //            ch = lookAhead( oldOff );
 //            if( ch != 0 && !::isspace(ch) )
 //                return error( Lexer::tr("invalid number") );
@@ -177,13 +197,28 @@ void NumLex::skipWhiteSpace()
         d_off++;
 }
 
+static bool hasXorZdigits( const QByteArray& str )
+{
+    for( int i = 0; i < str.size(); i++ )
+    {
+        const char ch = str[i];
+        if( ch == 'x' || ch == 'X' || ch == 'z' || ch == 'Z' || ch == '?' )
+            return true;
+    }
+    return false;
+}
+
 bool NumLex::basedValue()
 {
     QByteArray val;
     char ch = lookAhead( d_off );
     if( !extendedDigit(ch) )
-        // TODO: kommen BaseFormats ohne folgende Values vor?
-        return true; // error( Lexer::tr("invalid digit '%1'").arg(ch) );
+    {
+        if( d_fullValidation )
+            return error( Vl::PpLexer::tr("invalid digit for given base '%1'").arg(ch) );
+        else
+            return true;
+    }
     d_off++;
     val.append(ch);
     ch = lookAhead( d_off );
@@ -196,12 +231,19 @@ bool NumLex::basedValue()
         {
             d_off++;
             val.append(ch);
-        }else //if( ch == 0 || ::isspace(ch) )
+        }else if( d_fullValidation )
+        {
+            if( ch == 0 || ::isspace(ch) )
+                break;
+            else
+                return error( Vl::PpLexer::tr("invalid digit for given base '%1'").arg(ch) );
+        }else
             break;
-//        else
-//            return error( Lexer::tr("invalid digit '%1'").arg(ch) );
         ch = lookAhead( d_off );
     }
+    if( d_fullValidation && d_kind == Decimal && hasXorZdigits(val) &&
+            !( val.size() == 1 || ( val.size() == 2 && val[1] == '_' ) ) )
+        return error( QLatin1String("invalid based decimal value") );
     d_val = val;
     d_hasValue = !val.isEmpty();
     return true;
@@ -213,17 +255,17 @@ bool NumLex::extendedDigit(char ch)
     {
     case '0':
     case '1':
-        return true;
+        return !d_fullValidation || d_kind == Octal || d_kind == Hex || d_kind == Decimal || d_kind == Binary;
     case '2':
     case '3':
     case '4':
     case '5':
     case '6':
     case '7':
-        return d_kind == Octal || d_kind == Hex || d_kind == Decimal;
+        return !d_fullValidation || d_kind == Octal || d_kind == Hex || d_kind == Decimal;
     case '8':
     case '9':
-        return d_kind == Hex || d_kind == Decimal;
+        return !d_fullValidation || d_kind == Hex || d_kind == Decimal;
     case 'a':
     case 'A':
     case 'b':
@@ -236,19 +278,21 @@ bool NumLex::extendedDigit(char ch)
     case 'E':
     case 'f':
     case 'F':
-        return d_kind == Hex;
+        return !d_fullValidation || d_kind == Hex;
     case 'x':
     case 'X':
     case 'z':
     case 'Z':
     case '?':
-        return true;
+        return !d_fullValidation || d_kind == Octal || d_kind == Hex || d_kind == Binary
+                || d_kind == Decimal // aber nur x_digit { _ } oder z_digit { _ }
+                ;
     default:
         return false;
     }
 }
 
-bool NumLex::unsignedNumber()
+bool NumLex::unsignedNumber(bool allowHex)
 {
     // Hierher kommen wir nur, wenn der Lexer ein Digit entdeckt hat
     QByteArray val;
@@ -256,7 +300,6 @@ bool NumLex::unsignedNumber()
     if( !::isdigit( ch ) )
         return error( PpLexer::tr("expecting digit") );
 
-    // TODO: bei alleinstehenden basedValues könnten nun auch extendedDigis kommen
     d_off++;
     val.append(ch);
     ch = lookAhead( d_off );
@@ -265,7 +308,7 @@ bool NumLex::unsignedNumber()
         if( ch == '_' )
         {
             d_off++;
-        }else if( ::isdigit( ch ) )
+        }else if( ::isdigit( ch ) || ( allowHex && ::isxdigit( ch ) ) )
         {
             d_off++;
             val.append(ch);
@@ -280,6 +323,8 @@ bool NumLex::unsignedNumber()
 bool NumLex::real()
 {
     char ch = lookAhead( d_off );
+    if( !checkOnlyDigits( d_val ) )
+        return error( QString("number includes other than decimal digits: %1").arg(d_val.data()) );
     if( ch == '.' )
     {
         d_val += ch;

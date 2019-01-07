@@ -491,7 +491,7 @@ Token PpLexer::processDirective(const Token& tok )
             d_source.top().d_colNr = d_source.top().d_line.size();
             return nextTokenImp();
         }else
-            return processMacroUse( tok.d_val );
+            return processMacroUse( tok );
     }
     Q_ASSERT( false );
     return Token();
@@ -705,9 +705,9 @@ Token PpLexer::processCondition(Directive d)
     return Token();
 }
 
-static void replaceFormalByActualArg( Tokens& inout, const QByteArray& formalArg, const Tokens& actualArg )
+static void replaceFormalByActualArg( TokenList& inout, const QByteArray& formalArg, const TokenList& actualArg )
 {
-    Tokens out;
+    TokenList out;
     for( int i = 0; i < inout.size(); i++ )
     {
         if( inout[i].d_type == Tok_Ident && inout[i].d_val == formalArg )
@@ -724,84 +724,88 @@ static QDebug& operator<<(QDebug& dbg, const Vl::Token& t)
     return dbg;
 }
 
-QList<Tokens> PpLexer::fetchActualArgsFromList( const Tokens& text, int& off )
+QList<TokenList> PpLexer::fetchActualArgsFromList(const TokenList& toks, int* startFrom )
 {
-    QList<Tokens> result;
-    if( off >= text.size() || text[off].d_type != Tok_Lpar )
+    QList<TokenList> result;
+    int off = 0;
+    if( startFrom )
+        off = *startFrom;
+    if( off >= toks.size() || toks[off].d_type != Tok_Lpar )
     {
         error( "actual arguments expected" );
         return result;
     }
     off++;
-    Tokens toks;
-    int parCount = 0;
-    while( off < text.size() && text[off].isValid() )
+    TokenList actualArg;
+    int nestingLevel = 0;
+    bool rparFound = false;
+    while( off < toks.size() )
     {
-        if( text[off].d_type == Tok_Lpar )
-            parCount++;
-        else if( ( text[off].d_type == Tok_Rpar || text[off].d_type == Tok_Comma ) )
+        if( toks[off].d_type == Tok_Lpar )
+            nestingLevel++;
+        else if( ( toks[off].d_type == Tok_Rpar || toks[off].d_type == Tok_Comma ) )
         {
-            if( parCount == 0 )
+            if( nestingLevel == 0 )
             {
                 // Klammern sind ausgeglichen, wir haben ein Argument fertig gelesen
-                result.append(toks);
-                toks.clear();
-                if( text[off].d_type == Tok_Rpar )
+                result.append(actualArg);
+                actualArg.clear();
+                if( toks[off].d_type == Tok_Rpar )
                 {
+                    rparFound = true;
                     break;
                 }
-            }else if( text[off].d_type == Tok_Rpar )
-                parCount--;
+            }else if( toks[off].d_type == Tok_Rpar )
+                nestingLevel--;
         }else
-            toks.append( text[off] );
+            actualArg.append( toks[off] );
         off++;
     }
+    if( !rparFound )
+    {
+        error( "nonterminated macro actual argument list" );
+        result.clear();
+    }
+    if( startFrom )
+        *startFrom = off;
     return result;
 }
 
-QList<Tokens> PpLexer::fetchActualArgsFromStream()
+TokenList PpLexer::fetchLparToRpar()
 {
-    QList<Tokens> result;
+    TokenList result;
     Token t = nextTokenImp();
+    result.append(t);
     if( t.d_type != Tok_Lpar )
-    {
-        error( "actual arguments expected" );
         return result;
-    }
 
     t = nextTokenImp();
-    Tokens toks;
-    int parCount = 0;
+    int nestingLevel = 0;
     while( t.isValid() )
     {
+        result.append(t);
         if( t.d_type == Tok_Lpar )
-            parCount++;
-        else if( ( t.d_type == Tok_Rpar || t.d_type == Tok_Comma ) )
+            nestingLevel++;
+        else if( t.d_type == Tok_Rpar )
         {
-            if( parCount == 0 )
+            if( nestingLevel == 0 )
             {
-                // Klammern sind ausgeglichen, wir haben ein Argument fertig gelesen
-                result.append(toks);
-                toks.clear();
                 if( t.d_type == Tok_Rpar )
-                {
+                    // Klammern sind ausgeglichen, Funktion erfüllt
                     break;
-                }
             }else if( t.d_type == Tok_Rpar )
-                parCount--;
-        }else
-            toks.append( t );
-
+                nestingLevel--;
+        }
         t = nextTokenImp();
     }
     return result;
 }
 
-bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, Tokens& macroText)
+bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, TokenList& macroText)
 {
     while( true )
     {
-        Tokens result;
+        TokenList result;
         bool foundCodi = false;
         for( int i = 0; i < macroText.size(); i++ )
         {
@@ -827,12 +831,13 @@ bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, Tokens& macroTex
                 }else
                     macroDef = d_syms->getSymbol(macroId);
 
-                Tokens makroText = macroDef.d_toks;
+                TokenList makroText = macroDef.d_toks;
                 const QByteArrayList& formalArgs = macroDef.d_args;
 
                 if( !formalArgs.isEmpty() )
                 {
-                    const QList<Tokens> actualArgs = fetchActualArgsFromList( macroText, ++i );
+                    ++i;
+                    const QList<TokenList> actualArgs = fetchActualArgsFromList( macroText, &i );
                     if( formalArgs.size() != actualArgs.size() )
                     {
                         error( tr("wrong number of actual arguments in define '%1'").arg(macroId.data()));
@@ -853,8 +858,9 @@ bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, Tokens& macroTex
     return true;
 }
 
-Token PpLexer::processMacroUse(const QByteArray& makroId)
+Token PpLexer::processMacroUse(const Token& curTok)
 {
+    const QByteArray makroId = curTok.d_val;
     PpSymbols::Define makroDef;
     if( d_syms == 0 || !d_syms->contains(makroId) )
     {
@@ -863,12 +869,13 @@ Token PpLexer::processMacroUse(const QByteArray& makroId)
     }else
         makroDef = d_syms->getSymbol(makroId);
 
-    Tokens makroText = makroDef.d_toks;
+    TokenList makroText = makroDef.d_toks;
     const QByteArrayList& formalArgs = makroDef.d_args;
 
     if( !formalArgs.isEmpty() )
     {
-        const QList<Tokens> actualArgs = fetchActualArgsFromStream();
+        const TokenList toks = fetchLparToRpar();
+        const QList<TokenList> actualArgs = fetchActualArgsFromList( toks );
 
         if( formalArgs.size() != actualArgs.size() )
             return error( tr("wrong number of actual arguments in define '%1'").arg(makroId.data()));
@@ -1159,3 +1166,4 @@ void PpLexer::txlog(quint32 line)
         d_source.top().d_idol.append(line);
     }
 }
+

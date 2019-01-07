@@ -54,7 +54,7 @@ static QStringList collectFiles( const QDir& dir )
 static bool readFile( const QString& path, bool resOnly )
 {
 
-#define LexerTest
+//#define LexerTest
 #ifdef LexerTest
     qDebug() << "***** reading" << path;
     QFile in( path );
@@ -89,25 +89,20 @@ static bool readFile( const QString& path, bool resOnly )
     return true;
 #else
 
-//    QPlainTextEdit* edit = new QPlainTextEdit();
-//    QFont font("DejaVu Sans Mono",10);
-//    edit->setFont(font);
-//    new Vl::Highlighter( edit->document() );
-//    QFile f(path);
-//    f.open(QIODevice::ReadOnly);
-//    edit->setPlainText(f.readAll());
-//    edit->show();
-
     // mit PP braucht das gesamte Testverzeichnis (2k Verilog files) 1918 ms, ohne nur 718 ms
 
+#define UseFrontend
 #ifdef UseFrontend
     Vl::Frontend ff;
     const bool res = ff.process(path);
     return res;
 #else
     Vl::Errors e;
+    e.setShowWarnings(false);
     Vl::PpLexer lex;
     Vl::PpSymbols s;
+    lex.setIgnoreAttrs(false);
+    lex.setPackAttrs(false);
     lex.setErrors(&e);
     lex.setSyms(&s);
     lex.setStream( path, true );
@@ -179,7 +174,7 @@ int main(int argc, char *argv[])
             m.readProject( QStringList() << info.absoluteFilePath() );
 #else
             Vl::CrossRefModel m;
-            m.updateFiles( QStringList() << info.absoluteFilePath() );
+            m.updateFiles( QStringList() << info.absoluteFilePath(),true );
 #endif
         }else
             if( readFile( info.absoluteFilePath(), false) )

@@ -32,7 +32,7 @@ namespace Vl
 
         NumLex( const QByteArray&, int start = 0 );
         const QString& getError() const { return d_error; }
-        bool parse();
+        bool parse(bool fullValidation = false);
         int getOff() const { return d_off; }
         Kind getKind() const { return (Kind)d_kind; }
         const char* getKindName() const;
@@ -49,7 +49,7 @@ namespace Vl
         void skipWhiteSpace();
         bool basedValue();
         bool extendedDigit(char);
-        bool unsignedNumber();
+        bool unsignedNumber(bool allowHex = false);
         bool real();
         bool error( const QString& );
     private:
@@ -64,6 +64,7 @@ namespace Vl
         bool d_hasSize;
         bool d_hasBaseFormat;
         bool d_hasValue;
+        bool d_fullValidation;
     };
 }
 

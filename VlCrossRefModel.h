@@ -194,6 +194,7 @@ namespace Vl
 
         static ScopeRefNc createAst( const SynTree*, Errors* ); // returns a global scope
         static void fillAst( Branch* parentAst, Scope* superScope, SynTreePath& synPath, Errors* );
+        static void checkNumber( const SynTree*, Errors* );
         static bool checkLop(Scope* superScope, const SynTree* id, Errors* );
         static const Symbol* findFirst(const Branch*, quint16 type);
 
