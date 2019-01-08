@@ -391,7 +391,8 @@ quint16 CrossRefModel::calcKeyWordLen(const SynTree* st)
 
 static inline bool isHit( const CrossRefModel::SymRef& sub, quint32 line, quint16 col, const QString& source )
 {
-    return sub->tok().d_lineNr == line &&
+    // Nur tatsächlich in der Source am Ort sichtbare Symbole treffen, also nicht d_substituted
+    return !sub->tok().d_substituted && sub->tok().d_lineNr == line &&
             sub->tok().d_colNr <= col && col <= ( sub->tok().d_colNr + sub->tok().d_len )
             && sub->tok().d_sourcePath == source;
 }
@@ -581,6 +582,8 @@ static inline bool isBlockStructure( quint16 type )
     case SynTree::R_conditional_statement:
     case SynTree::R_case_statement:
     case SynTree::R_loop_statement:
+    case SynTree::R_Attribute:
+    case SynTree::R_MacroUsage:
         return true;
     default:
         return false;
@@ -949,6 +952,9 @@ bool CrossRefModel::parseFile(const QString& file, ScopeRefList& refs, IfDefOutL
     lex.setSyms( syms );
     lex.setIncs( incs );
     lex.setCache(fcache);
+    lex.setIgnoreAttrs(false);
+    lex.setPackAttrs(false);
+    lex.setSendMacroUsage(true);
 
     if( !lex.setStream( file, true ) )
         return false;
@@ -1187,7 +1193,7 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
         {
             index.insert( use, id );
             revIndex.insert( id, use );
-        }else
+        }else if( parent->tok().d_type != SynTree::R_Attribute )
             errs->error(Errors::Semantics, use->d_tok.d_sourcePath, use->d_tok.d_lineNr, use->d_tok.d_colNr,
                           tr("unknown identifier: %1").arg(use->d_tok.d_val.data()) );
     }else if( const PathIdent* use = leaf->toPathIdent() )

@@ -50,32 +50,80 @@ void Parser::Get() {
 	for (;;) {
 		d_cur = d_next;
 		d_next = scanner->nextToken();
-        if( d_next.d_type == Vl::Tok_Invalid )
+        bool deliverToParser = false;
+        switch( d_next.d_type )
         {
-            SynErr( d_next.d_type, d_next.d_val );
-        }else if( d_next.d_type == Vl::Tok_Latt )
-        {
-            Vl::TokenList l;
-            for(;;)
+        case Vl::Tok_Invalid:
+            if( !d_next.d_val.isEmpty() )
+                SynErr( d_next.d_type, d_next.d_val );
+            // else errors already handeled in lexer
+            break;
+        case Vl::Tok_MacroUsage:
             {
-                Vl::Token t = scanner->nextToken();
-                if( t.d_type == Vl::Tok_Ratt )
+                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_MacroUsage, d_next );
+                d_stack.top()->d_children.append(n);
+                for(;;)
                 {
-                    // reguläres Ende. TODO: was tun wir damit?
-                    break;
-                }else if( t.d_type == Vl::Tok_Eof || t.d_type == Vl::Tok_Latt )
-                {
-                    // irreguläres Ende
-                    d_cur = d_next;
-                    SemErr("non-terminated attribute");
-                    break;
-                }else
-                    l.append(t); // auch Vl::Tok_Invalid werden hier einfach mal gespeichert
+                    Vl::Token t = scanner->nextToken();
+                    if( t.d_prePp )
+                    {
+                        if( t.d_type == Vl::Tok_Ident || t.d_type == Vl::Tok_CoDi )
+                            n->d_children.append( new Vl::SynTree( t ) );
+                        // else ignore
+                    }else
+                    {
+                        // reguläres Ende
+                        d_next = t;
+                        deliverToParser = true;
+                        break;
+                    }
+                }
             }
-        }else if( d_next.d_type != Vl::Tok_Comment && d_next.d_type != Vl::Tok_Attribute )
+            break;
+        case Vl::Tok_Attribute:
+            {
+                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_Attribute, d_next );
+                d_stack.top()->d_children.append(n);
+            }
+            break;
+        case Vl::Tok_Latt:
+            {
+                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_Attribute, d_next );
+                d_stack.top()->d_children.append(n);
+                for(;;)
+                {
+                    Vl::Token t = scanner->nextToken();
+                    if( t.d_type == Vl::Tok_Ratt )
+                    {
+                        // reguläres Ende
+                        break;
+                    }else if( t.d_type == Vl::Tok_Eof || t.d_type == Vl::Tok_Latt )
+                    {
+                        // irreguläres Ende
+                        d_cur = d_next;
+                        SemErr("non-terminated attribute");
+                        break;
+                    }else
+                    {
+                        if( t.d_type == Vl::Tok_Ident || t.d_type == Vl::Tok_CoDi )
+                            n->d_children.append( new Vl::SynTree( t ) );
+                        // else ignore
+                    }
+                }
+            }
+            break;
+        case Vl::Tok_Comment:
+            // ignorieren
+            break;
+        default:
+            deliverToParser = true;
+            break;
+        }
+
+        if( deliverToParser )
         {
             if( d_next.d_type == Vl::Tok_Eof )
-                d_next.d_type = Vl::Tok_Invalid; // = _EOF
+                d_next.d_type = _EOF;
 
             la->kind = d_next.d_type;
             if (la->kind <= maxT)

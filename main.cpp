@@ -91,7 +91,7 @@ static bool readFile( const QString& path, bool resOnly )
 
     // mit PP braucht das gesamte Testverzeichnis (2k Verilog files) 1918 ms, ohne nur 718 ms
 
-#define UseFrontend
+//#define UseFrontend
 #ifdef UseFrontend
     Vl::Frontend ff;
     const bool res = ff.process(path);
@@ -103,6 +103,7 @@ static bool readFile( const QString& path, bool resOnly )
     Vl::PpSymbols s;
     lex.setIgnoreAttrs(false);
     lex.setPackAttrs(false);
+    lex.setSendMacroUsage(true);
     lex.setErrors(&e);
     lex.setSyms(&s);
     lex.setStream( path, true );

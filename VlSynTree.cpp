@@ -6,11 +6,14 @@ SynTree::SynTree(quint16 r, const Token& t ):d_tok(r){
 	d_tok.d_lineNr = t.d_lineNr;
 	d_tok.d_colNr = t.d_colNr;
 	d_tok.d_sourcePath = t.d_sourcePath;
+    d_tok.d_val = t.d_val;
 }
 
 const char* SynTree::rToStr( quint16 r ) {
 	switch(r) {
-		case R_always_construct: return "always_construct";
+    case R_Attribute: return "attribute_instance";
+    case R_MacroUsage: return "text_macro_usage";
+        case R_always_construct: return "always_construct";
 		case R_block_integer_declaration: return "block_integer_declaration";
 		case R_block_real_declaration: return "block_real_declaration";
 		case R_block_real_type: return "block_real_type";

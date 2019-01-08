@@ -47,6 +47,7 @@ namespace Vl
         void setPackComments( bool b ) { d_packComments = b; }
         void setIgnoreAttrs( bool b ) { d_ignoreAttrs = b; }
         void setPackAttrs( bool b ) { d_packAttributes = b; }
+        void setSendMacroUsage( bool b ) { d_sendMacroUsage = b; }
 
         void setErrors(Errors* p) { d_err = p; }
         void setSyms(PpSymbols* p) { d_syms = p; }
@@ -84,9 +85,9 @@ namespace Vl
         Token processDefine();
         Token processAttribute();
         Token processCondition(Directive);
-        QList<TokenList> fetchActualArgsFromList( const TokenList& text, int* startFrom = 0 );
+        QList<TokenList> fetchActualArgsFromList(const Token& codi, const TokenList& text, int* startFrom = 0 );
         TokenList fetchLparToRpar();
-        bool resolveAllMacroUses(const QByteArray& topId, TokenList& text );
+        bool resolveAllMacroUses(const Token& codi, const QByteArray& topId, TokenList& text );
         Token processMacroUse(const Token& tok);
         void nextLine();
 		void skipWhiteSpace();
@@ -100,6 +101,7 @@ namespace Vl
 		Token numeric();
         Token blockComment();
         Token error( const QString& );
+        Token error( const QString&, const Token& );
         void warning( const QString& );
         bool txOn() const;
         void txlog(quint32 line);
@@ -133,6 +135,7 @@ namespace Vl
         bool d_packAttributes;  // Pack everything between Tok_Latt and Tok_Ratt in a Tok_Attribute
         bool d_ignoreAttrs;     // Ignore Tok_Latt and Tok_Ratt and everything between
         bool d_filePathMode;    // 'library' or 'include' detected, using pathident instead of ident up to ';'
+        bool d_sendMacroUsage;  // deliver Tok_MacroUsage + actual args
     };
 }
 

@@ -34,7 +34,7 @@ using namespace Vl;
 PpLexer::PpLexer(QObject *parent) :
     QObject(parent), d_lastT(Tok_Invalid), d_err(0), d_syms(0), d_ignoreComments(true),
     d_ignoreAttrs(true), d_ignoreHidden(true), d_packAttributes(true), d_packComments(true),
-    d_filePathMode(false), d_incs(0),d_fcache(0)
+    d_filePathMode(false), d_incs(0),d_fcache(0),d_sendMacroUsage(false)
 {
 }
 
@@ -421,41 +421,50 @@ Token PpLexer::nextTokenPp()
     Token t = nextTokenImp();
     while( true )
     {
-        if( t.isEof() && !d_source.isEmpty() )
-            t = nextTokenImp();
-
-        const bool on = txOn();
-        t.d_hidden = !on;
-
-        if( on || !d_ignoreHidden )
+        try
         {
-            if( t.d_type == Tok_Invalid && d_err )
-            {
-                d_err->error(Errors::Lexer, t.d_sourcePath, t.d_lineNr, t.d_colNr, t.d_val );
+            if( t.isEof() && !d_source.isEmpty() )
                 t = nextTokenImp();
-            }if( t.d_type == Tok_Comment && d_ignoreComments )
+
+            const bool on = txOn();
+            t.d_hidden = !on;
+
+            if( on || !d_ignoreHidden )
             {
-                t = nextTokenImp();
-            }else if( t.d_type == Tok_Latt && ( d_packAttributes || d_ignoreAttrs ) )
-            {
-                t = processAttribute();
-                if( d_ignoreAttrs )
+                if( t.d_type == Tok_Invalid )
+                {
+                    if( d_err == 0 )
+                        return t;
+                    else
+                        // Already reported
+                        t = nextTokenImp();
+                }if( t.d_type == Tok_Comment && d_ignoreComments )
+                {
                     t = nextTokenImp();
-            }else if( d_syms && t.d_type == Tok_CoDi )
-            {
-                t = processDirective( t );
+                }else if( t.d_type == Tok_Latt && ( d_packAttributes || d_ignoreAttrs ) )
+                {
+                    t = processAttribute();
+                    if( d_ignoreAttrs )
+                        t = nextTokenImp();
+                }else if( d_syms && t.d_type == Tok_CoDi )
+                {
+                    t = processDirective( t );
+                }else
+                {
+                    return t;
+                }
             }else
             {
-                return t;
+                Directive d;
+                if( t.d_type == Tok_CoDi && isCondition( ( d = matchDirective(t.d_val) ) ) )
+                {
+                    t = processCondition(d);
+                }else
+                    t = nextTokenImp();
             }
-        }else
+        }catch( const Token& e )
         {
-            Directive d;
-            if( t.d_type == Tok_CoDi && isCondition( ( d = matchDirective(t.d_val) ) ) )
-            {
-                t = processCondition(d);
-            }else
-                t = nextTokenImp();
+            t = e;
         }
     }
 }
@@ -554,7 +563,7 @@ Token PpLexer::processDefine()
     def.d_sourcePath = source;
 
     if( matchDirective( def.d_name ) != Cd_Invalid )
-        return error("Text macro names may not be the same as compiler directive keywords" );
+        return error("text macro names may not be the same as compiler directive keywords" );
 
     PpLexer lex;
     lex.setErrors( d_err );
@@ -571,12 +580,12 @@ Token PpLexer::processDefine()
             if( t.d_type == Tok_Ident )
                 def.d_args.append( t.d_val );
             else if( t.d_type != Tok_Comma && t.d_type != Tok_Rpar )
-                return error( tr("invalid token in define argument list '%1': %2").
+                return error( tr("invalid token in define argument list of '%1': %2").
                               arg(def.d_name.data()).arg(t.getName()) );
             t = next(toks, i);
         }
         if( t.d_type != Tok_Rpar )
-            return error( tr("invalid argument list in define '%1'").arg(def.d_name.data()) );
+            return error( tr("invalid argument list in macro definition '%1'").arg(def.d_name.data()) );
         t = next(toks, i);
     }
 
@@ -724,7 +733,7 @@ static QDebug& operator<<(QDebug& dbg, const Vl::Token& t)
     return dbg;
 }
 
-QList<TokenList> PpLexer::fetchActualArgsFromList(const TokenList& toks, int* startFrom )
+QList<TokenList> PpLexer::fetchActualArgsFromList(const Token& codi,const TokenList& toks, int* startFrom )
 {
     QList<TokenList> result;
     int off = 0;
@@ -732,7 +741,7 @@ QList<TokenList> PpLexer::fetchActualArgsFromList(const TokenList& toks, int* st
         off = *startFrom;
     if( off >= toks.size() || toks[off].d_type != Tok_Lpar )
     {
-        error( "actual arguments expected" );
+        throw error( "actual arguments expected", codi );
         return result;
     }
     off++;
@@ -763,7 +772,7 @@ QList<TokenList> PpLexer::fetchActualArgsFromList(const TokenList& toks, int* st
     }
     if( !rparFound )
     {
-        error( "nonterminated macro actual argument list" );
+        throw error( "nonterminated macro actual argument list", codi );
         result.clear();
     }
     if( startFrom )
@@ -801,7 +810,7 @@ TokenList PpLexer::fetchLparToRpar()
     return result;
 }
 
-bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, TokenList& macroText)
+bool PpLexer::resolveAllMacroUses(const Token& codi,const QByteArray& topMacroId, TokenList& macroText)
 {
     while( true )
     {
@@ -815,18 +824,18 @@ bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, TokenList& macro
                 const QByteArray macroId = macroText[i].d_val;
                 if( matchDirective(macroId) != Cd_Invalid )
                 {
-                    error( "macro text cannot contain other compiler directives than text macros" );
+                    throw error( "macro text cannot contain other compiler directives than text macros", codi );
                     return false;
                 }
                 if( topMacroId == macroId )
                 {
-                    error( "macro expands directly or indirectly to text containing another usage of itself" );
+                    throw error( "macro expands directly or indirectly to text containing another usage of itself", codi );
                     return false;
                 }
                 PpSymbols::Define macroDef;
                 if( d_syms == 0 || !d_syms->contains(macroId) )
                 {
-                    error( tr("unknown define '%1'").arg(macroId.data()));
+                    throw error( tr("unknown text macro '%1'").arg(macroId.data()), codi );
                     return false;
                 }else
                     macroDef = d_syms->getSymbol(macroId);
@@ -837,10 +846,11 @@ bool PpLexer::resolveAllMacroUses(const QByteArray& topMacroId, TokenList& macro
                 if( !formalArgs.isEmpty() )
                 {
                     ++i;
-                    const QList<TokenList> actualArgs = fetchActualArgsFromList( macroText, &i );
+                    const QList<TokenList> actualArgs = fetchActualArgsFromList( codi, macroText, &i );
                     if( formalArgs.size() != actualArgs.size() )
                     {
-                        error( tr("wrong number of actual arguments in define '%1'").arg(macroId.data()));
+                        throw error( tr("wrong number of actual arguments in define '%1'" ).
+                                     arg(macroId.data()), codi );
                         return false;
                     }
                     for( int j = 0; j < actualArgs.size(); j++ )
@@ -864,35 +874,59 @@ Token PpLexer::processMacroUse(const Token& curTok)
     PpSymbols::Define makroDef;
     if( d_syms == 0 || !d_syms->contains(makroId) )
     {
-        warning( tr("unknown define '%1'").arg(makroId.data()));
-        return nextTokenImp();
+        return error( tr("unknown text macro '%1'").arg(makroId.data()), curTok );
+        //return nextTokenImp();
     }else
         makroDef = d_syms->getSymbol(makroId);
 
     TokenList makroText = makroDef.d_toks;
     const QByteArrayList& formalArgs = makroDef.d_args;
 
+    TokenList rawActualArgs;
     if( !formalArgs.isEmpty() )
     {
-        const TokenList toks = fetchLparToRpar();
-        const QList<TokenList> actualArgs = fetchActualArgsFromList( toks );
+        rawActualArgs = fetchLparToRpar();
+        const QList<TokenList> actualArgs = fetchActualArgsFromList( curTok, rawActualArgs );
 
         if( formalArgs.size() != actualArgs.size() )
-            return error( tr("wrong number of actual arguments in define '%1'").arg(makroId.data()));
+            return error( tr("wrong number of actual arguments in macro '%1'").arg(makroId.data()), curTok );
 
         for( int i = 0; i < actualArgs.size(); i++ )
             replaceFormalByActualArg( makroText, formalArgs[i], actualArgs[i] );
     }
-    resolveAllMacroUses( makroId, makroText );
+    resolveAllMacroUses( curTok, makroId, makroText );
     for( int i = 0; i < makroText.size(); i++ )
+    {
         makroText[i].d_substituted = true; // check: don't substitute in every case; provide option
-    Token t = nextTokenImp();
-    makroText.append(t);
-    t = makroText.first();
-    makroText = makroText.mid(1);
-    // return the first token immediately and the remaining ones via buffer
-    d_buffer << makroText;
-    return t;
+        makroText[i].d_lineNr = curTok.d_lineNr;
+        makroText[i].d_colNr = curTok.d_colNr;
+        makroText[i].d_sourcePath =curTok.d_sourcePath;
+        makroText[i].d_len = curTok.d_len /*+ ( rawActualArgs.isEmpty() ? 0 :
+                          rawActualArgs.last().d_colNr - rawActualArgs.first().d_colNr +
+                                                                        rawActualArgs.last().d_len )*/;
+    }
+    const Token nextTafterM = nextTokenImp();
+    makroText.append(nextTafterM);
+
+    if( d_sendMacroUsage )
+    {
+        // return macro usage token immediately followed by raw actual args and substituted actual args per buffer
+        Token mu = curTok;
+        mu.d_type = Tok_MacroUsage;
+        mu.d_prePp = true;
+        for( int i = 0; i < rawActualArgs.size(); i++ )
+            rawActualArgs[i].d_prePp = true;
+        d_buffer << rawActualArgs;
+        d_buffer << makroText;
+        return mu;
+    }else
+    {
+        // return the first token immediately and the remaining ones via buffer
+        const Token nextTtoSend = makroText.first();
+        makroText = makroText.mid(1);
+        d_buffer << makroText;
+        return nextTtoSend;
+    }
 }
 
 void PpLexer::nextLine()
@@ -1139,9 +1173,17 @@ Token PpLexer::blockComment()
 
 Token PpLexer::error(const QString& msg)
 {
+    return error( msg, d_lastT );
+}
+
+Token PpLexer::error(const QString& msg, const Token& e)
+{
     if( d_err )
-        d_err->error(Errors::Lexer, d_lastT.d_sourcePath, d_lastT.d_lineNr, d_lastT.d_colNr, msg );
-    return Token();
+        d_err->error(Errors::Lexer, e.d_sourcePath, e.d_lineNr, e.d_colNr, msg );
+    Token t = e;
+    t.d_type = Tok_Invalid;
+    t.d_val = msg.toUtf8();
+    return t;
 }
 
 void PpLexer::warning(const QString& msg)
