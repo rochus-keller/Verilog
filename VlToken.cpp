@@ -54,7 +54,7 @@ namespace Vl
         // TODO: nur temporäre Lösung
         if( s_lookup.isEmpty() )
         {
-            for( int i = Tok_always; i <= Tok_NoChange; i++ )
+            for( int i = Tok_always; i < Tok_maxSystemName; i++ )
                 s_lookup.insert( tokenToString(i), i );
         }
         TokenType t = (TokenType)s_lookup.value( str, Tok_Invalid );
@@ -441,7 +441,9 @@ namespace Vl
             return "xnor";
         case Tok_xor:
             return "xor";
-        case Tok_PathPulse:
+        case Tok_maxKeyword:
+            return "<maxKeyword>";
+       case Tok_PathPulse:
             return "PATHPULSE$";
         case Tok_Setup:
             return "$setup";
@@ -467,6 +469,8 @@ namespace Vl
             return "$width";
         case Tok_NoChange:
             return "$nochange";
+        case Tok_maxSystemName:
+            return "<maxSystemName>";
         case Tok_String:
             return "STRING";
         case Tok_Ident:
@@ -855,6 +859,8 @@ namespace Vl
             return "Tok_xnor";
         case Tok_xor:
             return "Tok_xor";
+        case Tok_maxKeyword:
+            return "Tok_maxKeyword";
         case Tok_PathPulse:
             return "Tok_PathPulse";
         case Tok_Setup:
@@ -881,6 +887,8 @@ namespace Vl
             return "Tok_Width";
         case Tok_NoChange:
             return "Tok_NoChange";
+        case Tok_maxSystemName:
+            return "Tok_maxSystemName";
         case Tok_String:
             return "Tok_String";
         case Tok_Ident:
@@ -991,7 +999,7 @@ namespace Vl
 
     bool tokenIsReservedWord(quint8 t)
     {
-        return t >= Tok_always && t <= Tok_NoChange;
+        return t >= Tok_always && t < Tok_maxSystemName;
     }
 
     bool tokenIsNumber(quint8 t)

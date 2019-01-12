@@ -508,11 +508,16 @@ static bool hasScope(const SynTree* st)
     case SynTree::R_generate_block:
     case SynTree::R_seq_block:
     case SynTree::R_par_block:
+#ifdef VL_O5_ONLY
         if( st->d_children.size() > 2 && st->d_children[1]->d_tok.d_type == Tok_Colon &&
                 st->d_children[2]->d_tok.d_type == Tok_Ident )
             return true;
         else
             return false;
+#else
+        // in SV these are scopes in any case regardless of named or unnamed
+        return true;
+#endif
     default:
         return false;
     }
@@ -594,6 +599,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
 {
     Q_ASSERT( parentAst != 0 && superScope != 0 && !synPath.isEmpty() );
 
+    int curUnnamed = 0;
     foreach( const SynTree* child, synPath.front()->d_children )
     {
 //        if( child->d_tok.d_val == "yellowCounter" )
@@ -611,6 +617,17 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             Scope* curScope = new Scope();
             curScope->d_super = superScope;
             curScope->d_tok = child->d_tok;
+#ifndef VL_O5_ONLY
+            if( curScope->d_tok.d_val.isEmpty() &&
+                    ( curScope->d_tok.d_type == SynTree::R_generate_block ||
+                      curScope->d_tok.d_type == SynTree::R_seq_block ||
+                      curScope->d_tok.d_type == SynTree::R_par_block ))
+            {
+                // curScope->d_tok.d_val = QString("<block%1>").arg(curUnnamed++,2,10,QChar('0')).toUtf8();
+                static int counter = 0;
+                curScope->d_tok.d_val = QString("<%1>").arg(counter++,4,16,QChar('0')).toUtf8();
+            }
+#endif
             curScope->d_tok.d_len = calcKeyWordLen(child);
             parentAst->d_children.append( SymRef(curScope) );
 

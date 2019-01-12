@@ -536,8 +536,11 @@ static Token next( const QList<Token>& toks, int& i )
 Token PpLexer::processDefine()
 {
     Token t = nextTokenImp();
-    if( t.d_type != Tok_Ident )
+    const bool reserved = tokenIsReservedWord(t.d_type);
+    if( t.d_type != Tok_Ident && !reserved )
         return error("expecting identifier after `define");
+    if( reserved )
+        t.d_type = Tok_Ident; // we use the token here as normal ident
     const bool hasArgs = d_source.top().d_colNr < d_source.top().d_line.size() &&
             d_source.top().d_line[d_source.top().d_colNr] == '(';
             // zwischen Ident und Klammer darf kein Space sein!

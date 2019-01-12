@@ -211,6 +211,8 @@ namespace Vl
         Tok_xnor,
         Tok_xor,
 
+        Tok_maxKeyword,
+
         // reserved system names
         Tok_PathPulse,
         Tok_Setup,
@@ -225,6 +227,8 @@ namespace Vl
         Tok_Period,
         Tok_Width,
         Tok_NoChange,
+
+        Tok_maxSystemName,
 
         // misc
         Tok_String,
