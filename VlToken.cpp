@@ -80,6 +80,8 @@ namespace Vl
         case Tok_Comment:
         case Tok_Attribute:
         case Tok_MacroUsage:
+        case Tok_Section:
+        case Tok_SectionEnd:
             return val;
         default:
             return tokenToString(t);
@@ -495,6 +497,10 @@ namespace Vl
             return "<eof>";
         case Tok_Comment:
             return "<comment>";
+        case Tok_Section:
+            return "<section>";
+        case Tok_SectionEnd:
+            return "<endsection>";
         case Tok_LineCont:
             return "<continue>";
         case Tok_Attribute:
@@ -917,6 +923,10 @@ namespace Vl
             return "Tok_Eof";
         case Tok_Comment:
             return "Tok_Comment";
+        case Tok_Section:
+            return "Tok_Section";
+        case Tok_SectionEnd:
+            return "Tok_SectionEnd";
         case Tok_LineCont:
             return "Tok_LineCont";
         }

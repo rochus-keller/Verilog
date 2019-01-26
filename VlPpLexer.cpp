@@ -38,13 +38,18 @@ PpLexer::PpLexer(QObject *parent) :
 {
 }
 
-void PpLexer::setStream(QIODevice* in, const QString& sourcePath)
+bool PpLexer::setStream(QIODevice* in, const QString& sourcePath, bool reportError)
 {
-    Q_ASSERT( in != 0);
-    InputCtx ctx;
-    ctx.d_in = in;
-    ctx.d_sourcePath = sourcePath;
-    d_source.push(ctx);
+    if( in == 0 )
+        return setStream( sourcePath, reportError );
+    else
+    {
+        InputCtx ctx;
+        ctx.d_in = in;
+        ctx.d_sourcePath = sourcePath;
+        d_source.push(ctx);
+        return true;
+    }
 }
 
 bool PpLexer::setStream(const QString& sourcePath, bool reportError )
@@ -271,8 +276,7 @@ Token PpLexer::nextTokenImp()
             switch( lookAhead(1) )
             {
             case '/':
-                return token(Tok_Comment, d_source.top().d_line.size() - d_source.top().d_colNr,
-                             d_source.top().d_line.mid( d_source.top().d_colNr + 2 ).trimmed() );
+                return lineComment();
             case '*':
                 return blockComment();
             default:
@@ -1172,6 +1176,60 @@ Token PpLexer::blockComment()
     }else
         d_source.top().d_colNr = pos; // lasse */ dem nächsten call von nextToken
     return t;
+}
+
+static inline bool isOpenPar( char c )
+{
+    switch( c )
+    {
+    case '{':
+    case '(':
+    case '[':
+    case '>':
+        return true;
+    default:
+        return false;
+    }
+}
+
+static inline bool isClosePar( char c )
+{
+    switch( c )
+    {
+    case '}':
+    case ')':
+    case ']':
+    case '<':
+        return true;
+    default:
+        return false;
+    }
+}
+
+Token PpLexer::lineComment()
+{
+    const int lenToEat = d_source.top().d_line.size() - d_source.top().d_colNr;
+    TokenType tt = Tok_Invalid;
+    int off = 0;
+    const char la2 = lookAhead(2);
+    if( isOpenPar(la2) )
+    {
+        tt = Tok_Section;
+        off = 3;
+        while( lookAhead(off) == la2 )
+            off++;
+    }else if( isClosePar(la2) )
+    {
+        tt = Tok_SectionEnd;
+        off = 3;
+        while( lookAhead(off) == la2 )
+            off++;
+    }else
+    {
+        tt = Tok_Comment;
+        off = 2;
+    }
+    return token( tt, lenToEat, d_source.top().d_line.mid( d_source.top().d_colNr + off ).trimmed() );
 }
 
 Token PpLexer::error(const QString& msg)

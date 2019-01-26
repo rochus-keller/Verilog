@@ -244,6 +244,8 @@ namespace Vl
         Tok_Attribute,      // substitutes Lattr and Rattr and all between
         Tok_MacroUsage,     // Redundant macro usage CoDi, followed by actual args if there, all d_prePp=true, followed by
         Tok_Comment,        // // or /**/
+        Tok_Section,   // //{ Title
+        Tok_SectionEnd,     // //}
         Tok_LineCont,       // Line continuation in `define xxx backslash
         Tok_Eof
     };

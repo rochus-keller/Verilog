@@ -43,6 +43,7 @@ namespace Vl
         // this class is thread-safe
     public:
         typedef QList<quint32> IfDefOutList; // Jeder Eintrag ist die Zeile der Änderung. Start bei On.
+        typedef QList<Token> SectionList; // d_len zweckentfremdet als level
 
         class Branch;
         class Scope;
@@ -61,6 +62,8 @@ namespace Vl
             typedef QExplicitlySharedDataPointer<const Symbol> SymRef;
             typedef QList<SymRef> SymRefList;
 
+            Symbol(const Token& = Token() );
+
             const Token& tok() const { return d_tok; }
             virtual const SymRefList& children() const;
             const Branch* toBranch() const;
@@ -75,7 +78,6 @@ namespace Vl
             const char* getTypeName() const;
         protected:
             virtual ~Symbol() {}
-            Symbol();
 
             friend class QExplicitlySharedDataPointer<Symbol>;
             friend class QExplicitlySharedDataPointer<const Symbol>;
@@ -172,6 +174,8 @@ namespace Vl
         SymRefList findAllReferencingSymbols(const Symbol* ) const;
         SymRefList findReferencingSymbolsByFile(const Symbol*, const QString& file ) const;
         IfDefOutList getIfDefOutsByFile( const QString& file ) const;
+        SectionList getSections( const QString& file ) const;
+        Token findSectionBySourcePos( const QString& file, quint32 line, quint16 col ) const;
         SymRef findGlobal( const QByteArray& name ) const;
         SymRefList getGlobalSyms( const QString& file = QString() ) const;
         IdentDeclRefList getGlobalNames( const QString& file = QString() ) const;
@@ -185,7 +189,8 @@ namespace Vl
 
     protected:
         typedef QList<const SynTree*> SynTreePath; // top = last
-        typedef QMap<QString,IfDefOutList> IfDefOutLists;
+        typedef QMap<QString,IfDefOutList> IfDefOutLists; // file -> list
+        typedef QMap<QString,SectionList> SectionLists; // file -> list
         typedef QList<ScopeRef> ScopeRefList;
         typedef QHash<const Symbol*,const IdentDecl*> Index; // ident use -> ident declaration
         typedef QMultiHash<const Symbol*, const Symbol*> RevIndex;
@@ -198,13 +203,11 @@ namespace Vl
         static bool checkLop(Scope* superScope, const SynTree* id, Errors* );
         static const Symbol* findFirst(const Branch*, quint16 type);
 
-        static bool parseFile(const QString& file, ScopeRefList&, IfDefOutLists&,
-                              Errors* errs, PpSymbols* syms, Includes* incs , FileCache* fcache);
-        static int parseFiles( const QStringList& files, ScopeRefList&, IfDefOutLists&,
+        static int parseFiles(const QStringList& files, ScopeRefList&, IfDefOutLists&, SectionLists&,
                                 Errors* errs, PpSymbols* syms, Includes* incs , FileCache* fcache, QAtomicInt* );
-        static bool parseString(const QString& code, const QString& sourcePath, ScopeRefList&, IfDefOutLists&,
+        static bool parseStream(QIODevice* stream, const QString& sourcePath, ScopeRefList&, IfDefOutLists&, SectionList&,
                               Errors* errs, PpSymbols* syms, Includes* incs , FileCache* fcache);
-        void insertFiles(const QStringList& files, const ScopeRefList&, const IfDefOutLists&, Errors* errs , bool lock = true); // write lock
+        void insertFiles(const QStringList& files, const ScopeRefList&, const IfDefOutLists&, const SectionLists&, Errors* errs , bool lock = true); // write lock
         static void clearFile(Scope*, const QString& file);
         static bool insertCell(const IdentDecl* decl, Scope*, Errors* );
         static void resolveIdents( Index&, RevIndex&, const Symbol*, const Branch*, const Scope*, const Scope*, Errors* );
@@ -223,6 +226,7 @@ namespace Vl
 
         Scope d_global;
         IfDefOutLists d_idols;
+        SectionLists d_sections;
         Index d_index;
         RevIndex d_revIndex;
 

@@ -98,14 +98,18 @@ bool CrossRefModel::parseString(const QString& code, const QString& sourcePath)
 
     ScopeRefList scopes;
     IfDefOutLists idols;
+    SectionLists secs;
 
     Errors errs(0,true);
     errs.setShowWarnings(false);
     errs.setReportToConsole(true); // TEST
     errs.setRecord(true);
 
-    parseString( code, sourcePath, scopes, idols, &errs, d_syms, d_incs, d_fcache );
-    insertFiles( QStringList() << sourcePath, scopes, idols, &errs, false );
+    QBuffer in;
+    in.setData( code.toLatin1() );
+    in.open(QIODevice::ReadOnly);
+    parseStream( &in, sourcePath, scopes, idols, secs[sourcePath], &errs, d_syms, d_incs, d_fcache );
+    insertFiles( QStringList() << sourcePath, scopes, idols, secs, &errs, false );
 
     d_lock.unlock();
     return errs.getErrCount() == 0;
@@ -212,6 +216,26 @@ CrossRefModel::IfDefOutList CrossRefModel::getIfDefOutsByFile(const QString& fil
     res = d_idols.value(file);
     d_lock.unlock();
     return res;
+}
+
+CrossRefModel::SectionList CrossRefModel::getSections(const QString& file) const
+{
+    SectionList res;
+    d_lock.lockForRead();
+    res = d_sections.value(file);
+    d_lock.unlock();
+    return res;
+}
+
+Token CrossRefModel::findSectionBySourcePos(const QString& file, quint32 line, quint16 col) const
+{
+    SectionList l = getSections(file);
+    foreach( const Token& t, l )
+    {
+        if( t.d_lineNr == line && t.d_colNr <= col )
+            return t;
+    }
+    return Token();
 }
 
 CrossRefModel::SymRef CrossRefModel::findGlobal(const QByteArray& name) const
@@ -449,6 +473,7 @@ void CrossRefModel::runUpdater(CrossRefModel* mdl)
 
     ScopeRefList scopes;
     IfDefOutLists idols;
+    SectionLists secs;
 
     Errors errs(0,true);
     errs.setShowWarnings(false);
@@ -457,10 +482,10 @@ void CrossRefModel::runUpdater(CrossRefModel* mdl)
 
     if( mdl->d_break )
         return;
-    parseFiles( files, scopes, idols, &errs, mdl->d_syms, mdl->d_incs, mdl->d_fcache, &mdl->d_break );
+    parseFiles( files, scopes, idols, secs, &errs, mdl->d_syms, mdl->d_incs, mdl->d_fcache, &mdl->d_break );
     if( mdl->d_break )
         return;
-    mdl->insertFiles( files, scopes, idols, &errs );
+    mdl->insertFiles( files, scopes, idols, secs, &errs );
 
 //    qDebug() << files.size() << "updated" << mdl->d_global.d_names.size() << "global names"
 //             << mdl->d_global.d_children.size() << "global children"
@@ -826,7 +851,7 @@ bool CrossRefModel::checkLop(CrossRefModel::Scope* superScope, const SynTree* id
     return true;
 }
 
-CrossRefModel::Symbol::Symbol()
+CrossRefModel::Symbol::Symbol(const Token& t):d_tok(t)
 {
 
 }
@@ -961,44 +986,7 @@ static void dumpAst(const CrossRefModel::Symbol* l, int level)
 }
 #endif
 
-bool CrossRefModel::parseFile(const QString& file, ScopeRefList& refs, IfDefOutLists& idols, Errors* e,
-                              PpSymbols* syms, Includes* incs, FileCache* fcache )
-{
-    PpLexer lex;
-    lex.setErrors( e );
-    lex.setSyms( syms );
-    lex.setIncs( incs );
-    lex.setCache(fcache);
-    lex.setIgnoreAttrs(false);
-    lex.setPackAttrs(false);
-    lex.setSendMacroUsage(true);
-
-    if( !lex.setStream( file, true ) )
-        return false;
-
-    Parser p;
-    const bool res = p.parseFile( &lex, e );
-    if( res )
-    {
-        SynTree root;
-        root.d_children = p.getResult(true);
-        ScopeRef top = createAst( &root, e );
-        refs.append(top);
-        idols = lex.getIdols();
-#ifdef _DUMP_AST
-        qDebug() << "********** dumping" << file;
-        dumpAst(top.constData(), 0 );
-        qDebug() << "********** end dump" << file;
-#endif
-//        qDebug() << "************** name table of" << file;
-//        Scope::Names::const_iterator n;
-//        for( n = top->d_names.begin(); n != top->d_names.end(); ++n )
-//            qDebug() << n.key() << SynTree::rToStr(n.value()->d_tok.d_type) << n.value()->d_tok.d_lineNr;
-    }
-    return res;
-}
-
-int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, IfDefOutLists& idols,
+int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, IfDefOutLists& idols, SectionLists& secs,
                                Errors* errs, PpSymbols* syms, Includes* incs, FileCache* fcache, QAtomicInt* stop )
 {
     QElapsedTimer t;
@@ -1009,9 +997,11 @@ int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, If
         if( stop && *stop )
             return esum;
         IfDefOutLists idol;
+        SectionList sec;
         int e = errs->getErrCount();
         int w = errs->getWrnCount();
-        parseFile(file, scopes, idol, errs, syms, incs, fcache);
+        parseStream( 0, file, scopes, idol, sec, errs, syms, incs, fcache );
+        secs[file] = sec;
         IfDefOutLists::const_iterator i;
         for( i = idol.begin(); i != idol.end(); ++i )
             idols.insert( i.key(), i.value() );
@@ -1033,46 +1023,64 @@ int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, If
     return esum;
 }
 
-bool CrossRefModel::parseString(const QString& code, const QString& sourcePath, ScopeRefList& refs,
-                                IfDefOutLists& idols, Errors* e, PpSymbols* syms, Includes* incs, FileCache* fcache)
+bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, CrossRefModel::ScopeRefList& refs,
+                                CrossRefModel::IfDefOutLists& idols, SectionList& secs, Errors* errs, PpSymbols* syms,
+                                Includes* incs, FileCache* fcache)
 {
     PpLexer lex;
-    lex.setErrors( e );
+    lex.setErrors( errs );
     lex.setSyms( syms );
     lex.setIncs( incs );
     lex.setCache(fcache);
+    lex.setIgnoreAttrs(false);
+    lex.setPackAttrs(false);
+    lex.setSendMacroUsage(true);
 
-    QBuffer in;
-    in.setData( code.toLatin1() );
-    in.open(QIODevice::ReadOnly);
-
-    lex.setStream( &in, sourcePath );
+    lex.setStream( stream, sourcePath );
 
     Parser p;
-    const bool res = p.parseFile( &lex, e );
+    const bool res = p.parseFile( &lex, errs );
     if( res )
     {
         SynTree root;
         root.d_children = p.getResult(true);
-        ScopeRef top = createAst( &root, e );
+        ScopeRef top = createAst( &root, errs );
         refs.append(top);
         idols = lex.getIdols();
+        int level = 0;
+        foreach( Token tok, p.getSections() )
+        {
+            if( tok.d_sourcePath != sourcePath )
+                continue;
+            if( tok.d_type == Tok_Section )
+            {
+                tok.d_len = level++;
+                secs.append(tok);
+            }else if( tok.d_type == Tok_SectionEnd )
+                level--;
+        }
+
 #ifdef _DUMP_AST
-        qDebug() << "********** dumping" << sourcePath;
+        qDebug() << "********** dumping" << file;
         dumpAst(top.constData(), 0 );
-        qDebug() << "********** end dump" << sourcePath;
+        qDebug() << "********** end dump" << file;
 #endif
+//        qDebug() << "************** name table of" << file;
+//        Scope::Names::const_iterator n;
+//        for( n = top->d_names.begin(); n != top->d_names.end(); ++n )
+//            qDebug() << n.key() << SynTree::rToStr(n.value()->d_tok.d_type) << n.value()->d_tok.d_lineNr;
     }
     return res;
 }
 
 void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& globals,
-                                const IfDefOutLists& idols, Errors* errs, bool lock )
+                                const IfDefOutLists& idols, const SectionLists& secs, Errors* errs, bool lock )
 {
     if( lock )
         d_lock.lockForRead();
     Scope newGlobal = d_global;
     IfDefOutLists newIdols = d_idols;
+    SectionLists newSecs = d_sections;
     if( lock )
         d_lock.unlock();
 
@@ -1091,30 +1099,24 @@ void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& gl
             insertCell( n.value(), &newGlobal, errs );
     }
 
-    /*
-    Scope::Names::const_iterator n;
-    for( n = d_global.d_names.begin(); n != d_global.d_names.end(); ++n )
-        qDebug() << n.key() << n.value()->d_tok.d_lineNr << QFileInfo(n.value()->d_tok.d_sourcePath).fileName();
-        */
-
     Index index;
     RevIndex revIndex;
-//    foreach( const ScopeRef& global, globals )
-//    {
-    //foreach( const SymRef& sub, global->d_children )
-        foreach( const SymRef& sub, newGlobal.d_children )
-        {
-            const Scope* cell = sub->toScope();
-            // NOTE: the d_super of all scopes not in files still point to d_global! We don't care since this is
-            // the only thread causing mutations and the mutations are serialized
-            if( cell ) // sub may be 0!
-                resolveIdents( index, revIndex, cell, 0, cell, &newGlobal, errs );
-        }
-//    }
+    foreach( const SymRef& sub, newGlobal.d_children )
+    {
+        const Scope* cell = sub->toScope();
+        // NOTE: the d_super of all scopes not in files still point to d_global! We don't care since this is
+        // the only thread causing mutations and the mutations are serialized
+        if( cell ) // sub may be 0!
+            resolveIdents( index, revIndex, cell, 0, cell, &newGlobal, errs );
+    }
 
     IfDefOutLists::const_iterator i;
     for( i = idols.begin(); i != idols.end(); ++i )
         newIdols.insert( i.key(), i.value() );
+
+    SectionLists::const_iterator j;
+    for( j = secs.begin(); j != secs.end(); ++j )
+        newSecs.insert( j.key(), j.value() );
 
     errCount = errs->getErrCount() - errCount;
 
@@ -1128,6 +1130,7 @@ void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& gl
     d_index = index;
     d_revIndex = revIndex;
     d_idols = newIdols;
+    d_sections = newSecs;
     d_global.d_names = newGlobal.d_names;
     d_global.d_children = newGlobal.d_children;
     foreach( const SymRef& sub, d_global.d_children )

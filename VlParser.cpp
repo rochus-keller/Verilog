@@ -69,6 +69,7 @@ bool Parser::parseFile(PpLexer* in, Errors* err)
     {
         d_st = p.d_root.d_children;
         p.d_root.d_children.clear();
+        d_sections = p.d_sections;
         return true;
     }else
         return false;

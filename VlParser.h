@@ -21,12 +21,12 @@
 */
 
 #include <QObject>
+#include <Verilog/VlSynTree.h>
 
 namespace Vl
 {
     class PpLexer;
     class Errors;
-    class SynTree;
 
     class Parser : public QObject
     {
@@ -43,6 +43,7 @@ namespace Vl
                 d_st.clear();
             return res;
         }
+        const QList<Vl::Token>& getSections() const { return d_sections; }
 
         static void dumpTree( SynTree*, int level = 0 );
     protected:
@@ -50,6 +51,7 @@ namespace Vl
 
     private:
         QList<SynTree*> d_st;
+        QList<Vl::Token> d_sections;
     };
 }
 

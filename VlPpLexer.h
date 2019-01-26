@@ -54,7 +54,7 @@ namespace Vl
         void setIncs(Includes* p) { d_incs = p; }
         void setCache(FileCache* p) { d_fcache = p; }
 
-        void setStream( QIODevice* in, const QString& sourcePath );
+        bool setStream( QIODevice* in, const QString& sourcePath, bool reportError = false );
         bool setStream(const QString& sourcePath , bool reportError);
 
 		Token nextToken();
@@ -100,6 +100,7 @@ namespace Vl
         Token pathident();
 		Token numeric();
         Token blockComment();
+        Token lineComment();
         Token error( const QString& );
         Token error( const QString&, const Token& );
         void warning( const QString& );

@@ -257,6 +257,7 @@ public:
 	};
 	TokDummy d_dummy;
 	TokDummy *la;			// lookahead token
+    QList<Vl::Token> d_sections;
 	
 	int peek( quint8 la = 1 );
 

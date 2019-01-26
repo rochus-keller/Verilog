@@ -115,6 +115,10 @@ void Parser::Get() {
         case Vl::Tok_Comment:
             // ignorieren
             break;
+        case Vl::Tok_Section:
+        case Vl::Tok_SectionEnd:
+            d_sections.append(d_next);
+            break;
         default:
             deliverToParser = true;
             break;
