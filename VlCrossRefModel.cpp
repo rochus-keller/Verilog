@@ -227,15 +227,15 @@ CrossRefModel::SectionList CrossRefModel::getSections(const QString& file) const
     return res;
 }
 
-Token CrossRefModel::findSectionBySourcePos(const QString& file, quint32 line, quint16 col) const
+CrossRefModel::Section CrossRefModel::findSectionBySourcePos(const QString& file, quint32 line, quint16 col) const
 {
     SectionList l = getSections(file);
-    foreach( const Token& t, l )
+    foreach( const Section& t, l )
     {
-        if( t.d_lineNr == line && t.d_colNr <= col )
+        if( t.d_lineFrom == line ) // && t.d_colNr <= col )
             return t;
     }
-    return Token();
+    return Section();
 }
 
 CrossRefModel::SymRef CrossRefModel::findGlobal(const QByteArray& name) const
@@ -624,7 +624,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
 {
     Q_ASSERT( parentAst != 0 && superScope != 0 && !synPath.isEmpty() );
 
-    int curUnnamed = 0;
+    //int curUnnamed = 0;
     foreach( const SynTree* child, synPath.front()->d_children )
     {
 //        if( child->d_tok.d_val == "yellowCounter" )
@@ -649,8 +649,9 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                       curScope->d_tok.d_type == SynTree::R_par_block ))
             {
                 // curScope->d_tok.d_val = QString("<block%1>").arg(curUnnamed++,2,10,QChar('0')).toUtf8();
-                static int counter = 0;
-                curScope->d_tok.d_val = QString("<%1>").arg(counter++,4,16,QChar('0')).toUtf8();
+                //static int counter = 0;
+                //curScope->d_tok.d_val = QString("<%1>").arg(counter++,4,16,QChar('0')).toUtf8();
+                curScope->d_tok.d_val = ".";
             }
 #endif
             curScope->d_tok.d_len = calcKeyWordLen(child);
@@ -1007,19 +1008,19 @@ int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, If
             idols.insert( i.key(), i.value() );
         e = errs->getErrCount() - e;
         w = errs->getWrnCount() - w;
-        if( errs->reportToConsole() )
-        {
-            if( e != 0 && w != 0 )
-                qDebug() << "####" << e << "Errors and" << w << "Warnings in" << file;
-            else if( errs->showWarnings() && w != 0 )
-                qDebug() << "####" << w << "Warnings in" << file;
-            else if( e != 0)
-                qDebug() << "####" << e << "Errors in" << file;
-        }
+//        if( errs->reportToConsole() )
+//        {
+//            if( e != 0 && w != 0 )
+//                qDebug() << "####" << e << "Errors and" << w << "Warnings in" << file;
+//            else if( errs->showWarnings() && w != 0 )
+//                qDebug() << "####" << w << "Warnings in" << file;
+//            else if( e != 0)
+//                qDebug() << "####" << e << "Errors in" << file;
+//        }
         esum += e;
     }
-    if( errs->reportToConsole() )
-        qDebug() << "### Parsed" << files.size() << "files in" << t.elapsed() << "ms with" << esum << "errors";
+//    if( errs->reportToConsole() )
+//        qDebug() << "### Parsed" << files.size() << "files in" << t.elapsed() << "ms with" << esum << "errors";
     return esum;
 }
 
@@ -1045,19 +1046,33 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
         SynTree root;
         root.d_children = p.getResult(true);
         ScopeRef top = createAst( &root, errs );
+//        qDebug() << "*** parsed" << sourcePath;
+//        foreach( const SymRef& sym, top->children() )
+//            qDebug() << sym->d_tok.d_val << sym->d_tok.d_lineNr;
         refs.append(top);
         idols = lex.getIdols();
-        int level = 0;
+        QList<int> stack;
         foreach( Token tok, p.getSections() )
         {
             if( tok.d_sourcePath != sourcePath )
                 continue;
             if( tok.d_type == Tok_Section )
             {
-                tok.d_len = level++;
-                secs.append(tok);
+                Section s;
+                s.d_lineFrom = s.d_lineTo = tok.d_lineNr;
+                s.d_title = tok.d_val;
+                secs.append(s);
+                stack.push_back( secs.size() - 1 );
             }else if( tok.d_type == Tok_SectionEnd )
-                level--;
+            {
+                if( !stack.isEmpty() )
+                {
+                    int i = stack.back();
+                    stack.pop_back();
+                    Q_ASSERT( i < secs.size() );
+                    secs[i].d_lineTo = tok.d_lineNr;
+                }
+            }
         }
 
 #ifdef _DUMP_AST
@@ -1073,7 +1088,7 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
     return res;
 }
 
-void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& globals,
+void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& scopes,
                                 const IfDefOutLists& idols, const SectionLists& secs, Errors* errs, bool lock )
 {
     if( lock )
@@ -1089,14 +1104,39 @@ void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& gl
 
     int errCount = errs->getErrCount();
 
+    // Lösche zuerst alles, was die neu geparsten Files betrifft, aus dem existierenden Global
     foreach( const QString& file, files )
         clearFile(&newGlobal,file);
 
-    foreach( const ScopeRef& global, globals )
+    // scopes enthält für jedes geparste File einen Scope
+    foreach( const ScopeRef& scope, scopes )
     {
-        Scope::Names::const_iterator n;
-        for( n = global->d_names.begin(); n != global->d_names.end(); ++n )
-            insertCell( n.value(), &newGlobal, errs );
+        // Prüfe, ob die Namen in scope allenfalls schon existieren, ansonsten füge sie in Global
+        Scope::Names::const_iterator scopeIter;
+        for( scopeIter = scope->d_names.begin(); scopeIter != scope->d_names.end(); ++scopeIter )
+        {
+            Scope::Names::const_iterator globalIter = newGlobal.d_names.find( scopeIter.key() );
+            if( globalIter != newGlobal.d_names.end() )
+            {
+                const IdentDecl* newDecl = scopeIter.value();
+                const IdentDecl* existingDecl = globalIter.value();
+                errs->error(Errors::Semantics, newDecl->d_decl->d_tok.d_sourcePath,
+                            newDecl->d_decl->d_tok.d_lineNr, newDecl->d_decl->d_tok.d_colNr,
+                              tr("duplicate cell name '%1' already declared in %2")
+                            .arg( newDecl->d_tok.d_val.data() )
+                            .arg( existingDecl->d_tok.d_sourcePath ) );
+            }else
+                newGlobal.d_names.insert( scopeIter.key(), scopeIter.value() );
+
+        }
+        // Alle children von scope werden übernommen und auf den neuen Global angepasst
+        foreach( const SymRef& s, scope->children() )
+        {
+            Branch* b = const_cast<Branch*>( s->toBranch() );
+            b->d_super = &newGlobal;
+        }
+        newGlobal.d_children += scope->d_children;
+
     }
 
     Index index;
@@ -1120,9 +1160,9 @@ void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& gl
 
     errCount = errs->getErrCount() - errCount;
 
-    if( errs->reportToConsole() )
-        qDebug() << "### Elaborated and indexed" << files.size() << "files in" << t.elapsed()
-                 << "ms with" << errCount << "errors";
+//    if( errs->reportToConsole() )
+//        qDebug() << "### Elaborated and indexed" << files.size() << "files in" << t.elapsed()
+//                 << "ms with" << errCount << "errors";
 
     if( lock )
         d_lock.lockForWrite();
@@ -1173,6 +1213,8 @@ void CrossRefModel::clearFile(Scope* global, const QString& file)
 
 bool CrossRefModel::insertCell(const IdentDecl* decl, Scope* global, Errors* errs)
 {
+    Q_ASSERT( false ); // obsolete funktion, direkt in caller eingefügt
+
     // Ein erheblicher Teil der Module (n=1173) unterscheidet sich im Namen vom Dateinamen
     // Häufig nur in Gross-Kleinschreibung, häufig mit "_postfix"
     // Der Versuch kann also nicht bestätigen, dass mehrheitlich ein Modul pro Datei und gleich heisst.
@@ -1180,7 +1222,7 @@ bool CrossRefModel::insertCell(const IdentDecl* decl, Scope* global, Errors* err
 //        qDebug() << "**** Module name differs from file name" << decl->tok().d_val << decl->tok().d_sourcePath;
     Scope* scope = const_cast<Scope*>( decl->d_decl->toScope() );
     Q_ASSERT( scope != 0 );
-    const int pos = global->d_children.indexOf( SymRef() );
+    const int pos = global->d_children.indexOf( SymRef(scope) );
     if( pos == -1 )
         global->d_children.append( SymRef(scope) );
     else

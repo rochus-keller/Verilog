@@ -43,7 +43,14 @@ namespace Vl
         // this class is thread-safe
     public:
         typedef QList<quint32> IfDefOutList; // Jeder Eintrag ist die Zeile der Änderung. Start bei On.
-        typedef QList<Token> SectionList; // d_len zweckentfremdet als level
+
+        struct Section
+        {
+            quint32 d_lineFrom, d_lineTo;
+            QByteArray d_title;
+            Section():d_lineFrom(0),d_lineTo(0){}
+        };
+        typedef QList<Section> SectionList;
 
         class Branch;
         class Scope;
@@ -175,7 +182,7 @@ namespace Vl
         SymRefList findReferencingSymbolsByFile(const Symbol*, const QString& file ) const;
         IfDefOutList getIfDefOutsByFile( const QString& file ) const;
         SectionList getSections( const QString& file ) const;
-        Token findSectionBySourcePos( const QString& file, quint32 line, quint16 col ) const;
+        Section findSectionBySourcePos( const QString& file, quint32 line, quint16 col ) const;
         SymRef findGlobal( const QByteArray& name ) const;
         SymRefList getGlobalSyms( const QString& file = QString() ) const;
         IdentDeclRefList getGlobalNames( const QString& file = QString() ) const;
