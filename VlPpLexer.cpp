@@ -1063,8 +1063,7 @@ Token PpLexer::ident()
 	while( true )
 	{
         const char c = lookAhead(off);
-        const QChar ch = QChar::fromLatin1( c );
-        if( !ch.isLetterOrNumber() && c != '_' && c != '$' )
+        if( !QChar(c).isLetterOrNumber() && c != '_' && c != '$' ) // QChar wegen möglichen Umlauten
 			break;
 		else
 			off++;

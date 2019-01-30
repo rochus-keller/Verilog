@@ -102,7 +102,7 @@ bool CrossRefModel::parseString(const QString& code, const QString& sourcePath)
 
     Errors errs(0,true);
     errs.setShowWarnings(false);
-    errs.setReportToConsole(true); // TEST
+    errs.setReportToConsole(false);
     errs.setRecord(true);
 
     QBuffer in;
@@ -477,7 +477,7 @@ void CrossRefModel::runUpdater(CrossRefModel* mdl)
 
     Errors errs(0,true);
     errs.setShowWarnings(false);
-    errs.setReportToConsole(true); // TEST
+    errs.setReportToConsole(false);
     errs.setRecord(true);
 
     if( mdl->d_break )
@@ -1359,4 +1359,23 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
 CrossRefModel::Branch::Branch():d_super(0)
 {
 
+}
+
+CrossRefModel::IdentDeclRefList CrossRefModel::Scope::getNames() const
+{
+    IdentDeclRefList res;
+    if( d_tok.d_type == SynTree::R_module_declaration )
+    {
+        const Scope* lop = Symbol::toScope( findFirst( this, SynTree::R_list_of_ports) );
+        if( lop )
+        {
+            Names::const_iterator i;
+            for( i = lop->d_names.begin(); i != lop->d_names.end(); ++i )
+                res.append( IdentDeclRef(i.value()) );
+        }
+    }
+    Names::const_iterator i;
+    for( i = d_names.begin(); i != d_names.end(); ++i )
+        res.append( IdentDeclRef(i.value()) );
+    return res;
 }

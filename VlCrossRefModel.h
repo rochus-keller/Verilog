@@ -152,6 +152,8 @@ namespace Vl
 
         class Scope : public Branch
         {
+        public:
+            IdentDeclRefList getNames() const;
         protected:
             int getType() const Q_DECL_OVERRIDE { return ClassScope; }
         private:
@@ -244,5 +246,6 @@ namespace Vl
         QAtomicInt d_break;
     };
 }
+Q_DECLARE_METATYPE(Vl::CrossRefModel::SymRef)
 
 #endif // VLCROSSREFMODEL_H
