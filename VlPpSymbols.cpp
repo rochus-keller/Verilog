@@ -65,6 +65,11 @@ const PpSymbols::Define PpSymbols::getSymbol(const QByteArray& id)
     return d;
 }
 
+QByteArrayList PpSymbols::getNames() const
+{
+    return d_defs.keys();
+}
+
 bool PpSymbols::contains(const QByteArray& id) const
 {
     d_lock.lockForRead();

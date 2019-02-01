@@ -50,6 +50,7 @@ namespace Vl
         void addSymbol(const QByteArray&, const QByteArray&, TokenType type );
 
         const Define getSymbol( const QByteArray& id );
+        QByteArrayList getNames() const;
 
         bool contains( const QByteArray& id ) const;
         void remove( const QByteArray& id );

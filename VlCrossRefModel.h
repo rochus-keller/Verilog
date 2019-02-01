@@ -153,6 +153,8 @@ namespace Vl
         class Scope : public Branch
         {
         public:
+            typedef QMap<QByteArray,IdentDeclRef> Names2;
+            Names2 getNames2(bool recursive = true) const;
             IdentDeclRefList getNames() const;
         protected:
             int getType() const Q_DECL_OVERRIDE { return ClassScope; }
@@ -177,7 +179,8 @@ namespace Vl
 
         bool isEmpty() const;
 
-        TreePath findSymbolBySourcePos(const QString& file, quint32 line, quint16 col , bool onlyIdents = true ) const;
+        TreePath findSymbolBySourcePos(const QString& file, quint32 line, quint16 col ,
+                                       bool onlyIdents = true, bool hitEmpty = false ) const;
         IdentDeclRef findDeclarationOfSymbolAtSourcePos(const QString& file, quint32 line, quint16 col) const;
         IdentDeclRef findDeclarationOfSymbol(const Symbol* ) const;
         SymRefList findAllReferencingSymbols(const Symbol* ) const;
@@ -191,6 +194,9 @@ namespace Vl
         static QList<Token> findTokenByPos(const QString& line, int col, int* pos );
         static QString qualifiedName( const TreePath&, bool skipFirst = false );
         static QStringList qualifiedNameParts( const TreePath&, bool skipFirst = false );
+        static const Scope* closestScope( const TreePath& );
+        static const Branch* closestBranch( const TreePath& );
+        static void dump(const Symbol*, int level = 0, bool recursive = true);
 
     signals:
         void sigFileUpdated( const QString& path );
@@ -223,7 +229,7 @@ namespace Vl
         static const IdentDecl* findNameInScope( const Scope*, const QByteArray& name, bool recursiv = true, bool ports = false );
         static quint16 calcTextLenOfDecl( const SynTree* );
         static quint16 calcKeyWordLen( const SynTree* );
-        static bool findSymbolBySourcePosImp(TreePath& path, quint32 line, quint16 col, bool onlyIdents );
+        static bool findSymbolBySourcePosImp(TreePath& path, quint32 line, quint16 col, bool onlyIdents , bool hitEmpty);
         static void runUpdater(CrossRefModel* );
     protected slots:
         void onWorkFinished();

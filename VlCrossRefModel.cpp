@@ -146,7 +146,25 @@ bool CrossRefModel::isEmpty() const
     return res;
 }
 
-CrossRefModel::TreePath CrossRefModel::findSymbolBySourcePos(const QString& file, quint32 line, quint16 col, bool onlyIdents ) const
+static bool hitsArea( const CrossRefModel::SymRef& sub, quint32 line, quint16 col, const QString& source )
+{
+    // es wurde in isHit bereits verifiziert, dass sub selber nicht getroffen wurde
+    if( sub->tok().d_sourcePath != source || sub->tok().d_lineNr > line ||
+            ( sub->tok().d_lineNr == line && sub->tok().d_colNr > col ) )
+        return false;
+    if( sub->children().isEmpty() )
+        return false;
+    foreach( const CrossRefModel::SymRef& subsub, sub->children() )
+    {
+        if( subsub->tok().d_sourcePath == source &&
+                ( line < subsub->tok().d_lineNr || line == subsub->tok().d_lineNr && col <= subsub->tok().d_colNr ) )
+            return true;
+    }
+    return false;
+}
+
+CrossRefModel::TreePath CrossRefModel::findSymbolBySourcePos(const QString& file, quint32 line, quint16 col,
+                                                             bool onlyIdents , bool hitEmpty) const
 {
     SymRefList list;
     d_lock.lockForRead();
@@ -159,7 +177,9 @@ CrossRefModel::TreePath CrossRefModel::findSymbolBySourcePos(const QString& file
         if( sub->d_tok.d_sourcePath == file )
         {
             res.push_front( sub );
-            if( findSymbolBySourcePosImp( res,line,col,onlyIdents) )
+            if( findSymbolBySourcePosImp( res,line,col,onlyIdents,hitEmpty) )
+                return res;
+            if( hitEmpty && hitsArea( sub, line, col, file ) )
                 return res;
             res.pop_front();
         }
@@ -328,6 +348,30 @@ QStringList CrossRefModel::qualifiedNameParts(const CrossRefModel::TreePath& pat
     return res;
 }
 
+const CrossRefModel::Scope*CrossRefModel::closestScope(const CrossRefModel::TreePath& path)
+{
+    for( int i = 0; i < path.size(); i++ )
+    {
+        Q_ASSERT(path[i]);
+        const Scope* s = path[i]->toScope();
+        if( s )
+            return s;
+    }
+    return 0;
+}
+
+const CrossRefModel::Branch*CrossRefModel::closestBranch(const CrossRefModel::TreePath& path)
+{
+    for( int i = 0; i < path.size(); i++ )
+    {
+        Q_ASSERT(path[i]);
+        const Branch* s = path[i]->toBranch();
+        if( s )
+            return s;
+    }
+    return 0;
+}
+
 const CrossRefModel::IdentDecl* CrossRefModel::findNameInScope(const Scope* scope, const QByteArray& name, bool recursiv, bool ports)
 {
     const IdentDecl* res = scope->d_names.value(name);
@@ -421,41 +465,29 @@ static inline bool isHit( const CrossRefModel::SymRef& sub, quint32 line, quint1
             && sub->tok().d_sourcePath == source;
 }
 
-bool CrossRefModel::findSymbolBySourcePosImp(CrossRefModel::TreePath& path, quint32 line, quint16 col, bool onlyIdents)
+
+bool CrossRefModel::findSymbolBySourcePosImp(CrossRefModel::TreePath& path, quint32 line, quint16 col,
+                                             bool onlyIdents, bool hitEmpty )
 {
     Q_ASSERT( !path.isEmpty() );
 
     // TODO: z.B. Binary search anwenden, da ja Idents alle nach Zeilen und Spalten geordnet sind
     foreach( const SymRef& sub, path.front()->children() )
     {
-#ifdef _old
-        if( sub->d_tok.d_type == Tok_Ident )
-        {
-            // NOTE: aufgelöste `xyz zeigen auf Ort der Definition, nicht auf die aktuelle Stelle im Code
-            if( isHit( sub, line, col, path.last()->d_tok.d_sourcePath ) )
-            {
-                path.push_front(sub);
-                return true;
-            }
-        }else
-        {
-            path.push_front(sub);
-            if( findSymbolBySourcePosImp( path, line, col, onlyIdents ) )
-                return true;
-            path.pop_front();
-        }
-#else
         path.push_front(sub);
 
         if( ( sub->d_tok.d_type == Tok_Ident || !onlyIdents ) &&
                 isHit( sub, line, col, path.last()->d_tok.d_sourcePath ) )
             return true;
 
-        if( findSymbolBySourcePosImp( path, line, col, onlyIdents ) )
+        if( findSymbolBySourcePosImp( path, line, col, onlyIdents, hitEmpty ) )
             return true;
 
+        if( hitEmpty && hitsArea( sub, line, col, path.last()->d_tok.d_sourcePath ) )
+            return true;
+
+        //else
         path.pop_front();
-#endif
     }
     return false;
 }
@@ -496,6 +528,31 @@ void CrossRefModel::runUpdater(CrossRefModel* mdl)
     if( d.data() )
         qDebug() << "Declaration" << d->tok().d_val << d->tok().d_lineNr << d->tok().d_colNr;
         */
+}
+
+void CrossRefModel::dump(const CrossRefModel::Symbol* node, int level, bool recursive )
+{
+    QByteArray str;
+    if( node->d_tok.d_type == Tok_Invalid )
+        level--;
+    else if( node->d_tok.d_type < SynTree::R_First )
+    {
+        if( tokenIsReservedWord( node->d_tok.d_type ) )
+            str = node->d_tok.d_val.toUpper();
+        else if( node->d_tok.d_type >= Tok_String )
+            str = SynTree::rToStr( node->d_tok.d_type ) + QByteArray(" ") +
+                    QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
+        else
+            str = QByteArray("\"") + node->d_tok.getName() + QByteArray("\"");
+
+    }else
+        str = SynTree::rToStr( node->d_tok.d_type );
+    str += QByteArray("\t\t\t\t\t") + QFileInfo(node->d_tok.d_sourcePath).fileName().toUtf8() +
+            ":" + QByteArray::number(node->d_tok.d_lineNr);
+    qDebug() << QByteArray(level*3, ' ').data() << str.data();
+    if( recursive )
+        foreach( const SymRef& sub, node->children() )
+            dump( sub.constData(), level + 1 );
 }
 
 void CrossRefModel::onWorkFinished()
@@ -683,6 +740,16 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             synPath.push_front(child);
             fillAst( parentAst, superScope, synPath, err );
             synPath.pop_front();
+        }else if( tokenIsBlockEnd(child->d_tok.d_type) )
+        {
+            // we need at least the last symbol of the production to be able to do
+            // line/col based searches when the cursor is in white space
+            parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
+        }else if( child->d_tok.d_type == Tok_Rpar )
+        {
+            // we need trailing ) to be able to assign whitespace to production
+            if( parentAst->d_tok.d_type == SynTree::R_module_or_udp_instance )
+                parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
         }else if( child->d_tok.d_type == Tok_Ident )
         {
             Scope* scope = superScope;
@@ -1041,7 +1108,7 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
 
     Parser p;
     const bool res = p.parseFile( &lex, errs );
-    if( res )
+    if( true ) // res ) // we need a SynTree in any case even with syntax errors
     {
         SynTree root;
         root.d_children = p.getResult(true);
@@ -1359,6 +1426,31 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
 CrossRefModel::Branch::Branch():d_super(0)
 {
 
+}
+
+CrossRefModel::Scope::Names2 CrossRefModel::Scope::getNames2(bool recursive) const
+{
+    Names2 res;
+    const Scope* super = d_super ? d_super->toScope() : 0;
+    if( recursive && super != 0 )
+        res = super->getNames2(recursive);
+
+    if( d_tok.d_type == SynTree::R_module_declaration )
+    {
+        const Scope* lop = Symbol::toScope( findFirst( this, SynTree::R_list_of_ports) );
+        if( lop )
+        {
+            Names::const_iterator i;
+            for( i = lop->d_names.begin(); i != lop->d_names.end(); ++i )
+                res.insert( i.key(), IdentDeclRef(i.value()) );
+        }
+    }
+
+    Names::const_iterator i;
+    for( i = d_names.begin(); i != d_names.end(); ++i )
+        res.insert( i.key(), IdentDeclRef(i.value()) );
+
+    return res;
 }
 
 CrossRefModel::IdentDeclRefList CrossRefModel::Scope::getNames() const
