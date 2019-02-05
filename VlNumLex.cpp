@@ -52,7 +52,7 @@ bool NumLex::parse(bool fullValidation)
         return basedValue();
     }else
     {
-        // NOTE: bei alleinstehenden Tok_BaseValue könnten laut Norm auch Hexdigits kommen.
+        // NOTE: bei alleinstehenden Tok_Base_Value könnten laut Norm auch Hexdigits kommen.
         // Wir schränken hier vorerst willkürlich ein, dass als erstes in jedem Fall eine Zahl kommen muss,
         // also im Falle von Hex eine vorstehende 0.
 
@@ -123,17 +123,17 @@ TokenType NumLex::getTokenType() const
     if( d_kind == Unknown )
         return Tok_Invalid;
     else if( d_kind == Real )
-        return Tok_Realnum;
+        return Tok_real_number;
     else if( d_hasSize && d_hasBaseFormat && d_hasValue )
-        return Tok_SizedBased;
+        return Tok_sizedbased_number;
     else if( d_hasBaseFormat && d_hasValue )
-        return Tok_BasedInt;
+        return Tok_based_number;
     else if( d_hasBaseFormat )
-        return Tok_BaseFormat;
+        return Tok_base_format;
     else if( d_hasValue )
-        return Tok_BaseValue;
+        return Tok_base_value;
     else
-        return Tok_Natural;
+        return Tok_natural_number;
 }
 
 bool NumLex::error(const QString& str)

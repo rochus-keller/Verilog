@@ -31,7 +31,8 @@ SOURCES += \
     ../Verilog/VlSynTree.cpp \
     ../Verilog/VlIncludes.cpp \
     ../Verilog/VlCrossRefModel.cpp \
-    ../Verilog/VlFileCache.cpp
+    ../Verilog/VlFileCache.cpp \
+    $$PWD/VlTokenType.cpp
 
 HEADERS  += \
     ../Verilog/VlParser.h \
@@ -44,5 +45,6 @@ HEADERS  += \
     ../Verilog/VlSynTree.h \
     ../Verilog/VlIncludes.h \
     ../Verilog/VlCrossRefModel.h \
-    ../Verilog/VlFileCache.h
+    ../Verilog/VlFileCache.h \
+    $$PWD/VlTokenType.h
 

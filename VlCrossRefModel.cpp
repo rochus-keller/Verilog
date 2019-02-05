@@ -61,8 +61,8 @@ CrossRefModel::CrossRefModel(QObject *parent, FileCache* fc) : QObject(parent)
     // TEST e200
     /*
     d_syms->addSymbol( "DISABLE_SV_ASSERTION", "", Tok_String );
-    d_syms->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Tok_Natural );
-    d_syms->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Tok_Natural );
+    d_syms->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Tok_Natural_number );
+    d_syms->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Tok_Natural_number );
     */
 
     d_errs = new Errors(this);
@@ -419,7 +419,7 @@ quint16 CrossRefModel::calcTextLenOfDecl(const SynTree* st)
         case Tok_Semi:
         case Tok_Hash:
         case Tok_Lpar:
-        case Tok_Ident:
+        case Tok_identifier:
             return cur->d_tok.d_colNr - st->d_tok.d_colNr;
         case Tok_Lbrack:
             {
@@ -476,7 +476,7 @@ bool CrossRefModel::findSymbolBySourcePosImp(CrossRefModel::TreePath& path, quin
     {
         path.push_front(sub);
 
-        if( ( sub->d_tok.d_type == Tok_Ident || !onlyIdents ) &&
+        if( ( sub->d_tok.d_type == Tok_identifier || !onlyIdents ) &&
                 isHit( sub, line, col, path.last()->d_tok.d_sourcePath ) )
             return true;
 
@@ -539,7 +539,7 @@ void CrossRefModel::dump(const CrossRefModel::Symbol* node, int level, bool recu
     {
         if( tokenIsReservedWord( node->d_tok.d_type ) )
             str = node->d_tok.d_val.toUpper();
-        else if( node->d_tok.d_type >= Tok_String )
+        else if( node->d_tok.d_type >= Tok_string )
             str = SynTree::rToStr( node->d_tok.d_type ) + QByteArray(" ") +
                     QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
         else
@@ -592,7 +592,7 @@ static bool hasScope(const SynTree* st)
     case SynTree::R_par_block:
 #ifdef VL_O5_ONLY
         if( st->d_children.size() > 2 && st->d_children[1]->d_tok.d_type == Tok_Colon &&
-                st->d_children[2]->d_tok.d_type == Tok_Ident )
+                st->d_children[2]->d_tok.d_type == Tok_Identifier )
             return true;
         else
             return false;
@@ -669,8 +669,8 @@ static inline bool isBlockStructure( quint16 type )
     case SynTree::R_conditional_statement:
     case SynTree::R_case_statement:
     case SynTree::R_loop_statement:
-    case SynTree::R_Attribute:
-    case SynTree::R_MacroUsage:
+    case Tok_Attribute:
+    case Tok_MacroUsage:
         return true;
     default:
         return false;
@@ -750,7 +750,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             // we need trailing ) to be able to assign whitespace to production
             if( parentAst->d_tok.d_type == SynTree::R_module_or_udp_instance )
                 parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
-        }else if( child->d_tok.d_type == Tok_Ident )
+        }else if( child->d_tok.d_type == Tok_identifier )
         {
             Scope* scope = superScope;
             SymRefNc sym;
@@ -1322,7 +1322,7 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
         {
             index.insert( use, id );
             revIndex.insert( id, use );
-        }else if( parent->tok().d_type != SynTree::R_Attribute )
+        }else if( parent->tok().d_type != Tok_Attribute )
             errs->error(Errors::Semantics, use->d_tok.d_sourcePath, use->d_tok.d_lineNr, use->d_tok.d_colNr,
                           tr("unknown identifier: %1").arg(use->d_tok.d_val.data()) );
     }else if( const PathIdent* use = leaf->toPathIdent() )

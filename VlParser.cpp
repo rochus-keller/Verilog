@@ -62,7 +62,7 @@ bool Parser::parseFile(PpLexer* in, Errors* err)
     Q_ASSERT( err );
     Coco::Parser p(in,err);
     int errs = err->getErrCount();
-    p.Parse();
+    p.RunParser();
     errs = err->getErrCount() - errs;
     //dumpTree( &p.d_root );
     if( errs == 0 )
@@ -95,7 +95,7 @@ void Parser::dumpTree(SynTree* node, int level)
     {
         if( tokenIsReservedWord( node->d_tok.d_type ) )
             str = node->d_tok.d_val.toUpper();
-        else if( node->d_tok.d_type >= Tok_String )
+        else if( node->d_tok.d_type >= Tok_string )
             str = QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
         else
             str = QByteArray("\"") + node->d_tok.getName() + QByteArray("\"");

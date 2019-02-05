@@ -35,12 +35,12 @@ Frontend::Frontend(QObject *parent) : QObject(parent),d_incs(0)
     d_ppSyms = new PpSymbols(this);
 
     // TEST e200
-    d_ppSyms->addSymbol( "DISABLE_SV_ASSERTION", "", Tok_String );
-    d_ppSyms->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Tok_Natural );
-    d_ppSyms->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Tok_Natural );
+    d_ppSyms->addSymbol( "DISABLE_SV_ASSERTION", "", Tok_string );
+    d_ppSyms->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Tok_natural_number );
+    d_ppSyms->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Tok_natural_number );
     // TEST oh
-    d_ppSyms->addSymbol( "CFG_ASIC", "1", Tok_Natural );
-    d_ppSyms->addSymbol( "CFG_PLATFORM", "", Tok_String );
+    d_ppSyms->addSymbol( "CFG_ASIC", "1", Tok_natural_number );
+    d_ppSyms->addSymbol( "CFG_PLATFORM", "", Tok_string );
 
     d_incs = new Includes(this);
     d_incs->setAutoAdd(true);

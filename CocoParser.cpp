@@ -60,14 +60,14 @@ void Parser::Get() {
             break;
         case Vl::Tok_MacroUsage:
             {
-                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_MacroUsage, d_next );
+                Vl::SynTree* n = new Vl::SynTree( Vl::Tok_MacroUsage, d_next );
                 d_stack.top()->d_children.append(n);
                 for(;;)
                 {
                     Vl::Token t = scanner->nextToken();
                     if( t.d_prePp )
                     {
-                        if( t.d_type == Vl::Tok_Ident || t.d_type == Vl::Tok_CoDi )
+                        if( t.d_type == Vl::Tok_identifier || t.d_type == Vl::Tok_CoDi )
                             n->d_children.append( new Vl::SynTree( t ) );
                         // else ignore
                     }else
@@ -82,13 +82,13 @@ void Parser::Get() {
             break;
         case Vl::Tok_Attribute:
             {
-                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_Attribute, d_next );
+                Vl::SynTree* n = new Vl::SynTree( Vl::Tok_Attribute, d_next );
                 d_stack.top()->d_children.append(n);
             }
             break;
         case Vl::Tok_Latt:
             {
-                Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_Attribute, d_next );
+                Vl::SynTree* n = new Vl::SynTree( Vl::Tok_Attribute, d_next );
                 d_stack.top()->d_children.append(n);
                 for(;;)
                 {
@@ -105,7 +105,7 @@ void Parser::Get() {
                         break;
                     }else
                     {
-                        if( t.d_type == Vl::Tok_Ident || t.d_type == Vl::Tok_CoDi )
+                        if( t.d_type == Vl::Tok_identifier || t.d_type == Vl::Tok_CoDi )
                             n->d_children.append( new Vl::SynTree( t ) );
                         // else ignore
                     }
@@ -167,515 +167,172 @@ bool Parser::WeakSeparator(int n, int syFol, int repFol) {
 
 void Parser::Verilog05() {
 		d_stack.push(&d_root); 
-		translation_unit();
-		d_stack.pop(); 
-}
-
-void Parser::translation_unit() {
 		while (StartOf(1)) {
-			if (la->kind == _Tmacromodule || la->kind == _Tmodule) {
+			if (la->kind == _T_macromodule || la->kind == _T_module) {
 				module_declaration();
-			} else if (la->kind == _Tprimitive) {
+			} else if (la->kind == _T_primitive) {
 				udp_declaration();
-			} else if (la->kind == _Tconfig) {
+			} else if (la->kind == _T_config) {
 				config_declaration();
-			} else if (la->kind == _Tlibrary) {
+			} else if (la->kind == _T_library) {
 				library_declaration();
 			} else {
 				include_statement();
 			}
 		}
-}
-
-void Parser::identifier() {
-		Expect(_TIdent,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::system_name() {
-		Expect(_TSysName,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::real_number() {
-		Expect(_TRealnum,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::natural_number() {
-		Expect(_TNatural,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::sizedbased_number() {
-		Expect(_TSizedBased,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::based_number() {
-		Expect(_TBasedInt,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::base_format() {
-		Expect(_TBaseFormat,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::base_value() {
-		Expect(_TBaseValue,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::string() {
-		Expect(_TString,__FUNCTION__);
-		addTerminal(); 
-}
-
-void Parser::unary_operator() {
-		switch (la->kind) {
-		case _TPlus: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TMinus: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBang: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeHat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THatTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		default: SynErr(204,__FUNCTION__); break;
-		}
-}
-
-void Parser::binary_operator() {
-		switch (la->kind) {
-		case _TPlus: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TMinus: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TStar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TSlash: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TPercent: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Eq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBangEq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T3Eq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBang2Eq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Amp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Bar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Star: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TLt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TLeq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TGt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TGeq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THatTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeHat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Gt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Lt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T3Gt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T3Lt: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		default: SynErr(205,__FUNCTION__); break;
-		}
-}
-
-void Parser::unary_module_path_operator() {
-		switch (la->kind) {
-		case _TBang: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeHat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THatTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		default: SynErr(206,__FUNCTION__); break;
-		}
-}
-
-void Parser::binary_module_path_operator() {
-		switch (la->kind) {
-		case _T2Eq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBangEq: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Amp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _T2Bar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TAmp: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TBar: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _TTildeHat: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		case _THatTilde: {
-			Get();
-			addTerminal(); 
-			break;
-		}
-		default: SynErr(207,__FUNCTION__); break;
-		}
+		d_stack.pop(); 
 }
 
 void Parser::module_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		module_keyword();
 		module_identifier();
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			module_parameter_port_list();
 		}
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			if (StartOf(2)) {
-				if (la->kind == _TLbrace || la->kind == _TDot || la->kind == _TIdent) {
+				if (la->kind == _T_Dot || la->kind == _T_Lbrace || la->kind == _T_identifier) {
 					list_of_ports();
 				} else {
 					list_of_port_declarations();
 				}
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(3)) {
 			module_item();
 		}
-		Expect(_Tendmodule,__FUNCTION__);
+		Expect(_T_endmodule,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::udp_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tprimitive,__FUNCTION__);
+		Expect(_T_primitive,__FUNCTION__);
 		addTerminal(); 
 		udp_identifier();
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			udp_port_list();
-		} else if (la->kind == _Toutput) {
+		} else if (la->kind == _T_output) {
 			udp_declaration_port_list();
-		} else SynErr(208,__FUNCTION__);
-		Expect(_TRpar,__FUNCTION__);
+		} else SynErr(212,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
-		while (la->kind == _Tinput || la->kind == _Toutput || la->kind == _Treg) {
+		while (la->kind == _T_input || la->kind == _T_output || la->kind == _T_reg) {
 			udp_port_declaration();
 		}
 		udp_body();
-		Expect(_Tendprimitive,__FUNCTION__);
+		Expect(_T_endprimitive,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::config_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_config_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tconfig,__FUNCTION__);
+		Expect(_T_config,__FUNCTION__);
 		addTerminal(); 
 		config_identifier();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		design_statement();
-		while (la->kind == _Tcell || la->kind == _Tdefault || la->kind == _Tinstance) {
+		while (la->kind == _T_cell || la->kind == _T_default || la->kind == _T_instance) {
 			config_rule_statement();
 		}
-		Expect(_Tendconfig,__FUNCTION__);
+		Expect(_T_endconfig,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::library_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_library_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tlibrary,__FUNCTION__);
+		Expect(_T_library,__FUNCTION__);
 		addTerminal(); 
 		library_identifier();
 		file_path_spec();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			file_path_spec();
 		}
-		if (la->kind == _TMinus) {
+		if (la->kind == _T_Minus) {
 			Get();
 			addTerminal(); 
-			Expect(_Tincdir,__FUNCTION__);
+			Expect(_T_incdir,__FUNCTION__);
 			addTerminal(); 
 			file_path_spec();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				file_path_spec();
 			}
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::include_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_include_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinclude,__FUNCTION__);
+		Expect(_T_include,__FUNCTION__);
 		addTerminal(); 
 		file_path_spec();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::library_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::file_path_spec() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_file_path_spec, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
-			identifier();
-		} else if (la->kind == _TString) {
-			string();
-		} else SynErr(209,__FUNCTION__);
+		if (la->kind == _T_identifier) {
+			Get();
+		} else if (la->kind == _T_string) {
+			Get();
+		} else SynErr(213,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::module_keyword() {
-		if (la->kind == _Tmodule) {
+		if (la->kind == _T_module) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tmacromodule) {
+		} else if (la->kind == _T_macromodule) {
 			Get();
 			addTerminal(); 
-		} else SynErr(210,__FUNCTION__);
+		} else SynErr(214,__FUNCTION__);
 }
 
 void Parser::module_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::module_parameter_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_parameter_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__FUNCTION__);
+		Expect(_T_Hash,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		parameter_declaration();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			parameter_declaration();
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -683,10 +340,10 @@ void Parser::module_parameter_port_list() {
 void Parser::list_of_ports() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_list_of_ports, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		port();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TLbrace || la->kind == _TDot || la->kind == _TIdent) {
+			if (la->kind == _T_Dot || la->kind == _T_Lbrace || la->kind == _T_identifier) {
 				port();
 			}
 		}
@@ -696,7 +353,7 @@ void Parser::list_of_ports() {
 void Parser::list_of_port_declarations() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_list_of_port_declarations, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		port_declaration();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			port_declaration();
@@ -705,94 +362,94 @@ void Parser::list_of_port_declarations() {
 }
 
 void Parser::module_item() {
-		if (la->kind == _Tinout || la->kind == _Tinput || la->kind == _Toutput) {
+		if (la->kind == _T_inout || la->kind == _T_input || la->kind == _T_output) {
 			port_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 		} else if (StartOf(4)) {
 			non_port_module_item();
-		} else SynErr(211,__FUNCTION__);
+		} else SynErr(215,__FUNCTION__);
 }
 
 void Parser::parameter_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tparameter,__FUNCTION__);
+		Expect(_T_parameter,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TLbrack || la->kind == _Tsigned || la->kind == _TIdent) {
-			if (la->kind == _Tsigned) {
+		if (la->kind == _T_Lbrack || la->kind == _T_signed || la->kind == _T_identifier) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(212,__FUNCTION__);
+		} else SynErr(216,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
 
 void Parser::port() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_port, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TLbrace || la->kind == _TIdent) {
+		if (la->kind == _T_Lbrace || la->kind == _T_identifier) {
 			port_expression();
-		} else if (la->kind == _TDot) {
+		} else if (la->kind == _T_Dot) {
 			Get();
 			addTerminal(); 
 			port_identifier();
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
-			if (la->kind == _TLbrace || la->kind == _TIdent) {
+			if (la->kind == _T_Lbrace || la->kind == _T_identifier) {
 				port_expression();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(213,__FUNCTION__);
+		} else SynErr(217,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::port_declaration() {
-		if (la->kind == _Tinout) {
+		if (la->kind == _T_inout) {
 			inout_declaration();
-		} else if (la->kind == _Tinput) {
+		} else if (la->kind == _T_input) {
 			input_declaration();
-		} else if (la->kind == _Toutput) {
+		} else if (la->kind == _T_output) {
 			output_declaration();
-		} else SynErr(214,__FUNCTION__);
+		} else SynErr(218,__FUNCTION__);
 }
 
 void Parser::port_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_port_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			port_reference();
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			port_reference();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				port_reference();
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(215,__FUNCTION__);
+		} else SynErr(219,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::port_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::port_reference() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_port_reference, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		port_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -801,12 +458,12 @@ void Parser::port_reference() {
 void Parser::constant_range_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_constant_range_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		constant_expression();
-		if (la->kind == _TColon || la->kind == _TPlusColon || la->kind == _TMinusColon) {
-			if (la->kind == _TColon) {
+		if (la->kind == _T_PlusColon || la->kind == _T_MinusColon || la->kind == _T_Colon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
 				lsb_constant_expression();
-			} else if (la->kind == _TPlusColon) {
+			} else if (la->kind == _T_PlusColon) {
 				Get();
 				addTerminal(); 
 				width_constant_expression();
@@ -821,16 +478,16 @@ void Parser::constant_range_expression() {
 
 void Parser::inout_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_inout_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinout,__FUNCTION__);
+		Expect(_T_inout,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(6)) {
 			net_type();
 		}
-		if (la->kind == _Tsigned) {
+		if (la->kind == _T_signed) {
 			Get();
 			addTerminal(); 
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		list_of_port_identifiers();
@@ -839,16 +496,16 @@ void Parser::inout_declaration() {
 
 void Parser::input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__FUNCTION__);
+		Expect(_T_input,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(6)) {
 			net_type();
 		}
-		if (la->kind == _Tsigned) {
+		if (la->kind == _T_signed) {
 			Get();
 			addTerminal(); 
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		list_of_port_identifiers();
@@ -857,189 +514,189 @@ void Parser::input_declaration() {
 
 void Parser::output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__FUNCTION__);
+		Expect(_T_output,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(7)) {
 			if (StartOf(6)) {
 				net_type();
 			}
-			if (la->kind == _Tsigned) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 			list_of_port_identifiers();
-		} else if (la->kind == _Treg) {
+		} else if (la->kind == _T_reg) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _Tsigned) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 			list_of_variable_port_identifiers();
-		} else if (la->kind == _Tinteger || la->kind == _Ttime) {
+		} else if (la->kind == _T_integer || la->kind == _T_time) {
 			output_variable_type();
 			list_of_variable_port_identifiers();
-		} else SynErr(216,__FUNCTION__);
+		} else SynErr(220,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::non_port_module_item() {
 		if (StartOf(8)) {
 			module_or_generate_item();
-		} else if (la->kind == _Tgenerate) {
+		} else if (la->kind == _T_generate) {
 			generate_region();
-		} else if (la->kind == _Tspecify) {
+		} else if (la->kind == _T_specify) {
 			specify_block();
-		} else if (la->kind == _Tparameter) {
+		} else if (la->kind == _T_parameter) {
 			parameter_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Tspecparam) {
+		} else if (la->kind == _T_specparam) {
 			specparam_declaration();
-		} else SynErr(217,__FUNCTION__);
+		} else SynErr(221,__FUNCTION__);
 }
 
 void Parser::module_or_generate_item() {
 		switch (la->kind) {
-		case _Tevent: case _Tfunction: case _Tgenvar: case _Tinteger: case _Treal: case _Trealtime: case _Treg: case _Tsupply0: case _Tsupply1: case _Ttask: case _Ttime: case _Ttri: case _Ttri0: case _Ttri1: case _Ttriand: case _Ttrior: case _Ttrireg: case _Tuwire: case _Twand: case _Twire: case _Twor: {
+		case _T_event: case _T_function: case _T_genvar: case _T_integer: case _T_real: case _T_realtime: case _T_reg: case _T_supply0: case _T_supply1: case _T_task: case _T_time: case _T_tri: case _T_tri0: case _T_tri1: case _T_triand: case _T_trior: case _T_trireg: case _T_uwire: case _T_wand: case _T_wire: case _T_wor: {
 			module_or_generate_item_declaration();
 			break;
 		}
-		case _Tlocalparam: {
+		case _T_localparam: {
 			local_parameter_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tdefparam: {
+		case _T_defparam: {
 			parameter_override();
 			break;
 		}
-		case _Tassign: {
+		case _T_assign: {
 			continuous_assign();
 			break;
 		}
-		case _Tand: case _Tbuf: case _Tbufif0: case _Tbufif1: case _Tcmos: case _Tnand: case _Tnmos: case _Tnor: case _Tnot: case _Tnotif0: case _Tnotif1: case _Tor: case _Tpmos: case _Tpulldown: case _Tpullup: case _Trcmos: case _Trnmos: case _Trpmos: case _Trtran: case _Trtranif0: case _Trtranif1: case _Ttran: case _Ttranif0: case _Ttranif1: case _Txnor: case _Txor: {
+		case _T_and: case _T_buf: case _T_bufif0: case _T_bufif1: case _T_cmos: case _T_nand: case _T_nmos: case _T_nor: case _T_not: case _T_notif0: case _T_notif1: case _T_or: case _T_pmos: case _T_pulldown: case _T_pullup: case _T_rcmos: case _T_rnmos: case _T_rpmos: case _T_rtran: case _T_rtranif0: case _T_rtranif1: case _T_tran: case _T_tranif0: case _T_tranif1: case _T_xnor: case _T_xor: {
 			gate_instantiation();
 			break;
 		}
-		case _TIdent: {
+		case _T_identifier: {
 			module_or_udp_instantiation();
 			break;
 		}
-		case _Tinitial: {
+		case _T_initial: {
 			initial_construct();
 			break;
 		}
-		case _Talways: {
+		case _T_always: {
 			always_construct();
 			break;
 		}
-		case _Tfor: {
+		case _T_for: {
 			loop_generate_construct();
 			break;
 		}
-		case _Tcase: case _Tif: {
+		case _T_case: case _T_if: {
 			conditional_generate_construct();
 			break;
 		}
-		default: SynErr(218,__FUNCTION__); break;
+		default: SynErr(222,__FUNCTION__); break;
 		}
 }
 
 void Parser::module_or_generate_item_declaration() {
 		switch (la->kind) {
-		case _Tsupply0: case _Tsupply1: case _Ttri: case _Ttri0: case _Ttri1: case _Ttriand: case _Ttrior: case _Ttrireg: case _Tuwire: case _Twand: case _Twire: case _Twor: {
+		case _T_supply0: case _T_supply1: case _T_tri: case _T_tri0: case _T_tri1: case _T_triand: case _T_trior: case _T_trireg: case _T_uwire: case _T_wand: case _T_wire: case _T_wor: {
 			net_declaration();
 			break;
 		}
-		case _Treg: {
+		case _T_reg: {
 			reg_declaration();
 			break;
 		}
-		case _Tinteger: {
+		case _T_integer: {
 			integer_declaration();
 			break;
 		}
-		case _Treal: {
+		case _T_real: {
 			real_declaration();
 			break;
 		}
-		case _Ttime: {
+		case _T_time: {
 			time_declaration();
 			break;
 		}
-		case _Trealtime: {
+		case _T_realtime: {
 			realtime_declaration();
 			break;
 		}
-		case _Tevent: {
+		case _T_event: {
 			event_declaration();
 			break;
 		}
-		case _Tgenvar: {
+		case _T_genvar: {
 			genvar_declaration();
 			break;
 		}
-		case _Ttask: {
+		case _T_task: {
 			task_declaration();
 			break;
 		}
-		case _Tfunction: {
+		case _T_function: {
 			function_declaration();
 			break;
 		}
-		default: SynErr(219,__FUNCTION__); break;
+		default: SynErr(223,__FUNCTION__); break;
 		}
 }
 
 void Parser::local_parameter_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_local_parameter_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tlocalparam,__FUNCTION__);
+		Expect(_T_localparam,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TLbrack || la->kind == _Tsigned || la->kind == _TIdent) {
-			if (la->kind == _Tsigned) {
+		if (la->kind == _T_Lbrack || la->kind == _T_signed || la->kind == _T_identifier) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(220,__FUNCTION__);
+		} else SynErr(224,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
 
 void Parser::parameter_override() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_override, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdefparam,__FUNCTION__);
+		Expect(_T_defparam,__FUNCTION__);
 		addTerminal(); 
 		list_of_defparam_assignments();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::continuous_assign() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_continuous_assign, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tassign,__FUNCTION__);
+		Expect(_T_assign,__FUNCTION__);
 		addTerminal(); 
-		if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+		if (la->kind == _T_Lpar) {
 			drive_strength();
 		}
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			delay3();
 		}
 		list_of_net_assignments();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1047,177 +704,177 @@ void Parser::continuous_assign() {
 void Parser::gate_instantiation() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_gate_instantiation, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		switch (la->kind) {
-		case _Tcmos: case _Trcmos: {
+		case _T_cmos: case _T_rcmos: {
 			cmos_switchtype();
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay3();
 			}
 			cmos_switch_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				cmos_switch_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tbufif0: case _Tbufif1: case _Tnotif0: case _Tnotif1: {
+		case _T_bufif0: case _T_bufif1: case _T_notif0: case _T_notif1: {
 			enable_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+			if (la->kind == _T_Lpar) {
 				drive_strength();
 			}
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay3();
 			}
 			enable_gate_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				enable_gate_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tnmos: case _Tpmos: case _Trnmos: case _Trpmos: {
+		case _T_nmos: case _T_pmos: case _T_rnmos: case _T_rpmos: {
 			mos_switchtype();
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay3();
 			}
 			mos_switch_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				mos_switch_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tand: case _Tnand: case _Tnor: case _Tor: case _Txnor: case _Txor: {
+		case _T_and: case _T_nand: case _T_nor: case _T_or: case _T_xnor: case _T_xor: {
 			n_input_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+			if (la->kind == _T_Lpar) {
 				drive_strength();
 			}
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay2();
 			}
 			n_input_gate_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				n_input_gate_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tbuf: case _Tnot: {
+		case _T_buf: case _T_not: {
 			n_output_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+			if (la->kind == _T_Lpar) {
 				drive_strength();
 			}
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay2();
 			}
 			n_output_gate_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				n_output_gate_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Trtranif0: case _Trtranif1: case _Ttranif0: case _Ttranif1: {
+		case _T_rtranif0: case _T_rtranif1: case _T_tranif0: case _T_tranif1: {
 			pass_en_switchtype();
-			if (la->kind == _THash) {
+			if (la->kind == _T_Hash) {
 				delay2();
 			}
 			pass_enable_switch_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				pass_enable_switch_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Trtran: case _Ttran: {
+		case _T_rtran: case _T_tran: {
 			pass_switchtype();
 			pass_switch_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				pass_switch_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tpulldown: {
+		case _T_pulldown: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+			if (la->kind == _T_Lpar) {
 				pulldown_strength();
 			}
 			pull_gate_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				pull_gate_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tpullup: {
+		case _T_pullup: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+			if (la->kind == _T_Lpar) {
 				pullup_strength();
 			}
 			pull_gate_instance();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				pull_gate_instance();
 			}
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(221,__FUNCTION__); break;
+		default: SynErr(225,__FUNCTION__); break;
 		}
 		d_stack.pop(); 
 }
 
 void Parser::module_or_udp_instantiation() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instantiation, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		identifier();
-		if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+		Expect(_T_identifier,__FUNCTION__);
+		if (la->kind == _T_Lpar) {
 			drive_strength();
 		}
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			parameter_value_assignment_or_delay2();
 		}
 		module_or_udp_instance();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			module_or_udp_instance();
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::initial_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_initial_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinitial,__FUNCTION__);
+		Expect(_T_initial,__FUNCTION__);
 		addTerminal(); 
 		statement();
 		d_stack.pop(); 
@@ -1225,7 +882,7 @@ void Parser::initial_construct() {
 
 void Parser::always_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_always_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Talways,__FUNCTION__);
+		Expect(_T_always,__FUNCTION__);
 		addTerminal(); 
 		statement();
 		d_stack.pop(); 
@@ -1233,51 +890,51 @@ void Parser::always_construct() {
 
 void Parser::loop_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_loop_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfor,__FUNCTION__);
+		Expect(_T_for,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		genvar_initialization();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		genvar_expression();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		genvar_iteration();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tbegin) {
+		if (la->kind == _T_begin) {
 			generate_block();
 		} else if (StartOf(8)) {
 			module_or_generate_item();
-		} else SynErr(222,__FUNCTION__);
+		} else SynErr(226,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::conditional_generate_construct() {
-		if (la->kind == _Tif) {
+		if (la->kind == _T_if) {
 			if_generate_construct();
-		} else if (la->kind == _Tcase) {
+		} else if (la->kind == _T_case) {
 			case_generate_construct();
-		} else SynErr(223,__FUNCTION__);
+		} else SynErr(227,__FUNCTION__);
 }
 
 void Parser::net_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_net_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		if (StartOf(6)) {
 			net_type();
-		} else if (la->kind == _Ttrireg) {
+		} else if (la->kind == _T_trireg) {
 			Get();
 			addTerminal(); 
-		} else SynErr(224,__FUNCTION__);
-		if (peek(1) == _TLpar && ( peek(2) == _Tstrong0 || peek(2) == _Tstrong1 || peek(2) == _Tpull0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak0 || peek(2) == _Tweak1 || peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 ) ) {
+		} else SynErr(228,__FUNCTION__);
+		if (la->kind == _T_Lpar) {
 			drive_strength();
 		}
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			charge_strength();
 		}
-		if (la->kind == _Tscalared || la->kind == _Tvectored) {
-			if (la->kind == _Tvectored) {
+		if (la->kind == _T_scalared || la->kind == _T_vectored) {
+			if (la->kind == _T_vectored) {
 				Get();
 				addTerminal(); 
 			} else {
@@ -1285,133 +942,133 @@ void Parser::net_declaration() {
 				addTerminal(); 
 			}
 		}
-		if (la->kind == _Tsigned) {
+		if (la->kind == _T_signed) {
 			Get();
 			addTerminal(); 
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			delay3();
 		}
 		list_of_net_decl_assignments_or_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__FUNCTION__);
+		Expect(_T_reg,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tsigned) {
+		if (la->kind == _T_signed) {
 			Get();
 			addTerminal(); 
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		list_of_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::integer_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_integer_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinteger,__FUNCTION__);
+		Expect(_T_integer,__FUNCTION__);
 		addTerminal(); 
 		list_of_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::real_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_real_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treal,__FUNCTION__);
+		Expect(_T_real,__FUNCTION__);
 		addTerminal(); 
 		list_of_real_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::time_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_time_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttime,__FUNCTION__);
+		Expect(_T_time,__FUNCTION__);
 		addTerminal(); 
 		list_of_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::realtime_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_realtime_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Trealtime,__FUNCTION__);
+		Expect(_T_realtime,__FUNCTION__);
 		addTerminal(); 
 		list_of_real_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::event_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tevent,__FUNCTION__);
+		Expect(_T_event,__FUNCTION__);
 		addTerminal(); 
 		list_of_event_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::genvar_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tgenvar,__FUNCTION__);
+		Expect(_T_genvar,__FUNCTION__);
 		addTerminal(); 
 		list_of_genvar_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::task_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_task_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttask,__FUNCTION__);
+		Expect(_T_task,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tautomatic) {
+		if (la->kind == _T_automatic) {
 			Get();
 			addTerminal(); 
 		}
 		task_identifier();
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _Tinout || la->kind == _Tinput || la->kind == _Toutput) {
+			if (la->kind == _T_inout || la->kind == _T_input || la->kind == _T_output) {
 				task_port_list();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(9)) {
 			task_item_declaration();
 		}
 		statement_or_null();
-		Expect(_Tendtask,__FUNCTION__);
+		Expect(_T_endtask,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::function_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_function_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfunction,__FUNCTION__);
+		Expect(_T_function,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tautomatic) {
+		if (la->kind == _T_automatic) {
 			Get();
 			addTerminal(); 
 		}
@@ -1419,64 +1076,64 @@ void Parser::function_declaration() {
 			function_range_or_type();
 		}
 		function_identifier();
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			function_port_list();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(11)) {
 			function_item_declaration();
 		}
 		function_statement();
-		Expect(_Tendfunction,__FUNCTION__);
+		Expect(_T_endfunction,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::generate_region() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_generate_region, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tgenerate,__FUNCTION__);
+		Expect(_T_generate,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(8)) {
 			module_or_generate_item();
 		}
-		Expect(_Tendgenerate,__FUNCTION__);
+		Expect(_T_endgenerate,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::specify_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specify_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tspecify,__FUNCTION__);
+		Expect(_T_specify,__FUNCTION__);
 		addTerminal(); 
 		while (StartOf(12)) {
 			specify_item();
 		}
-		Expect(_Tendspecify,__FUNCTION__);
+		Expect(_T_endspecify,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::specparam_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specparam_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tspecparam,__FUNCTION__);
+		Expect(_T_specparam,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		list_of_specparam_assignments();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::list_of_defparam_assignments() {
 		defparam_assignment();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			defparam_assignment();
@@ -1484,59 +1141,59 @@ void Parser::list_of_defparam_assignments() {
 }
 
 void Parser::config_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::design_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_design_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdesign,__FUNCTION__);
+		Expect(_T_design,__FUNCTION__);
 		addTerminal(); 
-		while (la->kind == _TIdent) {
-			if (la->kind == _TIdent) {
+		while (la->kind == _T_identifier) {
+			if (la->kind == _T_identifier) {
 				library_identifier();
-				Expect(_TDot,__FUNCTION__);
+				Expect(_T_Dot,__FUNCTION__);
 				addTerminal(); 
 			}
 			cell_identifier();
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::config_rule_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_config_rule_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tdefault) {
+		if (la->kind == _T_default) {
 			default_clause();
-		} else if (la->kind == _Tinstance) {
+		} else if (la->kind == _T_instance) {
 			inst_clause();
-		} else if (la->kind == _Tcell) {
+		} else if (la->kind == _T_cell) {
 			cell_clause();
-		} else SynErr(225,__FUNCTION__);
-		if (la->kind == _Tliblist) {
+		} else SynErr(229,__FUNCTION__);
+		if (la->kind == _T_liblist) {
 			liblist_clause();
-		} else if (la->kind == _Tuse) {
+		} else if (la->kind == _T_use) {
 			use_clause();
-		} else SynErr(226,__FUNCTION__);
-		Expect(_TSemi,__FUNCTION__);
+		} else SynErr(230,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::cell_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::default_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_default_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdefault,__FUNCTION__);
+		Expect(_T_default,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::inst_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_inst_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinstance,__FUNCTION__);
+		Expect(_T_instance,__FUNCTION__);
 		addTerminal(); 
 		inst_name();
 		d_stack.pop(); 
@@ -1544,11 +1201,11 @@ void Parser::inst_clause() {
 
 void Parser::cell_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_cell_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tcell,__FUNCTION__);
+		Expect(_T_cell,__FUNCTION__);
 		addTerminal(); 
-		if (peek(1) == _TIdent && peek(2) == _TDot ) {
+		if (la->kind == _T_identifier) {
 			library_identifier();
-			Expect(_TDot,__FUNCTION__);
+			Expect(_T_Dot,__FUNCTION__);
 			addTerminal(); 
 		}
 		cell_identifier();
@@ -1557,9 +1214,9 @@ void Parser::cell_clause() {
 
 void Parser::liblist_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_liblist_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tliblist,__FUNCTION__);
+		Expect(_T_liblist,__FUNCTION__);
 		addTerminal(); 
-		while (la->kind == _TIdent) {
+		while (la->kind == _T_identifier) {
 			library_identifier();
 		}
 		d_stack.pop(); 
@@ -1567,18 +1224,18 @@ void Parser::liblist_clause() {
 
 void Parser::use_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_use_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tuse,__FUNCTION__);
+		Expect(_T_use,__FUNCTION__);
 		addTerminal(); 
-		if (peek(1) == _TIdent && peek(2) == _TDot ) {
+		if (la->kind == _T_identifier) {
 			library_identifier();
-			Expect(_TDot,__FUNCTION__);
+			Expect(_T_Dot,__FUNCTION__);
 			addTerminal(); 
 		}
 		cell_identifier();
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
-			Expect(_Tconfig,__FUNCTION__);
+			Expect(_T_config,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -1587,7 +1244,7 @@ void Parser::use_clause() {
 void Parser::inst_name() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_inst_name, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		topmodule_identifier();
-		while (la->kind == _TDot) {
+		while (la->kind == _T_Dot) {
 			Get();
 			addTerminal(); 
 			instance_identifier();
@@ -1596,46 +1253,46 @@ void Parser::inst_name() {
 }
 
 void Parser::topmodule_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::instance_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::range() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_range, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLbrack,__FUNCTION__);
+		Expect(_T_Lbrack,__FUNCTION__);
 		addTerminal(); 
 		msb_constant_expression();
-		Expect(_TColon,__FUNCTION__);
+		Expect(_T_Colon,__FUNCTION__);
 		addTerminal(); 
 		lsb_constant_expression();
-		Expect(_TRbrack,__FUNCTION__);
+		Expect(_T_Rbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::parameter_type() {
-		if (la->kind == _Tinteger) {
+		if (la->kind == _T_integer) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Treal) {
+		} else if (la->kind == _T_real) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trealtime) {
+		} else if (la->kind == _T_realtime) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Ttime) {
+		} else if (la->kind == _T_time) {
 			Get();
 			addTerminal(); 
-		} else SynErr(227,__FUNCTION__);
+		} else SynErr(231,__FUNCTION__);
 }
 
 void Parser::list_of_param_assignments() {
 		param_assignment();
-		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__FUNCTION__);
+		while (la->kind == _T_Comma) {
+			Get();
 			addTerminal(); 
 			param_assignment();
 		}
@@ -1643,7 +1300,7 @@ void Parser::list_of_param_assignments() {
 
 void Parser::list_of_specparam_assignments() {
 		specparam_assignment();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			specparam_assignment();
@@ -1652,69 +1309,69 @@ void Parser::list_of_specparam_assignments() {
 
 void Parser::net_type() {
 		switch (la->kind) {
-		case _Tsupply0: {
+		case _T_supply0: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Tsupply1: {
+		case _T_supply1: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Ttri: {
+		case _T_tri: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Ttriand: {
+		case _T_triand: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Ttrior: {
+		case _T_trior: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Ttri0: {
+		case _T_tri0: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Ttri1: {
+		case _T_tri1: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Tuwire: {
+		case _T_uwire: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Twire: {
+		case _T_wire: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Twand: {
+		case _T_wand: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Twor: {
+		case _T_wor: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(228,__FUNCTION__); break;
+		default: SynErr(232,__FUNCTION__); break;
 		}
 }
 
 void Parser::list_of_port_identifiers() {
 		port_identifier();
-		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__FUNCTION__);
+		while (la->kind == _T_Comma) {
+			Get();
 			addTerminal(); 
 			port_identifier();
 		}
@@ -1723,16 +1380,16 @@ void Parser::list_of_port_identifiers() {
 void Parser::list_of_variable_port_identifiers() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_list_of_variable_port_identifiers, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		port_identifier();
-		if (la->kind == _TEq) {
+		if (la->kind == _T_Eq) {
 			Get();
 			addTerminal(); 
 			constant_expression();
 		}
-		while (peek(1) == _TComma && peek(2) == _TIdent ) {
-			Expect(_TComma,__FUNCTION__);
+		while (la->kind == _T_Comma) {
+			Get();
 			addTerminal(); 
 			port_identifier();
-			if (la->kind == _TEq) {
+			if (la->kind == _T_Eq) {
 				Get();
 				addTerminal(); 
 				constant_expression();
@@ -1742,26 +1399,26 @@ void Parser::list_of_variable_port_identifiers() {
 }
 
 void Parser::output_variable_type() {
-		if (la->kind == _Tinteger) {
+		if (la->kind == _T_integer) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Ttime) {
+		} else if (la->kind == _T_time) {
 			Get();
 			addTerminal(); 
-		} else SynErr(229,__FUNCTION__);
+		} else SynErr(233,__FUNCTION__);
 }
 
 void Parser::list_of_event_identifiers() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_list_of_event_identifiers, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		event_identifier();
-		while (la->kind == _TLbrack) {
+		while (la->kind == _T_Lbrack) {
 			dimension();
 		}
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			event_identifier();
-			while (la->kind == _TLbrack) {
+			while (la->kind == _T_Lbrack) {
 				dimension();
 			}
 		}
@@ -1770,7 +1427,7 @@ void Parser::list_of_event_identifiers() {
 
 void Parser::list_of_variable_identifiers() {
 		variable_type();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			variable_type();
@@ -1780,10 +1437,10 @@ void Parser::list_of_variable_identifiers() {
 void Parser::list_of_net_decl_assignments_or_identifiers() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_list_of_net_decl_assignments_or_identifiers, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		net_identifier();
-		if (la->kind == _TEq || la->kind == _TLbrack) {
-			if (la->kind == _TLbrack) {
+		if (la->kind == _T_Eq || la->kind == _T_Lbrack) {
+			if (la->kind == _T_Lbrack) {
 				dimension();
-				while (la->kind == _TLbrack) {
+				while (la->kind == _T_Lbrack) {
 					dimension();
 				}
 			} else {
@@ -1792,14 +1449,14 @@ void Parser::list_of_net_decl_assignments_or_identifiers() {
 				expression();
 			}
 		}
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			net_identifier();
-			if (la->kind == _TEq || la->kind == _TLbrack) {
-				if (la->kind == _TLbrack) {
+			if (la->kind == _T_Eq || la->kind == _T_Lbrack) {
+				if (la->kind == _T_Lbrack) {
 					dimension();
-					while (la->kind == _TLbrack) {
+					while (la->kind == _T_Lbrack) {
 						dimension();
 					}
 				} else {
@@ -1813,18 +1470,18 @@ void Parser::list_of_net_decl_assignments_or_identifiers() {
 }
 
 void Parser::net_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::dimension() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dimension, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLbrack,__FUNCTION__);
+		Expect(_T_Lbrack,__FUNCTION__);
 		addTerminal(); 
 		dimension_constant_expression();
-		Expect(_TColon,__FUNCTION__);
+		Expect(_T_Colon,__FUNCTION__);
 		addTerminal(); 
 		dimension_constant_expression();
-		Expect(_TRbrack,__FUNCTION__);
+		Expect(_T_Rbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1843,52 +1500,52 @@ void Parser::expression() {
 
 void Parser::drive_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_drive_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else if (la->kind == _Thighz0) {
+		} else if (la->kind == _T_highz0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Thighz1) {
+		} else if (la->kind == _T_highz1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(230,__FUNCTION__);
-		Expect(_TComma,__FUNCTION__);
+		} else SynErr(234,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(16)) {
 			strength1();
 		} else if (StartOf(15)) {
 			strength0();
-		} else if (la->kind == _Thighz1) {
+		} else if (la->kind == _T_highz1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Thighz0) {
+		} else if (la->kind == _T_highz0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(231,__FUNCTION__);
-		Expect(_TRpar,__FUNCTION__);
+		} else SynErr(235,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::charge_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_charge_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tsmall) {
+		if (la->kind == _T_small) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tmedium) {
+		} else if (la->kind == _T_medium) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tlarge) {
+		} else if (la->kind == _T_large) {
 			Get();
 			addTerminal(); 
-		} else SynErr(232,__FUNCTION__);
-		Expect(_TRpar,__FUNCTION__);
+		} else SynErr(236,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -1899,7 +1556,7 @@ void Parser::delay3() {
 
 void Parser::list_of_real_identifiers() {
 		real_type();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			real_type();
@@ -1909,20 +1566,20 @@ void Parser::list_of_real_identifiers() {
 void Parser::real_type() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_real_type, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		real_identifier();
-		if (la->kind == _TLbrack || la->kind == _TComma || la->kind == _TSemi) {
-			while (la->kind == _TLbrack) {
+		if (la->kind == _T_Comma || la->kind == _T_Semi || la->kind == _T_Lbrack) {
+			while (la->kind == _T_Lbrack) {
 				dimension();
 			}
-		} else if (la->kind == _TEq) {
+		} else if (la->kind == _T_Eq) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(233,__FUNCTION__);
+		} else SynErr(237,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::real_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::constant_expression() {
@@ -1940,71 +1597,71 @@ void Parser::constant_expression() {
 void Parser::variable_type() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_variable_type, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		variable_identifier();
-		if (la->kind == _TLbrack || la->kind == _TComma || la->kind == _TSemi) {
-			while (la->kind == _TLbrack) {
+		if (la->kind == _T_Comma || la->kind == _T_Semi || la->kind == _T_Lbrack) {
+			while (la->kind == _T_Lbrack) {
 				dimension();
 			}
-		} else if (la->kind == _TEq) {
+		} else if (la->kind == _T_Eq) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(234,__FUNCTION__);
+		} else SynErr(238,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::variable_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::strength0() {
-		if (la->kind == _Tsupply0) {
+		if (la->kind == _T_supply0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tstrong0) {
+		} else if (la->kind == _T_strong0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tpull0) {
+		} else if (la->kind == _T_pull0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tweak0) {
+		} else if (la->kind == _T_weak0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(235,__FUNCTION__);
+		} else SynErr(239,__FUNCTION__);
 }
 
 void Parser::strength1() {
-		if (la->kind == _Tsupply1) {
+		if (la->kind == _T_supply1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tstrong1) {
+		} else if (la->kind == _T_strong1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tpull1) {
+		} else if (la->kind == _T_pull1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tweak1) {
+		} else if (la->kind == _T_weak1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(236,__FUNCTION__);
+		} else SynErr(240,__FUNCTION__);
 }
 
 void Parser::delay() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_delay, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__FUNCTION__);
+		Expect(_T_Hash,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(17)) {
 			delay_value();
 		}
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			mintypmax_expression();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				mintypmax_expression();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			while (StartOf(14)) {
 				expression_nlr();
@@ -2016,19 +1673,19 @@ void Parser::delay() {
 void Parser::delay_value() {
 		if (StartOf(18)) {
 			unsigned_or_real_number();
-		} else if (la->kind == _TIdent) {
-			identifier();
-		} else SynErr(237,__FUNCTION__);
+		} else if (la->kind == _T_identifier) {
+			Get();
+		} else SynErr(241,__FUNCTION__);
 }
 
 void Parser::mintypmax_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_mintypmax_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		expression();
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			expression();
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			expression();
 		}
@@ -2039,14 +1696,14 @@ void Parser::expression_nlr() {
 		if (StartOf(19)) {
 			binary_operator();
 			expression();
-		} else if (la->kind == _TQmark) {
+		} else if (la->kind == _T_Qmark) {
 			Get();
 			addTerminal(); 
 			expression();
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			expression();
-		} else SynErr(238,__FUNCTION__);
+		} else SynErr(242,__FUNCTION__);
 }
 
 void Parser::delay2() {
@@ -2060,20 +1717,20 @@ void Parser::unsigned_or_real_number() {
 void Parser::defparam_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_defparam_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		hierarchical_parameter_identifier();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		constant_mintypmax_expression();
 		d_stack.pop(); 
 }
 
 void Parser::event_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::param_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_param_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		parameter_identifier();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		constant_mintypmax_expression();
 		d_stack.pop(); 
@@ -2081,14 +1738,14 @@ void Parser::param_assignment() {
 
 void Parser::specparam_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specparam_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			specparam_identifier();
-			Expect(_TEq,__FUNCTION__);
+			Expect(_T_Eq,__FUNCTION__);
 			addTerminal(); 
 			constant_mintypmax_expression();
-		} else if (la->kind == _TPathPulse) {
+		} else if (la->kind == _T_PATHPULSE_dlr) {
 			pulse_control_specparam();
-		} else SynErr(239,__FUNCTION__);
+		} else SynErr(243,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2099,11 +1756,11 @@ void Parser::hierarchical_parameter_identifier() {
 void Parser::constant_mintypmax_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_constant_mintypmax_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		constant_expression();
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			constant_expression();
 		}
@@ -2111,28 +1768,28 @@ void Parser::constant_mintypmax_expression() {
 }
 
 void Parser::parameter_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::specparam_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::pulse_control_specparam() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pulse_control_specparam, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TPathPulse,__FUNCTION__);
+		Expect(_T_PATHPULSE_dlr,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reject_limit_value();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			error_limit_value();
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2162,38 +1819,36 @@ void Parser::lsb_constant_expression() {
 }
 
 void Parser::function_range_or_type() {
-		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_function_range_or_type, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TLbrack || la->kind == _Tsigned || la->kind == _TIdent) {
-			if (la->kind == _Tsigned) {
+		if (la->kind == _T_Lbrack || la->kind == _T_signed || la->kind == _T_identifier) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
-		} else if (la->kind == _Tinteger) {
+		} else if (la->kind == _T_integer) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Treal) {
+		} else if (la->kind == _T_real) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trealtime) {
+		} else if (la->kind == _T_realtime) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Ttime) {
+		} else if (la->kind == _T_time) {
 			Get();
 			addTerminal(); 
-		} else SynErr(240,__FUNCTION__);
-		d_stack.pop(); 
+		} else SynErr(244,__FUNCTION__);
 }
 
 void Parser::function_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::function_port_list() {
 		tf_input_declaration();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			tf_input_declaration();
@@ -2203,11 +1858,11 @@ void Parser::function_port_list() {
 void Parser::function_item_declaration() {
 		if (StartOf(20)) {
 			block_item_declaration();
-		} else if (la->kind == _Tinput) {
+		} else if (la->kind == _T_input) {
 			tf_input_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(241,__FUNCTION__);
+		} else SynErr(245,__FUNCTION__);
 }
 
 void Parser::function_statement() {
@@ -2216,76 +1871,76 @@ void Parser::function_statement() {
 
 void Parser::block_item_declaration() {
 		switch (la->kind) {
-		case _Treg: {
+		case _T_reg: {
 			block_reg_declaration();
 			break;
 		}
-		case _Tinteger: {
+		case _T_integer: {
 			block_integer_declaration();
 			break;
 		}
-		case _Ttime: {
+		case _T_time: {
 			block_time_declaration();
 			break;
 		}
-		case _Treal: {
+		case _T_real: {
 			block_real_declaration();
 			break;
 		}
-		case _Trealtime: {
+		case _T_realtime: {
 			block_realtime_declaration();
 			break;
 		}
-		case _Tevent: {
+		case _T_event: {
 			event_declaration();
 			break;
 		}
-		case _Tlocalparam: {
+		case _T_localparam: {
 			local_parameter_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _Tparameter: {
+		case _T_parameter: {
 			parameter_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(242,__FUNCTION__); break;
+		default: SynErr(246,__FUNCTION__); break;
 		}
 }
 
 void Parser::tf_input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__FUNCTION__);
+		Expect(_T_input,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
-			if (la->kind == _Treg) {
+			if (la->kind == _T_reg) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _Tsigned) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(243,__FUNCTION__);
+		} else SynErr(247,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
 
 void Parser::task_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::task_port_list() {
 		task_port_item();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			task_port_item();
@@ -2295,19 +1950,19 @@ void Parser::task_port_list() {
 void Parser::task_item_declaration() {
 		if (StartOf(20)) {
 			block_item_declaration();
-		} else if (la->kind == _Tinput) {
+		} else if (la->kind == _T_input) {
 			tf_input_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Toutput) {
+		} else if (la->kind == _T_output) {
 			tf_output_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Tinout) {
+		} else if (la->kind == _T_inout) {
 			tf_inout_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(244,__FUNCTION__);
+		} else SynErr(248,__FUNCTION__);
 }
 
 void Parser::statement_or_null() {
@@ -2318,136 +1973,136 @@ void Parser::statement_or_null() {
 
 void Parser::tf_output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__FUNCTION__);
+		Expect(_T_output,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
-			if (la->kind == _Treg) {
+			if (la->kind == _T_reg) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _Tsigned) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(245,__FUNCTION__);
+		} else SynErr(249,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
 
 void Parser::tf_inout_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_tf_inout_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinout,__FUNCTION__);
+		Expect(_T_inout,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(21)) {
-			if (la->kind == _Treg) {
+			if (la->kind == _T_reg) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _Tsigned) {
+			if (la->kind == _T_signed) {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lbrack) {
 				range();
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(246,__FUNCTION__);
+		} else SynErr(250,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
 
 void Parser::task_port_item() {
-		if (la->kind == _Tinput) {
+		if (la->kind == _T_input) {
 			tf_input_declaration();
-		} else if (la->kind == _Toutput) {
+		} else if (la->kind == _T_output) {
 			tf_output_declaration();
-		} else if (la->kind == _Tinout) {
+		} else if (la->kind == _T_inout) {
 			tf_inout_declaration();
-		} else SynErr(247,__FUNCTION__);
+		} else SynErr(251,__FUNCTION__);
 }
 
 void Parser::task_port_type() {
-		if (la->kind == _Tinteger) {
+		if (la->kind == _T_integer) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Treal) {
+		} else if (la->kind == _T_real) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trealtime) {
+		} else if (la->kind == _T_realtime) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Ttime) {
+		} else if (la->kind == _T_time) {
 			Get();
 			addTerminal(); 
-		} else SynErr(248,__FUNCTION__);
+		} else SynErr(252,__FUNCTION__);
 }
 
 void Parser::block_reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__FUNCTION__);
+		Expect(_T_reg,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tsigned) {
+		if (la->kind == _T_signed) {
 			Get();
 			addTerminal(); 
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_integer_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_integer_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinteger,__FUNCTION__);
+		Expect(_T_integer,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_time_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_time_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Ttime,__FUNCTION__);
+		Expect(_T_time,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_variable_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_real_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_real_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treal,__FUNCTION__);
+		Expect(_T_real,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_real_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_realtime_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_realtime_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Trealtime,__FUNCTION__);
+		Expect(_T_realtime,__FUNCTION__);
 		addTerminal(); 
 		list_of_block_real_identifiers();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::list_of_block_variable_identifiers() {
 		block_variable_type();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			block_variable_type();
@@ -2456,7 +2111,7 @@ void Parser::list_of_block_variable_identifiers() {
 
 void Parser::list_of_block_real_identifiers() {
 		block_real_type();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			block_real_type();
@@ -2466,7 +2121,7 @@ void Parser::list_of_block_real_identifiers() {
 void Parser::block_variable_type() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_variable_type, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		variable_identifier();
-		while (la->kind == _TLbrack) {
+		while (la->kind == _T_Lbrack) {
 			dimension();
 		}
 		d_stack.pop(); 
@@ -2475,315 +2130,315 @@ void Parser::block_variable_type() {
 void Parser::block_real_type() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_block_real_type, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		real_identifier();
-		while (la->kind == _TLbrack) {
+		while (la->kind == _T_Lbrack) {
 			dimension();
 		}
 		d_stack.pop(); 
 }
 
 void Parser::cmos_switchtype() {
-		if (la->kind == _Tcmos) {
+		if (la->kind == _T_cmos) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trcmos) {
+		} else if (la->kind == _T_rcmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(249,__FUNCTION__);
+		} else SynErr(253,__FUNCTION__);
 }
 
 void Parser::cmos_switch_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_cmos_switch_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		ncontrol_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		pcontrol_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::enable_gatetype() {
-		if (la->kind == _Tbufif0) {
+		if (la->kind == _T_bufif0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tbufif1) {
+		} else if (la->kind == _T_bufif1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tnotif0) {
+		} else if (la->kind == _T_notif0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tnotif1) {
+		} else if (la->kind == _T_notif1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(250,__FUNCTION__);
+		} else SynErr(254,__FUNCTION__);
 }
 
 void Parser::enable_gate_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_enable_gate_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::mos_switchtype() {
-		if (la->kind == _Tnmos) {
+		if (la->kind == _T_nmos) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tpmos) {
+		} else if (la->kind == _T_pmos) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trnmos) {
+		} else if (la->kind == _T_rnmos) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trpmos) {
+		} else if (la->kind == _T_rpmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(251,__FUNCTION__);
+		} else SynErr(255,__FUNCTION__);
 }
 
 void Parser::mos_switch_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_mos_switch_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::n_input_gatetype() {
 		switch (la->kind) {
-		case _Tand: {
+		case _T_and: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Tnand: {
+		case _T_nand: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Tor: {
+		case _T_or: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Tnor: {
+		case _T_nor: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Txor: {
+		case _T_xor: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		case _Txnor: {
+		case _T_xnor: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(252,__FUNCTION__); break;
+		default: SynErr(256,__FUNCTION__); break;
 		}
 }
 
 void Parser::n_input_gate_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_n_input_gate_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		input_terminal();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			input_terminal();
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::n_output_gatetype() {
-		if (la->kind == _Tbuf) {
+		if (la->kind == _T_buf) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tnot) {
+		} else if (la->kind == _T_not) {
 			Get();
 			addTerminal(); 
-		} else SynErr(253,__FUNCTION__);
+		} else SynErr(257,__FUNCTION__);
 }
 
 void Parser::n_output_gate_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_n_output_gate_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		input_or_output_terminal();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			input_or_output_terminal();
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pass_en_switchtype() {
-		if (la->kind == _Ttranif0) {
+		if (la->kind == _T_tranif0) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Ttranif1) {
+		} else if (la->kind == _T_tranif1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trtranif1) {
+		} else if (la->kind == _T_rtranif1) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trtranif0) {
+		} else if (la->kind == _T_rtranif0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(254,__FUNCTION__);
+		} else SynErr(258,__FUNCTION__);
 }
 
 void Parser::pass_enable_switch_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pass_enable_switch_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		enable_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pass_switchtype() {
-		if (la->kind == _Ttran) {
+		if (la->kind == _T_tran) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Trtran) {
+		} else if (la->kind == _T_rtran) {
 			Get();
 			addTerminal(); 
-		} else SynErr(255,__FUNCTION__);
+		} else SynErr(259,__FUNCTION__);
 }
 
 void Parser::pass_switch_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pass_switch_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		inout_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pulldown_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pulldown_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(256,__FUNCTION__);
-		if (la->kind == _TComma) {
+		} else SynErr(260,__FUNCTION__);
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			if (StartOf(16)) {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(257,__FUNCTION__);
+			} else SynErr(261,__FUNCTION__);
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pull_gate_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pull_gate_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			name_of_gate_instance();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		output_terminal();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::pullup_strength() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pullup_strength, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(15)) {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(258,__FUNCTION__);
-		if (la->kind == _TComma) {
+		} else SynErr(262,__FUNCTION__);
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			if (StartOf(16)) {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(259,__FUNCTION__);
+			} else SynErr(263,__FUNCTION__);
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -2791,7 +2446,7 @@ void Parser::pullup_strength() {
 void Parser::name_of_gate_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_name_of_gate_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		gate_instance_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
 		d_stack.pop(); 
@@ -2838,46 +2493,46 @@ void Parser::inout_terminal() {
 }
 
 void Parser::gate_instance_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::net_lvalue() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_net_lvalue, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			hierarchical_identifier_range_const();
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			net_lvalue();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				net_lvalue();
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(260,__FUNCTION__);
+		} else SynErr(264,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::named_parameter_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_named_parameter_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TDot,__FUNCTION__);
+		Expect(_T_Dot,__FUNCTION__);
 		addTerminal(); 
 		parameter_identifier();
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(23)) {
 			mintypmax_expression();
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::list_of_genvar_identifiers() {
 		genvar_identifier();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			genvar_identifier();
@@ -2885,13 +2540,13 @@ void Parser::list_of_genvar_identifiers() {
 }
 
 void Parser::genvar_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::genvar_initialization() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_initialization, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		genvar_identifier();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
 		d_stack.pop(); 
@@ -2910,7 +2565,7 @@ void Parser::genvar_expression() {
 void Parser::genvar_iteration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_genvar_iteration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		genvar_identifier();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		genvar_expression();
 		d_stack.pop(); 
@@ -2918,9 +2573,9 @@ void Parser::genvar_iteration() {
 
 void Parser::generate_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_generate_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tbegin,__FUNCTION__);
+		Expect(_T_begin,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			generate_block_identifier();
@@ -2928,9 +2583,70 @@ void Parser::generate_block() {
 		while (StartOf(8)) {
 			module_or_generate_item();
 		}
-		Expect(_Tend,__FUNCTION__);
+		Expect(_T_end,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
+}
+
+void Parser::unary_operator() {
+		switch (la->kind) {
+		case _T_Plus: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Minus: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bang: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Tilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeAmp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeBar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Hat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeHat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_HatTilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		default: SynErr(265,__FUNCTION__); break;
+		}
 }
 
 void Parser::genvar_primary() {
@@ -2947,7 +2663,7 @@ void Parser::genvar_expression_nlr() {
 				Get();
 				addTerminal(); 
 				genvar_expression();
-				Expect(_TColon,__FUNCTION__);
+				Expect(_T_Colon,__FUNCTION__);
 				addTerminal(); 
 				genvar_expression();
 				genvar_expression_nlr();
@@ -2955,53 +2671,184 @@ void Parser::genvar_expression_nlr() {
 		}
 }
 
+void Parser::binary_operator() {
+		switch (la->kind) {
+		case _T_Plus: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Minus: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Star: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Slash: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Percent: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Eq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_BangEq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_3Eq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bang2Eq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Star: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Lt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Leq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Gt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Geq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Hat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_HatTilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeHat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Gt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Lt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_3Gt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_3Lt: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		default: SynErr(266,__FUNCTION__); break;
+		}
+}
+
 void Parser::constant_primary() {
 		if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TString) {
-			string();
-		} else if (la->kind == _TLpar) {
+		} else if (la->kind == _T_string) {
+			Get();
+		} else if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _TIdent || la->kind == _TSysName) {
-			if (la->kind == _TIdent) {
-				identifier();
+		} else if (la->kind == _T_identifier || la->kind == _T_system_name) {
+			if (la->kind == _T_identifier) {
+				Get();
 			} else {
-				system_name();
+				Get();
 			}
-			if (la->kind == _TLpar || la->kind == _TLbrack) {
-				if (la->kind == _TLbrack) {
+			if (la->kind == _T_Lpar || la->kind == _T_Lbrack) {
+				if (la->kind == _T_Lbrack) {
 					Get();
 					addTerminal(); 
 					constant_range_expression();
-					Expect(_TRbrack,__FUNCTION__);
+					Expect(_T_Rbrack,__FUNCTION__);
 					addTerminal(); 
 				} else {
 					Get();
 					addTerminal(); 
 					constant_expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						constant_expression();
 					}
-					Expect(_TRpar,__FUNCTION__);
+					Expect(_T_Rpar,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			if (la->kind == _TLbrace || la->kind == _TComma) {
-				if (la->kind == _TComma) {
+			if (la->kind == _T_Comma || la->kind == _T_Lbrace) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					constant_expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						constant_expression();
@@ -3010,31 +2857,31 @@ void Parser::constant_primary() {
 					Get();
 					addTerminal(); 
 					constant_expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						constant_expression();
 					}
-					Expect(_TRbrace,__FUNCTION__);
+					Expect(_T_Rbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(261,__FUNCTION__);
+		} else SynErr(267,__FUNCTION__);
 }
 
 void Parser::if_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_if_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tif,__FUNCTION__);
+		Expect(_T_if,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		generate_block_or_null();
-		if (la->kind == _Telse) {
+		if (la->kind == _T_else) {
 			Get();
 			addTerminal(); 
 			generate_block_or_null();
@@ -3044,72 +2891,72 @@ void Parser::if_generate_construct() {
 
 void Parser::case_generate_construct() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_case_generate_construct, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tcase,__FUNCTION__);
+		Expect(_T_case,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		constant_expression();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		case_generate_item();
 		while (StartOf(24)) {
 			case_generate_item();
 		}
-		Expect(_Tendcase,__FUNCTION__);
+		Expect(_T_endcase,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::generate_block_or_null() {
-		if (la->kind == _Tbegin) {
+		if (la->kind == _T_begin) {
 			generate_block();
 		} else if (StartOf(8)) {
 			module_or_generate_item();
-		} else if (la->kind == _TSemi) {
+		} else if (la->kind == _T_Semi) {
 			Get();
 			addTerminal(); 
-		} else SynErr(262,__FUNCTION__);
+		} else SynErr(268,__FUNCTION__);
 }
 
 void Parser::case_generate_item() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_case_generate_item, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		if (StartOf(23)) {
 			constant_expression();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				constant_expression();
 			}
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			generate_block_or_null();
-		} else if (la->kind == _Tdefault) {
+		} else if (la->kind == _T_default) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TColon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
 			}
 			generate_block_or_null();
-		} else SynErr(263,__FUNCTION__);
+		} else SynErr(269,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::generate_block_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::udp_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::udp_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		output_port_identifier();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		input_port_identifier();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			input_port_identifier();
@@ -3120,10 +2967,10 @@ void Parser::udp_port_list() {
 void Parser::udp_declaration_port_list() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_declaration_port_list, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		udp_output_declaration();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		udp_input_declaration();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			udp_input_declaration();
@@ -3132,55 +2979,55 @@ void Parser::udp_declaration_port_list() {
 }
 
 void Parser::udp_port_declaration() {
-		if (la->kind == _Toutput) {
+		if (la->kind == _T_output) {
 			udp_output_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Tinput) {
+		} else if (la->kind == _T_input) {
 			udp_input_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Treg) {
+		} else if (la->kind == _T_reg) {
 			udp_reg_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(264,__FUNCTION__);
+		} else SynErr(270,__FUNCTION__);
 }
 
 void Parser::udp_body() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_body, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tinitial) {
+		if (la->kind == _T_initial) {
 			udp_initial_statement();
 		}
-		Expect(_Ttable,__FUNCTION__);
+		Expect(_T_table,__FUNCTION__);
 		addTerminal(); 
 		sequential_or_combinatorial_entry();
 		while (StartOf(25)) {
 			sequential_or_combinatorial_entry();
 		}
-		Expect(_Tendtable,__FUNCTION__);
+		Expect(_T_endtable,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::output_port_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::input_port_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::udp_output_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_output_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Toutput,__FUNCTION__);
+		Expect(_T_output,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Treg) {
+		if (la->kind == _T_reg) {
 			Get();
 			addTerminal(); 
 		}
 		port_identifier();
-		if (la->kind == _TEq) {
+		if (la->kind == _T_Eq) {
 			Get();
 			addTerminal(); 
 			constant_expression();
@@ -3190,7 +3037,7 @@ void Parser::udp_output_declaration() {
 
 void Parser::udp_input_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_input_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinput,__FUNCTION__);
+		Expect(_T_input,__FUNCTION__);
 		addTerminal(); 
 		list_of_port_identifiers();
 		d_stack.pop(); 
@@ -3198,7 +3045,7 @@ void Parser::udp_input_declaration() {
 
 void Parser::udp_reg_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_reg_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Treg,__FUNCTION__);
+		Expect(_T_reg,__FUNCTION__);
 		addTerminal(); 
 		variable_identifier();
 		d_stack.pop(); 
@@ -3206,13 +3053,13 @@ void Parser::udp_reg_declaration() {
 
 void Parser::udp_initial_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_udp_initial_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tinitial,__FUNCTION__);
+		Expect(_T_initial,__FUNCTION__);
 		addTerminal(); 
 		output_port_identifier();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		init_val();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3222,38 +3069,38 @@ void Parser::sequential_or_combinatorial_entry() {
 		while (StartOf(26)) {
 			level_or_edge_symbol();
 		}
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			level_symbol();
 			if (StartOf(27)) {
 				level_symbol();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
 		while (StartOf(26)) {
 			level_or_edge_symbol();
 		}
-		Expect(_TColon,__FUNCTION__);
+		Expect(_T_Colon,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(27)) {
 			level_symbol();
-		} else if (la->kind == _TMinus) {
+		} else if (la->kind == _T_Minus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(265,__FUNCTION__);
-		if (la->kind == _TColon) {
+		} else SynErr(271,__FUNCTION__);
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			if (StartOf(27)) {
 				level_symbol();
-			} else if (la->kind == _TMinus) {
+			} else if (la->kind == _T_Minus) {
 				Get();
 				addTerminal(); 
-			} else SynErr(266,__FUNCTION__);
+			} else SynErr(272,__FUNCTION__);
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3265,71 +3112,71 @@ void Parser::init_val() {
 void Parser::level_or_edge_symbol() {
 		if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TIdent) {
-			identifier();
-		} else if (la->kind == _TQmark) {
+		} else if (la->kind == _T_identifier) {
+			Get();
+		} else if (la->kind == _T_Qmark) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _TStar) {
+		} else if (la->kind == _T_Star) {
 			Get();
 			addTerminal(); 
-		} else SynErr(267,__FUNCTION__);
+		} else SynErr(273,__FUNCTION__);
 }
 
 void Parser::level_symbol() {
 		if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TIdent) {
-			identifier();
-		} else if (la->kind == _TQmark) {
+		} else if (la->kind == _T_identifier) {
+			Get();
+		} else if (la->kind == _T_Qmark) {
 			Get();
 			addTerminal(); 
-		} else SynErr(268,__FUNCTION__);
+		} else SynErr(274,__FUNCTION__);
 }
 
 void Parser::number() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_number, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TRealnum) {
-			real_number();
-		} else if (la->kind == _TNatural) {
-			natural_number();
-			if (la->kind == _TBasedInt || la->kind == _TBaseFormat) {
-				if (la->kind == _TBasedInt) {
-					based_number();
+		if (la->kind == _T_real_number) {
+			Get();
+		} else if (la->kind == _T_natural_number) {
+			Get();
+			if (la->kind == _T_based_number || la->kind == _T_base_format) {
+				if (la->kind == _T_based_number) {
+					Get();
 				} else {
-					base_format();
-					if (la->kind == _TBaseValue) {
-						base_value();
-					} else if (la->kind == _TNatural) {
-						natural_number();
-					} else SynErr(269,__FUNCTION__);
+					Get();
+					if (la->kind == _T_base_value) {
+						Get();
+					} else if (la->kind == _T_natural_number) {
+						Get();
+					} else SynErr(275,__FUNCTION__);
 				}
 			}
-		} else if (la->kind == _TSizedBased) {
-			sizedbased_number();
-		} else if (la->kind == _TBasedInt) {
-			based_number();
-		} else if (la->kind == _TBaseFormat) {
-			base_format();
-			if (la->kind == _TBaseValue) {
-				base_value();
-			} else if (la->kind == _TNatural) {
-				natural_number();
-			} else SynErr(270,__FUNCTION__);
-		} else SynErr(271,__FUNCTION__);
+		} else if (la->kind == _T_sizedbased_number) {
+			Get();
+		} else if (la->kind == _T_based_number) {
+			Get();
+		} else if (la->kind == _T_base_format) {
+			Get();
+			if (la->kind == _T_base_value) {
+				Get();
+			} else if (la->kind == _T_natural_number) {
+				Get();
+			} else SynErr(276,__FUNCTION__);
+		} else SynErr(277,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::edge_descriptor() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_edge_descriptor, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
-			identifier();
+		if (la->kind == _T_identifier) {
+			Get();
 		} else if (StartOf(18)) {
 			number();
-		} else SynErr(272,__FUNCTION__);
+		} else SynErr(278,__FUNCTION__);
 		if (StartOf(17)) {
-			if (la->kind == _TIdent) {
-				identifier();
+			if (la->kind == _T_identifier) {
+				Get();
 			} else {
 				number();
 			}
@@ -3343,7 +3190,7 @@ void Parser::scalar_constant() {
 
 void Parser::list_of_net_assignments() {
 		net_assignment();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			net_assignment();
@@ -3353,7 +3200,7 @@ void Parser::list_of_net_assignments() {
 void Parser::net_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_net_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		net_lvalue();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		expression();
 		d_stack.pop(); 
@@ -3361,94 +3208,94 @@ void Parser::net_assignment() {
 
 void Parser::statement() {
 		switch (la->kind) {
-		case _TLbrace: case _TIdent: {
+		case _T_Lbrace: case _T_identifier: {
 			blocking_or_nonblocking_assignment_or_task_enable();
 			break;
 		}
-		case _Tcase: case _Tcasex: case _Tcasez: {
+		case _T_case: case _T_casex: case _T_casez: {
 			case_statement();
 			break;
 		}
-		case _Tif: {
+		case _T_if: {
 			conditional_statement();
 			break;
 		}
-		case _Tdisable: {
+		case _T_disable: {
 			disable_statement();
 			break;
 		}
-		case _TMinus: {
+		case _T_MinusGt: {
 			event_trigger();
 			break;
 		}
-		case _Tfor: case _Tforever: case _Trepeat: case _Twhile: {
+		case _T_for: case _T_forever: case _T_repeat: case _T_while: {
 			loop_statement();
 			break;
 		}
-		case _Tfork: {
+		case _T_fork: {
 			par_block();
 			break;
 		}
-		case _Tassign: case _Tdeassign: case _Tforce: case _Trelease: {
+		case _T_assign: case _T_deassign: case _T_force: case _T_release: {
 			procedural_continuous_assignments();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			break;
 		}
-		case _THash: case _TAt: {
+		case _T_Hash: case _T_At: {
 			procedural_timing_control_statement();
 			break;
 		}
-		case _Tbegin: {
+		case _T_begin: {
 			seq_block();
 			break;
 		}
-		case _TSysName: {
+		case _T_system_name: {
 			system_task_enable();
 			break;
 		}
-		case _Twait: {
+		case _T_wait: {
 			wait_statement();
 			break;
 		}
-		case _TSemi: {
+		case _T_Semi: {
 			Get();
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(273,__FUNCTION__); break;
+		default: SynErr(279,__FUNCTION__); break;
 		}
 }
 
 void Parser::procedural_continuous_assignments() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_procedural_continuous_assignments, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tassign) {
+		if (la->kind == _T_assign) {
 			Get();
 			addTerminal(); 
 			variable_assignment();
-		} else if (la->kind == _Tdeassign) {
+		} else if (la->kind == _T_deassign) {
 			Get();
 			addTerminal(); 
 			variable_lvalue();
-		} else if (la->kind == _Tforce) {
+		} else if (la->kind == _T_force) {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-			Expect(_TEq,__FUNCTION__);
+			Expect(_T_Eq,__FUNCTION__);
 			addTerminal(); 
 			expression();
-		} else if (la->kind == _Trelease) {
+		} else if (la->kind == _T_release) {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-		} else SynErr(274,__FUNCTION__);
+		} else SynErr(280,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::variable_assignment() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_variable_assignment, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		variable_lvalue();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		expression();
 		d_stack.pop(); 
@@ -3456,47 +3303,47 @@ void Parser::variable_assignment() {
 
 void Parser::variable_lvalue() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_variable_lvalue, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			hierarchical_identifier_range();
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			variable_lvalue();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				variable_lvalue();
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(275,__FUNCTION__);
+		} else SynErr(281,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::variable_or_net_lvalue() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_variable_or_net_lvalue, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier) {
 			hierarchical_identifier_range();
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				variable_or_net_lvalue();
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(276,__FUNCTION__);
+		} else SynErr(282,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::par_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_par_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tfork,__FUNCTION__);
+		Expect(_T_fork,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			block_identifier();
@@ -3507,20 +3354,20 @@ void Parser::par_block() {
 		while (StartOf(22)) {
 			statement();
 		}
-		Expect(_Tjoin,__FUNCTION__);
+		Expect(_T_join,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::block_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::seq_block() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_seq_block, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tbegin,__FUNCTION__);
+		Expect(_T_begin,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			block_identifier();
@@ -3531,7 +3378,7 @@ void Parser::seq_block() {
 		while (StartOf(22)) {
 			statement();
 		}
-		Expect(_Tend,__FUNCTION__);
+		Expect(_T_end,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -3539,116 +3386,94 @@ void Parser::seq_block() {
 void Parser::blocking_or_nonblocking_assignment_or_task_enable() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_blocking_or_nonblocking_assignment_or_task_enable, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		variable_lvalue();
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			expression();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				expression();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		if (la->kind == _TEq || la->kind == _TLeq) {
-			if (la->kind == _TLeq) {
+		if (la->kind == _T_Leq || la->kind == _T_Eq) {
+			if (la->kind == _T_Leq) {
 				Get();
 				addTerminal(); 
 			} else {
 				Get();
 				addTerminal(); 
 			}
-			if (la->kind == _THash || la->kind == _TAt || la->kind == _Trepeat) {
+			if (la->kind == _T_Hash || la->kind == _T_At || la->kind == _T_repeat) {
 				delay_or_event_control();
 			}
 			if (StartOf(23)) {
 				expression();
 			}
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::delay_or_event_control() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_delay_or_event_control, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			delay_control();
-		} else if (la->kind == _TAt) {
+		} else if (la->kind == _T_At) {
 			event_control();
-		} else if (la->kind == _Trepeat) {
+		} else if (la->kind == _T_repeat) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			event_control();
-		} else SynErr(277,__FUNCTION__);
+		} else SynErr(283,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::case_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_case_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tcase) {
+		if (la->kind == _T_case) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
-			addTerminal(); 
-			expression();
-			Expect(_TRpar,__FUNCTION__);
-			addTerminal(); 
-			case_item();
-			while (StartOf(24)) {
-				case_item();
-			}
-			Expect(_Tendcase,__FUNCTION__);
-			addTerminal(); 
-		} else if (la->kind == _Tcasez) {
+		} else if (la->kind == _T_casez) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
-			addTerminal(); 
-			expression();
-			Expect(_TRpar,__FUNCTION__);
-			addTerminal(); 
-			case_item();
-			while (StartOf(24)) {
-				case_item();
-			}
-			Expect(_Tendcase,__FUNCTION__);
-			addTerminal(); 
-		} else if (la->kind == _Tcasex) {
+		} else if (la->kind == _T_casex) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
-			addTerminal(); 
-			expression();
-			Expect(_TRpar,__FUNCTION__);
-			addTerminal(); 
+		} else SynErr(284,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
+		addTerminal(); 
+		expression();
+		Expect(_T_Rpar,__FUNCTION__);
+		addTerminal(); 
+		case_item();
+		while (StartOf(24)) {
 			case_item();
-			while (StartOf(24)) {
-				case_item();
-			}
-			Expect(_Tendcase,__FUNCTION__);
-			addTerminal(); 
-		} else SynErr(278,__FUNCTION__);
+		}
+		Expect(_T_endcase,__FUNCTION__);
+		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::conditional_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_conditional_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tif,__FUNCTION__);
+		Expect(_T_if,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		expression();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		statement_or_null();
-		if (la->kind == _Telse) {
+		if (la->kind == _T_else) {
 			Get();
 			addTerminal(); 
 			statement_or_null();
@@ -3658,108 +3483,104 @@ void Parser::conditional_statement() {
 
 void Parser::disable_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_disable_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tdisable,__FUNCTION__);
+		Expect(_T_disable,__FUNCTION__);
 		addTerminal(); 
 		hierarchical_task_or_block_identifier();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::event_trigger() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_trigger, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TMinus,__FUNCTION__);
-		addTerminal(); 
-		Expect(_TGt,__FUNCTION__);
+		Expect(_T_MinusGt,__FUNCTION__);
 		addTerminal(); 
 		hierarchical_identifier_range();
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::loop_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_loop_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tforever) {
+		if (la->kind == _T_forever) {
 			Get();
 			addTerminal(); 
 			statement();
-		} else if (la->kind == _Trepeat) {
+		} else if (la->kind == _T_repeat) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
-		} else if (la->kind == _Twhile) {
+		} else if (la->kind == _T_while) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
-		} else if (la->kind == _Tfor) {
+		} else if (la->kind == _T_for) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			variable_assignment();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			expression();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
 			variable_assignment();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
-		} else SynErr(279,__FUNCTION__);
+		} else SynErr(285,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::procedural_timing_control_statement() {
-		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_procedural_timing_control_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		procedural_timing_control();
 		statement_or_null();
-		d_stack.pop(); 
 }
 
 void Parser::system_task_enable() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_system_task_enable, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		system_task_identifier();
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			if (StartOf(23)) {
 				expression();
 			}
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				if (StartOf(23)) {
 					expression();
 				}
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::wait_statement() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_wait_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Twait,__FUNCTION__);
+		Expect(_T_wait,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		expression();
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		statement_or_null();
 		d_stack.pop(); 
@@ -3771,25 +3592,25 @@ void Parser::delay_control() {
 
 void Parser::event_control() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_control, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TAt,__FUNCTION__);
+		Expect(_T_At,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			if (StartOf(28)) {
 				event_expression();
-			} else if (la->kind == _TStar) {
+			} else if (la->kind == _T_Star) {
 				Get();
 				addTerminal(); 
-			} else SynErr(280,__FUNCTION__);
-			Expect(_TRpar,__FUNCTION__);
+			} else SynErr(286,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _TStar) {
+		} else if (la->kind == _T_Star) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _TIdent) {
+		} else if (la->kind == _T_identifier) {
 			hierarchical_event_identifier();
-		} else SynErr(281,__FUNCTION__);
+		} else SynErr(287,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3799,23 +3620,23 @@ void Parser::hierarchical_task_or_block_identifier() {
 
 void Parser::hierarchical_identifier() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_hierarchical_identifier, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		identifier();
-		if (la->kind == _TLbrack) {
+		Expect(_T_identifier,__FUNCTION__);
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
-		while (la->kind == _TDot) {
+		while (la->kind == _T_Dot) {
 			Get();
 			addTerminal(); 
-			identifier();
-			if (la->kind == _TLbrack) {
+			Expect(_T_identifier,__FUNCTION__);
+			if (la->kind == _T_Lbrack) {
 				Get();
 				addTerminal(); 
 				constant_expression();
-				Expect(_TRbrack,__FUNCTION__);
+				Expect(_T_Rbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -3827,17 +3648,17 @@ void Parser::event_expression() {
 		if (StartOf(23)) {
 			expression();
 			event_expression_nlr();
-		} else if (la->kind == _Tposedge) {
+		} else if (la->kind == _T_posedge) {
 			Get();
 			addTerminal(); 
 			expression();
 			event_expression_nlr();
-		} else if (la->kind == _Tnegedge) {
+		} else if (la->kind == _T_negedge) {
 			Get();
 			addTerminal(); 
 			expression();
 			event_expression_nlr();
-		} else SynErr(282,__FUNCTION__);
+		} else SynErr(288,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3847,24 +3668,24 @@ void Parser::hierarchical_event_identifier() {
 
 void Parser::hierarchical_identifier_range() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_hierarchical_identifier_range, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		identifier();
-		while (la->kind == _TLbrack || la->kind == _TDot) {
-			if (la->kind == _TDot) {
+		Expect(_T_identifier,__FUNCTION__);
+		while (la->kind == _T_Dot || la->kind == _T_Lbrack) {
+			if (la->kind == _T_Dot) {
 				Get();
 				addTerminal(); 
-				identifier();
-				if (la->kind == _TLbrack) {
+				Expect(_T_identifier,__FUNCTION__);
+				if (la->kind == _T_Lbrack) {
 					Get();
 					addTerminal(); 
 					range_expression();
-					Expect(_TRbrack,__FUNCTION__);
+					Expect(_T_Rbrack,__FUNCTION__);
 					addTerminal(); 
 				}
 			} else {
 				Get();
 				addTerminal(); 
 				range_expression();
-				Expect(_TRbrack,__FUNCTION__);
+				Expect(_T_Rbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -3872,8 +3693,8 @@ void Parser::hierarchical_identifier_range() {
 }
 
 void Parser::event_expression_nlr() {
-		if (la->kind == _TComma || la->kind == _Tor) {
-			if (la->kind == _Tor) {
+		if (la->kind == _T_Comma || la->kind == _T_or) {
+			if (la->kind == _T_or) {
 				Get();
 				addTerminal(); 
 				event_expression();
@@ -3888,160 +3709,154 @@ void Parser::event_expression_nlr() {
 }
 
 void Parser::procedural_timing_control() {
-		if (la->kind == _THash) {
+		if (la->kind == _T_Hash) {
 			delay_control();
-		} else if (la->kind == _TAt) {
+		} else if (la->kind == _T_At) {
 			event_control();
-		} else SynErr(283,__FUNCTION__);
+		} else SynErr(289,__FUNCTION__);
 }
 
 void Parser::case_item() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_case_item, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		if (StartOf(23)) {
 			expression();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				expression();
 			}
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			statement_or_null();
-		} else if (la->kind == _Tdefault) {
+		} else if (la->kind == _T_default) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TColon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
 			}
 			statement_or_null();
-		} else SynErr(284,__FUNCTION__);
+		} else SynErr(290,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::system_task_identifier() {
-		system_name();
+		Expect(_T_system_name,__FUNCTION__);
 }
 
 void Parser::specify_item() {
-		if (la->kind == _Tspecparam) {
+		if (la->kind == _T_specparam) {
 			specparam_declaration();
-		} else if (la->kind == _Tpulsestyle_onevent || la->kind == _Tpulsestyle_ondetect) {
+		} else if (la->kind == _T_pulsestyle_ondetect || la->kind == _T_pulsestyle_onevent) {
 			pulsestyle_declaration();
-		} else if (la->kind == _Tnoshowcancelled || la->kind == _Tshowcancelled) {
+		} else if (la->kind == _T_noshowcancelled || la->kind == _T_showcancelled) {
 			showcancelled_declaration();
-		} else if (la->kind == _TLpar || la->kind == _Tif || la->kind == _Tifnone) {
+		} else if (la->kind == _T_Lpar || la->kind == _T_if || la->kind == _T_ifnone) {
 			path_declaration();
 		} else if (StartOf(29)) {
 			system_timing_check();
-		} else SynErr(285,__FUNCTION__);
+		} else SynErr(291,__FUNCTION__);
 }
 
 void Parser::pulsestyle_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_pulsestyle_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tpulsestyle_onevent) {
+		if (la->kind == _T_pulsestyle_onevent) {
 			Get();
 			addTerminal(); 
-			list_of_path_outputs();
-			Expect(_TSemi,__FUNCTION__);
-			addTerminal(); 
-		} else if (la->kind == _Tpulsestyle_ondetect) {
+		} else if (la->kind == _T_pulsestyle_ondetect) {
 			Get();
 			addTerminal(); 
-			list_of_path_outputs();
-			Expect(_TSemi,__FUNCTION__);
-			addTerminal(); 
-		} else SynErr(286,__FUNCTION__);
+		} else SynErr(292,__FUNCTION__);
+		list_of_path_outputs();
+		Expect(_T_Semi,__FUNCTION__);
+		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::showcancelled_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_showcancelled_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tshowcancelled) {
+		if (la->kind == _T_showcancelled) {
 			Get();
 			addTerminal(); 
-			list_of_path_outputs();
-			Expect(_TSemi,__FUNCTION__);
-			addTerminal(); 
-		} else if (la->kind == _Tnoshowcancelled) {
+		} else if (la->kind == _T_noshowcancelled) {
 			Get();
 			addTerminal(); 
-			list_of_path_outputs();
-			Expect(_TSemi,__FUNCTION__);
-			addTerminal(); 
-		} else SynErr(287,__FUNCTION__);
+		} else SynErr(293,__FUNCTION__);
+		list_of_path_outputs();
+		Expect(_T_Semi,__FUNCTION__);
+		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::path_declaration() {
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			simple_or_edge_sensitive_path_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _Tif || la->kind == _Tifnone) {
+		} else if (la->kind == _T_if || la->kind == _T_ifnone) {
 			state_dependent_path_declaration();
-			Expect(_TSemi,__FUNCTION__);
+			Expect(_T_Semi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(288,__FUNCTION__);
+		} else SynErr(294,__FUNCTION__);
 }
 
 void Parser::system_timing_check() {
 		switch (la->kind) {
-		case _TSetup: {
+		case _T_dlr_setup: {
 			dlr_setup_timing_check();
 			break;
 		}
-		case _THold: {
+		case _T_dlr_hold: {
 			dlr_hold_timing_check();
 			break;
 		}
-		case _TSetupHold: {
+		case _T_dlr_setuphold: {
 			dlr_setuphold_timing_check();
 			break;
 		}
-		case _TRecovery: {
+		case _T_dlr_recovery: {
 			dlr_recovery_timing_check();
 			break;
 		}
-		case _TRemoval: {
+		case _T_dlr_removal: {
 			dlr_removal_timing_check();
 			break;
 		}
-		case _TRecrem: {
+		case _T_dlr_recrem: {
 			dlr_recrem_timing_check();
 			break;
 		}
-		case _TSkew: {
+		case _T_dlr_skew: {
 			dlr_skew_timing_check();
 			break;
 		}
-		case _TTimeSkew: {
+		case _T_dlr_timeskew: {
 			dlr_timeskew_timing_check();
 			break;
 		}
-		case _TFullSkew: {
+		case _T_dlr_fullskew: {
 			dlr_fullskew_timing_check();
 			break;
 		}
-		case _TPeriod: {
+		case _T_dlr_period: {
 			dlr_period_timing_check();
 			break;
 		}
-		case _TWidth: {
+		case _T_dlr_width: {
 			dlr_width_timing_check();
 			break;
 		}
-		case _TNoChange: {
+		case _T_dlr_nochange: {
 			dlr_nochange_timing_check();
 			break;
 		}
-		default: SynErr(289,__FUNCTION__); break;
+		default: SynErr(295,__FUNCTION__); break;
 		}
 }
 
 void Parser::list_of_path_outputs() {
 		specify_output_terminal_descriptor();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			specify_output_terminal_descriptor();
@@ -4050,49 +3865,49 @@ void Parser::list_of_path_outputs() {
 
 void Parser::simple_or_edge_sensitive_path_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_edge_sensitive_path_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _Tnegedge || la->kind == _Tposedge) {
+		if (la->kind == _T_negedge || la->kind == _T_posedge) {
 			edge_identifier();
 		}
 		list_of_path_inputs();
-		if (la->kind == _TPlus || la->kind == _TMinus) {
+		if (la->kind == _T_Plus || la->kind == _T_Minus) {
 			polarity_operator();
 		}
-		if (la->kind == _TEqGt) {
+		if (la->kind == _T_EqGt) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				specify_output_terminal_descriptor();
 			}
-		} else if (la->kind == _TStarGt) {
+		} else if (la->kind == _T_StarGt) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				list_of_path_outputs();
 			}
-		} else SynErr(290,__FUNCTION__);
-		if (la->kind == _TLpar) {
+		} else SynErr(296,__FUNCTION__);
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			if (la->kind == _TColon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
-			} else if (la->kind == _TPlusColon) {
+			} else if (la->kind == _T_PlusColon) {
 				Get();
 				addTerminal(); 
-			} else if (la->kind == _TMinusColon) {
+			} else if (la->kind == _T_MinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(291,__FUNCTION__);
+			} else SynErr(297,__FUNCTION__);
 			data_source_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		path_delay_value();
 		d_stack.pop(); 
@@ -4100,51 +3915,47 @@ void Parser::simple_or_edge_sensitive_path_declaration() {
 
 void Parser::state_dependent_path_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_state_dependent_path_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tif) {
+		if (la->kind == _T_if) {
 			Get();
 			addTerminal(); 
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			module_path_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 			simple_or_edge_sensitive_path_description();
-			Expect(_TEq,__FUNCTION__);
+			Expect(_T_Eq,__FUNCTION__);
 			addTerminal(); 
 			path_delay_value();
-		} else if (la->kind == _Tifnone) {
+		} else if (la->kind == _T_ifnone) {
 			Get();
 			addTerminal(); 
 			simple_path_declaration();
-		} else SynErr(292,__FUNCTION__);
+		} else SynErr(298,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::parallel_or_full_path_description() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parallel_or_full_path_description, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
-		addTerminal(); 
 		list_of_path_inputs();
-		if (la->kind == _TPlus || la->kind == _TMinus) {
+		if (la->kind == _T_Plus || la->kind == _T_Minus) {
 			polarity_operator();
 		}
-		if (la->kind == _TEqGt) {
+		if (la->kind == _T_EqGt) {
 			Get();
 			addTerminal(); 
 			specify_output_terminal_descriptor();
-		} else if (la->kind == _TStarGt) {
+		} else if (la->kind == _T_StarGt) {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-		} else SynErr(293,__FUNCTION__);
-		Expect(_TRpar,__FUNCTION__);
-		addTerminal(); 
+		} else SynErr(299,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::list_of_path_inputs() {
 		specify_input_terminal_descriptor();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			specify_input_terminal_descriptor();
@@ -4152,23 +3963,23 @@ void Parser::list_of_path_inputs() {
 }
 
 void Parser::polarity_operator() {
-		if (la->kind == _TPlus) {
+		if (la->kind == _T_Plus) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _TMinus) {
+		} else if (la->kind == _T_Minus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(294,__FUNCTION__);
+		} else SynErr(300,__FUNCTION__);
 }
 
 void Parser::specify_output_terminal_descriptor() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specify_output_terminal_descriptor, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		output_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4177,7 +3988,7 @@ void Parser::specify_output_terminal_descriptor() {
 void Parser::simple_path_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_path_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		parallel_or_full_path_description();
-		Expect(_TEq,__FUNCTION__);
+		Expect(_T_Eq,__FUNCTION__);
 		addTerminal(); 
 		path_delay_value();
 		d_stack.pop(); 
@@ -4185,12 +3996,12 @@ void Parser::simple_path_declaration() {
 
 void Parser::path_delay_value() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_path_delay_value, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TLpar) {
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 		}
 		list_of_path_delay_expressions();
-		if (la->kind == _TRpar) {
+		if (la->kind == _T_Rpar) {
 			Get();
 			addTerminal(); 
 		}
@@ -4200,11 +4011,11 @@ void Parser::path_delay_value() {
 void Parser::specify_input_terminal_descriptor() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specify_input_terminal_descriptor, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		input_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4219,16 +4030,16 @@ void Parser::output_identifier() {
 }
 
 void Parser::input_or_inout_port_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::output_or_inout_port_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::list_of_path_delay_expressions() {
 		path_delay_expression();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			path_delay_expression();
@@ -4240,13 +4051,13 @@ void Parser::path_delay_expression() {
 }
 
 void Parser::edge_identifier() {
-		if (la->kind == _Tposedge) {
+		if (la->kind == _T_posedge) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tnegedge) {
+		} else if (la->kind == _T_negedge) {
 			Get();
 			addTerminal(); 
-		} else SynErr(295,__FUNCTION__);
+		} else SynErr(301,__FUNCTION__);
 }
 
 void Parser::data_source_expression() {
@@ -4255,48 +4066,44 @@ void Parser::data_source_expression() {
 
 void Parser::simple_or_edge_sensitive_path_description() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_edge_sensitive_path_description, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TLpar,__FUNCTION__);
-		addTerminal(); 
-		if (la->kind == _Tnegedge || la->kind == _Tposedge) {
+		if (la->kind == _T_negedge || la->kind == _T_posedge) {
 			edge_identifier();
 		}
 		list_of_path_inputs();
-		if (la->kind == _TPlus || la->kind == _TMinus) {
+		if (la->kind == _T_Plus || la->kind == _T_Minus) {
 			polarity_operator();
 		}
-		if (la->kind == _TEqGt) {
+		if (la->kind == _T_EqGt) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				specify_output_terminal_descriptor();
 			}
-		} else if (la->kind == _TStarGt) {
+		} else if (la->kind == _T_StarGt) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				list_of_path_outputs();
 			}
-		} else SynErr(296,__FUNCTION__);
-		if (la->kind == _TLpar) {
+		} else SynErr(302,__FUNCTION__);
+		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-			if (la->kind == _TColon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
-			} else if (la->kind == _TPlusColon) {
+			} else if (la->kind == _T_PlusColon) {
 				Get();
 				addTerminal(); 
-			} else if (la->kind == _TMinusColon) {
+			} else if (la->kind == _T_MinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(297,__FUNCTION__);
+			} else SynErr(303,__FUNCTION__);
 			data_source_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		}
-		Expect(_TRpar,__FUNCTION__);
-		addTerminal(); 
 		d_stack.pop(); 
 }
 
@@ -4312,102 +4119,102 @@ void Parser::module_path_expression() {
 
 void Parser::dlr_setup_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_setup_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSetup,__FUNCTION__);
+		Expect(_T_dlr_setup,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_hold_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_hold_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THold,__FUNCTION__);
+		Expect(_T_dlr_hold,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_setuphold_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_setuphold_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSetupHold,__FUNCTION__);
+		Expect(_T_dlr_setuphold,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
-			if (la->kind == _TComma) {
+			if (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				if (StartOf(23)) {
 					stamptime_condition();
 				}
-				if (la->kind == _TComma) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					if (StartOf(23)) {
 						checktime_condition();
 					}
-					if (la->kind == _TComma) {
+					if (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
-						if (la->kind == _TIdent) {
+						if (la->kind == _T_identifier) {
 							delayed_reference();
 						}
-						if (la->kind == _TComma) {
+						if (la->kind == _T_Comma) {
 							Get();
 							addTerminal(); 
-							if (la->kind == _TIdent) {
+							if (la->kind == _T_identifier) {
 								delayed_data();
 							}
 						}
@@ -4415,111 +4222,111 @@ void Parser::dlr_setuphold_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_recovery_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_recovery_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRecovery,__FUNCTION__);
+		Expect(_T_dlr_recovery,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_removal_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_removal_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRemoval,__FUNCTION__);
+		Expect(_T_dlr_removal,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_recrem_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_recrem_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TRecrem,__FUNCTION__);
+		Expect(_T_dlr_recrem,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
-			if (la->kind == _TComma) {
+			if (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				if (StartOf(23)) {
 					stamptime_condition();
 				}
-				if (la->kind == _TComma) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					if (StartOf(23)) {
 						checktime_condition();
 					}
-					if (la->kind == _TComma) {
+					if (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
-						if (la->kind == _TIdent) {
+						if (la->kind == _T_identifier) {
 							delayed_reference();
 						}
-						if (la->kind == _TComma) {
+						if (la->kind == _T_Comma) {
 							Get();
 							addTerminal(); 
-							if (la->kind == _TIdent) {
+							if (la->kind == _T_identifier) {
 								delayed_data();
 							}
 						}
@@ -4527,66 +4334,66 @@ void Parser::dlr_recrem_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_skew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_skew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TSkew,__FUNCTION__);
+		Expect(_T_dlr_skew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_timeskew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_timeskew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TTimeSkew,__FUNCTION__);
+		Expect(_T_dlr_timeskew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
-			if (la->kind == _TComma) {
+			if (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				if (StartOf(23)) {
 					event_based_flag();
 				}
-				if (la->kind == _TComma) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					if (StartOf(23)) {
@@ -4595,42 +4402,42 @@ void Parser::dlr_timeskew_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_fullskew_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_fullskew_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TFullSkew,__FUNCTION__);
+		Expect(_T_dlr_fullskew,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
-			if (la->kind == _TComma) {
+			if (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				if (StartOf(23)) {
 					event_based_flag();
 				}
-				if (la->kind == _TComma) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					if (StartOf(23)) {
@@ -4639,90 +4446,90 @@ void Parser::dlr_fullskew_timing_check() {
 				}
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_period_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_period_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TPeriod,__FUNCTION__);
+		Expect(_T_dlr_period,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		controlled_reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_width_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_width_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TWidth,__FUNCTION__);
+		Expect(_T_dlr_width,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		controlled_reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		timing_check_limit();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			threshold();
-			if (la->kind == _TComma) {
+			if (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::dlr_nochange_timing_check() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_dlr_nochange_timing_check, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TNoChange,__FUNCTION__);
+		Expect(_T_dlr_nochange,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		reference_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		data_event();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		start_edge_offset();
-		Expect(_TComma,__FUNCTION__);
+		Expect(_T_Comma,__FUNCTION__);
 		addTerminal(); 
 		end_edge_offset();
-		if (la->kind == _TComma) {
+		if (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
-			if (la->kind == _TIdent) {
+			if (la->kind == _T_identifier) {
 				notifier();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TSemi,__FUNCTION__);
+		Expect(_T_Semi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
@@ -4754,11 +4561,11 @@ void Parser::checktime_condition() {
 void Parser::delayed_reference() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_delayed_reference, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		terminal_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4767,11 +4574,11 @@ void Parser::delayed_reference() {
 void Parser::delayed_data() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_delayed_data, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		terminal_identifier();
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4805,10 +4612,8 @@ void Parser::controlled_timing_check_event() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_controlled_timing_check_event, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		timing_check_event_control();
 		specify_terminal_descriptor();
-		if (la->kind == _T2Amp) {
+		if (la->kind == _T_3Amp) {
 			Get();
-			addTerminal(); 
-			Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4817,14 +4622,12 @@ void Parser::controlled_timing_check_event() {
 
 void Parser::timing_check_event() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_timing_check_event, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _Tedge || la->kind == _Tnegedge || la->kind == _Tposedge) {
+		if (la->kind == _T_edge || la->kind == _T_negedge || la->kind == _T_posedge) {
 			timing_check_event_control();
 		}
 		specify_terminal_descriptor();
-		if (la->kind == _T2Amp) {
+		if (la->kind == _T_3Amp) {
 			Get();
-			addTerminal(); 
-			Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4832,19 +4635,19 @@ void Parser::timing_check_event() {
 }
 
 void Parser::terminal_identifier() {
-		identifier();
+		Expect(_T_identifier,__FUNCTION__);
 }
 
 void Parser::timing_check_event_control() {
-		if (la->kind == _Tposedge) {
+		if (la->kind == _T_posedge) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tnegedge) {
+		} else if (la->kind == _T_negedge) {
 			Get();
 			addTerminal(); 
-		} else if (la->kind == _Tedge) {
+		} else if (la->kind == _T_edge) {
 			edge_control_specifier();
-		} else SynErr(298,__FUNCTION__);
+		} else SynErr(304,__FUNCTION__);
 }
 
 void Parser::specify_terminal_descriptor() {
@@ -4857,29 +4660,29 @@ void Parser::timing_check_condition() {
 
 void Parser::edge_control_specifier() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_edge_control_specifier, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_Tedge,__FUNCTION__);
+		Expect(_T_edge,__FUNCTION__);
 		addTerminal(); 
-		Expect(_TLbrack,__FUNCTION__);
+		Expect(_T_Lbrack,__FUNCTION__);
 		addTerminal(); 
 		edge_descriptor();
-		while (la->kind == _TComma) {
+		while (la->kind == _T_Comma) {
 			Get();
 			addTerminal(); 
 			edge_descriptor();
 		}
-		Expect(_TRbrack,__FUNCTION__);
+		Expect(_T_Rbrack,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::specify_input_or_output_terminal_descriptor() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_specify_input_or_output_terminal_descriptor, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		identifier();
-		if (la->kind == _TLbrack) {
+		Expect(_T_identifier,__FUNCTION__);
+		if (la->kind == _T_Lbrack) {
 			Get();
 			addTerminal(); 
 			constant_range_expression();
-			Expect(_TRbrack,__FUNCTION__);
+			Expect(_T_Rbrack,__FUNCTION__);
 			addTerminal(); 
 		}
 		d_stack.pop(); 
@@ -4889,15 +4692,15 @@ void Parser::scalar_timing_check_condition() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_scalar_timing_check_condition, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		expression();
 		if (StartOf(31)) {
-			if (la->kind == _T2Eq) {
+			if (la->kind == _T_2Eq) {
 				Get();
 				addTerminal(); 
 				scalar_constant();
-			} else if (la->kind == _T3Eq) {
+			} else if (la->kind == _T_3Eq) {
 				Get();
 				addTerminal(); 
 				scalar_constant();
-			} else if (la->kind == _TBangEq) {
+			} else if (la->kind == _T_BangEq) {
 				Get();
 				addTerminal(); 
 				scalar_constant();
@@ -4914,14 +4717,14 @@ void Parser::constant_expression_nlr() {
 		if (StartOf(19)) {
 			binary_operator();
 			constant_expression();
-		} else if (la->kind == _TQmark) {
+		} else if (la->kind == _T_Qmark) {
 			Get();
 			addTerminal(); 
 			constant_expression();
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(299,__FUNCTION__);
+		} else SynErr(305,__FUNCTION__);
 }
 
 void Parser::width_constant_expression() {
@@ -4929,44 +4732,44 @@ void Parser::width_constant_expression() {
 }
 
 void Parser::primary() {
-		if (la->kind == _TIdent || la->kind == _TSysName) {
-			if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier || la->kind == _T_system_name) {
+			if (la->kind == _T_identifier) {
 				hierarchical_identifier_range();
 			} else {
 				system_function_identifier();
 			}
-			if (la->kind == _TLpar) {
+			if (la->kind == _T_Lpar) {
 				Get();
 				addTerminal(); 
 				expression();
-				while (la->kind == _TComma) {
+				while (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					expression();
 				}
-				Expect(_TRpar,__FUNCTION__);
+				Expect(_T_Rpar,__FUNCTION__);
 				addTerminal(); 
 			}
 		} else if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TString) {
-			string();
-		} else if (la->kind == _TLpar) {
+		} else if (la->kind == _T_string) {
+			Get();
+		} else if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			mintypmax_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			expression();
-			if (la->kind == _TLbrace || la->kind == _TComma) {
-				if (la->kind == _TComma) {
+			if (la->kind == _T_Comma || la->kind == _T_Lbrace) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						expression();
@@ -4975,57 +4778,108 @@ void Parser::primary() {
 					Get();
 					addTerminal(); 
 					expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRbrace,__FUNCTION__);
+					Expect(_T_Rbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(300,__FUNCTION__);
+		} else SynErr(306,__FUNCTION__);
+}
+
+void Parser::unary_module_path_operator() {
+		switch (la->kind) {
+		case _T_Bang: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Tilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeAmp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeBar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Hat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeHat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_HatTilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		default: SynErr(307,__FUNCTION__); break;
+		}
 }
 
 void Parser::module_path_primary() {
 		if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TIdent || la->kind == _TSysName) {
-			if (la->kind == _TIdent) {
+		} else if (la->kind == _T_identifier || la->kind == _T_system_name) {
+			if (la->kind == _T_identifier) {
 				hierarchical_identifier();
 			} else {
 				system_function_identifier();
 			}
-			if (la->kind == _TLpar) {
+			if (la->kind == _T_Lpar) {
 				Get();
 				addTerminal(); 
 				expression();
-				while (la->kind == _TComma) {
+				while (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					expression();
 				}
-				Expect(_TRpar,__FUNCTION__);
+				Expect(_T_Rpar,__FUNCTION__);
 				addTerminal(); 
 			}
-		} else if (la->kind == _TLpar) {
+		} else if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			module_path_mintypmax_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			module_path_expression();
-			if (la->kind == _TLbrace || la->kind == _TComma) {
-				if (la->kind == _TComma) {
+			if (la->kind == _T_Comma || la->kind == _T_Lbrace) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					module_path_expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						module_path_expression();
@@ -5034,18 +4888,18 @@ void Parser::module_path_primary() {
 					Get();
 					addTerminal(); 
 					module_path_expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						module_path_expression();
 					}
-					Expect(_TRbrace,__FUNCTION__);
+					Expect(_T_Rbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(301,__FUNCTION__);
+		} else SynErr(308,__FUNCTION__);
 }
 
 void Parser::module_path_expression_nlr() {
@@ -5058,7 +4912,7 @@ void Parser::module_path_expression_nlr() {
 				Get();
 				addTerminal(); 
 				module_path_expression();
-				Expect(_TColon,__FUNCTION__);
+				Expect(_T_Colon,__FUNCTION__);
 				addTerminal(); 
 				module_path_expression();
 				module_path_expression_nlr();
@@ -5066,14 +4920,65 @@ void Parser::module_path_expression_nlr() {
 		}
 }
 
+void Parser::binary_module_path_operator() {
+		switch (la->kind) {
+		case _T_2Eq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_BangEq: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_2Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Amp: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Bar: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_Hat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_HatTilde: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		case _T_TildeHat: {
+			Get();
+			addTerminal(); 
+			break;
+		}
+		default: SynErr(309,__FUNCTION__); break;
+		}
+}
+
 void Parser::module_path_mintypmax_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_path_mintypmax_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		module_path_expression();
-		if (la->kind == _TColon) {
+		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
 			module_path_expression();
-			Expect(_TColon,__FUNCTION__);
+			Expect(_T_Colon,__FUNCTION__);
 			addTerminal(); 
 			module_path_expression();
 		}
@@ -5083,12 +4988,12 @@ void Parser::module_path_mintypmax_expression() {
 void Parser::range_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_range_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		expression();
-		if (la->kind == _TColon || la->kind == _TPlusColon || la->kind == _TMinusColon) {
-			if (la->kind == _TColon) {
+		if (la->kind == _T_PlusColon || la->kind == _T_MinusColon || la->kind == _T_Colon) {
+			if (la->kind == _T_Colon) {
 				Get();
 				addTerminal(); 
 				lsb_constant_expression();
-			} else if (la->kind == _TPlusColon) {
+			} else if (la->kind == _T_PlusColon) {
 				Get();
 				addTerminal(); 
 				width_constant_expression();
@@ -5102,29 +5007,29 @@ void Parser::range_expression() {
 }
 
 void Parser::system_function_identifier() {
-		system_name();
+		Expect(_T_system_name,__FUNCTION__);
 }
 
 void Parser::hierarchical_identifier_range_const() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_hierarchical_identifier_range_const, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		identifier();
-		while (la->kind == _TLbrack || la->kind == _TDot) {
-			if (la->kind == _TDot) {
+		Expect(_T_identifier,__FUNCTION__);
+		while (la->kind == _T_Dot || la->kind == _T_Lbrack) {
+			if (la->kind == _T_Dot) {
 				Get();
 				addTerminal(); 
-				identifier();
-				if (la->kind == _TLbrack) {
+				Expect(_T_identifier,__FUNCTION__);
+				if (la->kind == _T_Lbrack) {
 					Get();
 					addTerminal(); 
 					constant_range_expression();
-					Expect(_TRbrack,__FUNCTION__);
+					Expect(_T_Rbrack,__FUNCTION__);
 					addTerminal(); 
 				}
 			} else {
 				Get();
 				addTerminal(); 
 				constant_range_expression();
-				Expect(_TRbrack,__FUNCTION__);
+				Expect(_T_Rbrack,__FUNCTION__);
 				addTerminal(); 
 			}
 		}
@@ -5133,129 +5038,129 @@ void Parser::hierarchical_identifier_range_const() {
 
 void Parser::parameter_value_assignment_or_delay2() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_parameter_value_assignment_or_delay2, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_THash,__FUNCTION__);
+		Expect(_T_Hash,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(17)) {
 			delay_value();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(23)) {
 			mintypmax_expression();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				mintypmax_expression();
 			}
-		} else if (la->kind == _TDot) {
+		} else if (la->kind == _T_Dot) {
 			named_parameter_assignment();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				named_parameter_assignment();
 			}
-		} else SynErr(302,__FUNCTION__);
-		Expect(_TRpar,__FUNCTION__);
+		} else SynErr(310,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::module_or_udp_instance() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instance, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TIdent) {
-			identifier();
+		if (la->kind == _T_identifier) {
+			Get();
 		}
-		if (la->kind == _TLbrack) {
+		if (la->kind == _T_Lbrack) {
 			range();
 		}
-		Expect(_TLpar,__FUNCTION__);
+		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(34)) {
 			port_connection_or_output_terminal();
-			while (la->kind == _TComma) {
+			while (la->kind == _T_Comma) {
 				Get();
 				addTerminal(); 
 				port_connection_or_output_terminal();
 			}
 		}
-		Expect(_TRpar,__FUNCTION__);
+		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
 }
 
 void Parser::port_connection_or_output_terminal() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_port_connection_or_output_terminal, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _TDot) {
+		if (la->kind == _T_Dot) {
 			Get();
 			addTerminal(); 
 			port_identifier();
-			Expect(_TLpar,__FUNCTION__);
+			Expect(_T_Lpar,__FUNCTION__);
 			addTerminal(); 
 			if (StartOf(23)) {
 				expression();
 			}
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (StartOf(35)) {
 			if (StartOf(23)) {
 				expression_2();
 			}
-		} else SynErr(303,__FUNCTION__);
+		} else SynErr(311,__FUNCTION__);
 		d_stack.pop(); 
 }
 
 void Parser::primary_2() {
-		if (la->kind == _TIdent || la->kind == _TSysName) {
-			if (la->kind == _TIdent) {
+		if (la->kind == _T_identifier || la->kind == _T_system_name) {
+			if (la->kind == _T_identifier) {
 				hierarchical_identifier_range();
 			} else {
 				system_function_identifier();
 			}
-			if (la->kind == _TLpar || la->kind == _TLbrace) {
-				if (la->kind == _TLpar) {
+			if (la->kind == _T_Lpar || la->kind == _T_Lbrace) {
+				if (la->kind == _T_Lpar) {
 					Get();
 					addTerminal(); 
 					expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRpar,__FUNCTION__);
+					Expect(_T_Rpar,__FUNCTION__);
 					addTerminal(); 
 				} else {
 					Get();
 					addTerminal(); 
 					net_lvalue();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						net_lvalue();
 					}
-					Expect(_TRbrace,__FUNCTION__);
+					Expect(_T_Rbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
 		} else if (StartOf(18)) {
 			number();
-		} else if (la->kind == _TString) {
-			string();
-		} else if (la->kind == _TLpar) {
+		} else if (la->kind == _T_string) {
+			Get();
+		} else if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
 			mintypmax_expression();
-			Expect(_TRpar,__FUNCTION__);
+			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (la->kind == _TLbrace) {
+		} else if (la->kind == _T_Lbrace) {
 			Get();
 			addTerminal(); 
 			expression();
-			if (la->kind == _TLbrace || la->kind == _TComma) {
-				if (la->kind == _TComma) {
+			if (la->kind == _T_Comma || la->kind == _T_Lbrace) {
+				if (la->kind == _T_Comma) {
 					Get();
 					addTerminal(); 
 					expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						expression();
@@ -5264,18 +5169,18 @@ void Parser::primary_2() {
 					Get();
 					addTerminal(); 
 					expression();
-					while (la->kind == _TComma) {
+					while (la->kind == _T_Comma) {
 						Get();
 						addTerminal(); 
 						expression();
 					}
-					Expect(_TRbrace,__FUNCTION__);
+					Expect(_T_Rbrace,__FUNCTION__);
 					addTerminal(); 
 				}
 			}
-			Expect(_TRbrace,__FUNCTION__);
+			Expect(_T_Rbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(304,__FUNCTION__);
+		} else SynErr(312,__FUNCTION__);
 }
 
 
@@ -5378,7 +5283,7 @@ void Parser::Parse() {
 }
 
 Parser::Parser(Vl::PpLexer *scanner, Vl::Errors* err) {
-	maxT = 203;
+	maxT = 211;
 
 	ParserInitCaller<Parser>::CallInit(this);
 	la = &d_dummy;
@@ -5392,43 +5297,43 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[36][205] = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,T,T,x, x,T,x,x, x,T,T,T, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,T, T,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,T,T,x, x,T,x,x, x,T,x,x, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,x, T,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,T,T,T, T,T,x,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,T,T,x, x,x,x,x, x,T,T,T, T,T,x,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,x,T,x, x,T,x,x, x,T,x,x, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,x, x,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,x,x,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, T,x,x,x, x,x,T,x, T,x,x,x, T,T,T,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x}
+	static bool set[36][213] = {
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,T,T, T,T,x,x, x,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,T,T,T, x,x,T,x, x,x,T,T, T,x,T,x, x,x,x,T, x,x,x,T, x,T,T,x, T,T,T,T, T,T,T,x, x,x,x,T, T,x,x,T, T,T,T,x, x,T,T,T, T,T,x,x, x,x,T,T, x,x,T,T, x,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,T,T, T,T,x,x, x,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,T,T,T, x,x,T,x, x,x,T,x, x,x,T,x, x,x,x,T, x,x,x,T, x,T,T,x, T,T,T,T, x,T,T,x, x,x,x,T, T,x,x,T, T,T,T,x, x,T,T,T, T,T,x,x, x,x,T,T, x,x,T,T, x,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,T,T, x,x,x,x, x,x,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,T,T, T,T,x,x, x,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,T,x,T, x,x,T,x, x,x,T,x, x,x,T,x, x,x,x,T, x,x,x,T, x,T,T,x, T,T,T,T, x,x,T,x, x,x,x,T, T,x,x,T, T,T,T,x, x,T,T,T, T,T,x,x, x,x,x,x, x,x,T,T, x,T,T,T, T,T,T,T, T,T,T,T, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,T, T,x,T,T, T,x,x,x, x,T,x,T, x,x,T,x, x,T,x,x, x,T,x,x, x,T,T,T, T,x,T,T, x,T,T,T, T,T,x,x, x,T,T,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,T, T,x,T,T, T,x,x,x, x,T,x,T, x,x,T,x, x,T,x,x, x,T,x,x, x,T,T,T, T,x,T,T, x,T,T,T, T,x,x,x, x,T,T,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,T,T,T, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,T, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,x,x, x,T,T,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,T, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,T,T,x, T,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,T,x, T,x,x,x, x,x,T,x, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,T,x, x,x,x,T, x,x,T,x, T,x,x,x, x,x,T,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x}
 	};
 
 
@@ -5451,317 +5356,325 @@ void Errors::SynErr(const QString& sourcePath, int line, int col, int n, Vl::Err
 		ctxStr = QString( " in %1" ).arg(ctx);
     if( n == 0 )
         s = QString("EOF expected%1").arg(ctxStr);
-    else if( n < Vl::Tok_maxSystemName )
+    else if( n < Vl::TT_Specials )
         s = QString("'%2' expected%1").arg(ctxStr).arg(Vl::tokenToString(n));
-    else if( n <= Vl::Tok_Eof )
+    else if( n <= Vl::TT_Max )
         s = QString("%2 expected%1").arg(ctxStr).arg(Vl::tokenToString(n));
     else
 	switch (n) {
 			case 0: s = coco_string_create(L"EOF expected"); break;
-			case 1: s = coco_string_create(L"TPlus expected"); break;
-			case 2: s = coco_string_create(L"TMinus expected"); break;
-			case 3: s = coco_string_create(L"TBang expected"); break;
-			case 4: s = coco_string_create(L"TBangEq expected"); break;
-			case 5: s = coco_string_create(L"TBang2Eq expected"); break;
-			case 6: s = coco_string_create(L"TTilde expected"); break;
-			case 7: s = coco_string_create(L"TTildeBar expected"); break;
-			case 8: s = coco_string_create(L"TTildeAmp expected"); break;
-			case 9: s = coco_string_create(L"TTildeHat expected"); break;
-			case 10: s = coco_string_create(L"THat expected"); break;
-			case 11: s = coco_string_create(L"THatTilde expected"); break;
-			case 12: s = coco_string_create(L"TSlash expected"); break;
-			case 13: s = coco_string_create(L"TPercent expected"); break;
-			case 14: s = coco_string_create(L"TEq expected"); break;
-			case 15: s = coco_string_create(L"T2Eq expected"); break;
-			case 16: s = coco_string_create(L"T3Eq expected"); break;
-			case 17: s = coco_string_create(L"TAmp expected"); break;
-			case 18: s = coco_string_create(L"T2Amp expected"); break;
-			case 19: s = coco_string_create(L"TBar expected"); break;
-			case 20: s = coco_string_create(L"T2Bar expected"); break;
-			case 21: s = coco_string_create(L"TStar expected"); break;
-			case 22: s = coco_string_create(L"T2Star expected"); break;
-			case 23: s = coco_string_create(L"TLt expected"); break;
-			case 24: s = coco_string_create(L"TLeq expected"); break;
-			case 25: s = coco_string_create(L"T2Lt expected"); break;
-			case 26: s = coco_string_create(L"T3Lt expected"); break;
-			case 27: s = coco_string_create(L"TGt expected"); break;
-			case 28: s = coco_string_create(L"TGeq expected"); break;
-			case 29: s = coco_string_create(L"T2Gt expected"); break;
-			case 30: s = coco_string_create(L"T3Gt expected"); break;
-			case 31: s = coco_string_create(L"THash expected"); break;
-			case 32: s = coco_string_create(L"TAt expected"); break;
-			case 33: s = coco_string_create(L"TQmark expected"); break;
-			case 34: s = coco_string_create(L"TEqGt expected"); break;
-			case 35: s = coco_string_create(L"TStarGt expected"); break;
-			case 36: s = coco_string_create(L"TLpar expected"); break;
-			case 37: s = coco_string_create(L"TRpar expected"); break;
-			case 38: s = coco_string_create(L"TLbrack expected"); break;
-			case 39: s = coco_string_create(L"TRbrack expected"); break;
-			case 40: s = coco_string_create(L"TLbrace expected"); break;
-			case 41: s = coco_string_create(L"TRbrace expected"); break;
-			case 42: s = coco_string_create(L"TLatt expected"); break;
-			case 43: s = coco_string_create(L"TRatt expected"); break;
-			case 44: s = coco_string_create(L"TLcmt expected"); break;
-			case 45: s = coco_string_create(L"TRcmt expected"); break;
-			case 46: s = coco_string_create(L"TComma expected"); break;
-			case 47: s = coco_string_create(L"TDot expected"); break;
-			case 48: s = coco_string_create(L"TSemi expected"); break;
-			case 49: s = coco_string_create(L"TColon expected"); break;
-			case 50: s = coco_string_create(L"TPlusColon expected"); break;
-			case 51: s = coco_string_create(L"TMinusColon expected"); break;
-			case 52: s = coco_string_create(L"Talways expected"); break;
-			case 53: s = coco_string_create(L"Tand expected"); break;
-			case 54: s = coco_string_create(L"Tassign expected"); break;
-			case 55: s = coco_string_create(L"Tautomatic expected"); break;
-			case 56: s = coco_string_create(L"Tbegin expected"); break;
-			case 57: s = coco_string_create(L"Tbuf expected"); break;
-			case 58: s = coco_string_create(L"Tbufif0 expected"); break;
-			case 59: s = coco_string_create(L"Tbufif1 expected"); break;
-			case 60: s = coco_string_create(L"Tcase expected"); break;
-			case 61: s = coco_string_create(L"Tcasex expected"); break;
-			case 62: s = coco_string_create(L"Tcasez expected"); break;
-			case 63: s = coco_string_create(L"Tcell expected"); break;
-			case 64: s = coco_string_create(L"Tcmos expected"); break;
-			case 65: s = coco_string_create(L"Tconfig expected"); break;
-			case 66: s = coco_string_create(L"Tdeassign expected"); break;
-			case 67: s = coco_string_create(L"Tdefault expected"); break;
-			case 68: s = coco_string_create(L"Tdefparam expected"); break;
-			case 69: s = coco_string_create(L"Tdesign expected"); break;
-			case 70: s = coco_string_create(L"Tdisable expected"); break;
-			case 71: s = coco_string_create(L"Tedge expected"); break;
-			case 72: s = coco_string_create(L"Telse expected"); break;
-			case 73: s = coco_string_create(L"Tend expected"); break;
-			case 74: s = coco_string_create(L"Tendcase expected"); break;
-			case 75: s = coco_string_create(L"Tendconfig expected"); break;
-			case 76: s = coco_string_create(L"Tendfunction expected"); break;
-			case 77: s = coco_string_create(L"Tendgenerate expected"); break;
-			case 78: s = coco_string_create(L"Tendmodule expected"); break;
-			case 79: s = coco_string_create(L"Tendprimitive expected"); break;
-			case 80: s = coco_string_create(L"Tendspecify expected"); break;
-			case 81: s = coco_string_create(L"Tendtable expected"); break;
-			case 82: s = coco_string_create(L"Tendtask expected"); break;
-			case 83: s = coco_string_create(L"Tevent expected"); break;
-			case 84: s = coco_string_create(L"Tfor expected"); break;
-			case 85: s = coco_string_create(L"Tforce expected"); break;
-			case 86: s = coco_string_create(L"Tforever expected"); break;
-			case 87: s = coco_string_create(L"Tfork expected"); break;
-			case 88: s = coco_string_create(L"Tfunction expected"); break;
-			case 89: s = coco_string_create(L"Tgenerate expected"); break;
-			case 90: s = coco_string_create(L"Tgenvar expected"); break;
-			case 91: s = coco_string_create(L"Thighz0 expected"); break;
-			case 92: s = coco_string_create(L"Thighz1 expected"); break;
-			case 93: s = coco_string_create(L"Tif expected"); break;
-			case 94: s = coco_string_create(L"Tifnone expected"); break;
-			case 95: s = coco_string_create(L"Tincdir expected"); break;
-			case 96: s = coco_string_create(L"Tinclude expected"); break;
-			case 97: s = coco_string_create(L"Tinitial expected"); break;
-			case 98: s = coco_string_create(L"Tinout expected"); break;
-			case 99: s = coco_string_create(L"Tinput expected"); break;
-			case 100: s = coco_string_create(L"Tinstance expected"); break;
-			case 101: s = coco_string_create(L"Tinteger expected"); break;
-			case 102: s = coco_string_create(L"Tjoin expected"); break;
-			case 103: s = coco_string_create(L"Tlarge expected"); break;
-			case 104: s = coco_string_create(L"Tliblist expected"); break;
-			case 105: s = coco_string_create(L"Tlibrary expected"); break;
-			case 106: s = coco_string_create(L"Tlocalparam expected"); break;
-			case 107: s = coco_string_create(L"Tmacromodule expected"); break;
-			case 108: s = coco_string_create(L"Tmedium expected"); break;
-			case 109: s = coco_string_create(L"Tmodule expected"); break;
-			case 110: s = coco_string_create(L"Tnand expected"); break;
-			case 111: s = coco_string_create(L"Tnegedge expected"); break;
-			case 112: s = coco_string_create(L"Tnmos expected"); break;
-			case 113: s = coco_string_create(L"Tnor expected"); break;
-			case 114: s = coco_string_create(L"Tnoshowcancelled expected"); break;
-			case 115: s = coco_string_create(L"Tnot expected"); break;
-			case 116: s = coco_string_create(L"Tnotif0 expected"); break;
-			case 117: s = coco_string_create(L"Tnotif1 expected"); break;
-			case 118: s = coco_string_create(L"Tor expected"); break;
-			case 119: s = coco_string_create(L"Toutput expected"); break;
-			case 120: s = coco_string_create(L"Tparameter expected"); break;
-			case 121: s = coco_string_create(L"Tpmos expected"); break;
-			case 122: s = coco_string_create(L"Tposedge expected"); break;
-			case 123: s = coco_string_create(L"Tprimitive expected"); break;
-			case 124: s = coco_string_create(L"Tpull0 expected"); break;
-			case 125: s = coco_string_create(L"Tpull1 expected"); break;
-			case 126: s = coco_string_create(L"Tpulldown expected"); break;
-			case 127: s = coco_string_create(L"Tpullup expected"); break;
-			case 128: s = coco_string_create(L"Tpulsestyle_onevent expected"); break;
-			case 129: s = coco_string_create(L"Tpulsestyle_ondetect expected"); break;
-			case 130: s = coco_string_create(L"Trcmos expected"); break;
-			case 131: s = coco_string_create(L"Treal expected"); break;
-			case 132: s = coco_string_create(L"Trealtime expected"); break;
-			case 133: s = coco_string_create(L"Treg expected"); break;
-			case 134: s = coco_string_create(L"Trelease expected"); break;
-			case 135: s = coco_string_create(L"Trepeat expected"); break;
-			case 136: s = coco_string_create(L"Trnmos expected"); break;
-			case 137: s = coco_string_create(L"Trpmos expected"); break;
-			case 138: s = coco_string_create(L"Trtran expected"); break;
-			case 139: s = coco_string_create(L"Trtranif0 expected"); break;
-			case 140: s = coco_string_create(L"Trtranif1 expected"); break;
-			case 141: s = coco_string_create(L"Tscalared expected"); break;
-			case 142: s = coco_string_create(L"Tshowcancelled expected"); break;
-			case 143: s = coco_string_create(L"Tsigned expected"); break;
-			case 144: s = coco_string_create(L"Tsmall expected"); break;
-			case 145: s = coco_string_create(L"Tspecify expected"); break;
-			case 146: s = coco_string_create(L"Tspecparam expected"); break;
-			case 147: s = coco_string_create(L"Tstrong0 expected"); break;
-			case 148: s = coco_string_create(L"Tstrong1 expected"); break;
-			case 149: s = coco_string_create(L"Tsupply0 expected"); break;
-			case 150: s = coco_string_create(L"Tsupply1 expected"); break;
-			case 151: s = coco_string_create(L"Ttable expected"); break;
-			case 152: s = coco_string_create(L"Ttask expected"); break;
-			case 153: s = coco_string_create(L"Ttime expected"); break;
-			case 154: s = coco_string_create(L"Ttran expected"); break;
-			case 155: s = coco_string_create(L"Ttranif0 expected"); break;
-			case 156: s = coco_string_create(L"Ttranif1 expected"); break;
-			case 157: s = coco_string_create(L"Ttri expected"); break;
-			case 158: s = coco_string_create(L"Ttri0 expected"); break;
-			case 159: s = coco_string_create(L"Ttri1 expected"); break;
-			case 160: s = coco_string_create(L"Ttriand expected"); break;
-			case 161: s = coco_string_create(L"Ttrior expected"); break;
-			case 162: s = coco_string_create(L"Ttrireg expected"); break;
-			case 163: s = coco_string_create(L"Tunsigned expected"); break;
-			case 164: s = coco_string_create(L"Tuse expected"); break;
-			case 165: s = coco_string_create(L"Tuwire expected"); break;
-			case 166: s = coco_string_create(L"Tvectored expected"); break;
-			case 167: s = coco_string_create(L"Twait expected"); break;
-			case 168: s = coco_string_create(L"Twand expected"); break;
-			case 169: s = coco_string_create(L"Tweak0 expected"); break;
-			case 170: s = coco_string_create(L"Tweak1 expected"); break;
-			case 171: s = coco_string_create(L"Twhile expected"); break;
-			case 172: s = coco_string_create(L"Twire expected"); break;
-			case 173: s = coco_string_create(L"Twor expected"); break;
-			case 174: s = coco_string_create(L"Txnor expected"); break;
-			case 175: s = coco_string_create(L"Txor expected"); break;
-			case 176: s = coco_string_create(L"TmaxKeyword expected"); break;
-			case 177: s = coco_string_create(L"TPathPulse expected"); break;
-			case 178: s = coco_string_create(L"TSetup expected"); break;
-			case 179: s = coco_string_create(L"THold expected"); break;
-			case 180: s = coco_string_create(L"TSetupHold expected"); break;
-			case 181: s = coco_string_create(L"TRecovery expected"); break;
-			case 182: s = coco_string_create(L"TRemoval expected"); break;
-			case 183: s = coco_string_create(L"TRecrem expected"); break;
-			case 184: s = coco_string_create(L"TSkew expected"); break;
-			case 185: s = coco_string_create(L"TTimeSkew expected"); break;
-			case 186: s = coco_string_create(L"TFullSkew expected"); break;
-			case 187: s = coco_string_create(L"TPeriod expected"); break;
-			case 188: s = coco_string_create(L"TWidth expected"); break;
-			case 189: s = coco_string_create(L"TNoChange expected"); break;
-			case 190: s = coco_string_create(L"TmaxSystemName expected"); break;
-			case 191: s = coco_string_create(L"TString expected"); break;
-			case 192: s = coco_string_create(L"TIdent expected"); break;
-			case 193: s = coco_string_create(L"TSysName expected"); break;
-			case 194: s = coco_string_create(L"TCoDi expected"); break;
-			case 195: s = coco_string_create(L"TRealnum expected"); break;
-			case 196: s = coco_string_create(L"TNatural expected"); break;
-			case 197: s = coco_string_create(L"TSizedBased expected"); break;
-			case 198: s = coco_string_create(L"TBasedInt expected"); break;
-			case 199: s = coco_string_create(L"TBaseFormat expected"); break;
-			case 200: s = coco_string_create(L"TBaseValue expected"); break;
-			case 201: s = coco_string_create(L"TAttribute expected"); break;
-			case 202: s = coco_string_create(L"TMacroUsage expected"); break;
-			case 203: s = coco_string_create(L"??? expected"); break;
-			case 204: s = coco_string_create(L"invalid unary_operator"); break;
-			case 205: s = coco_string_create(L"invalid binary_operator"); break;
-			case 206: s = coco_string_create(L"invalid unary_module_path_operator"); break;
-			case 207: s = coco_string_create(L"invalid binary_module_path_operator"); break;
-			case 208: s = coco_string_create(L"invalid udp_declaration"); break;
-			case 209: s = coco_string_create(L"invalid file_path_spec"); break;
-			case 210: s = coco_string_create(L"invalid module_keyword"); break;
-			case 211: s = coco_string_create(L"invalid module_item"); break;
-			case 212: s = coco_string_create(L"invalid parameter_declaration"); break;
-			case 213: s = coco_string_create(L"invalid port"); break;
-			case 214: s = coco_string_create(L"invalid port_declaration"); break;
-			case 215: s = coco_string_create(L"invalid port_expression"); break;
-			case 216: s = coco_string_create(L"invalid output_declaration"); break;
-			case 217: s = coco_string_create(L"invalid non_port_module_item"); break;
-			case 218: s = coco_string_create(L"invalid module_or_generate_item"); break;
-			case 219: s = coco_string_create(L"invalid module_or_generate_item_declaration"); break;
-			case 220: s = coco_string_create(L"invalid local_parameter_declaration"); break;
-			case 221: s = coco_string_create(L"invalid gate_instantiation"); break;
-			case 222: s = coco_string_create(L"invalid loop_generate_construct"); break;
-			case 223: s = coco_string_create(L"invalid conditional_generate_construct"); break;
-			case 224: s = coco_string_create(L"invalid net_declaration"); break;
-			case 225: s = coco_string_create(L"invalid config_rule_statement"); break;
-			case 226: s = coco_string_create(L"invalid config_rule_statement"); break;
-			case 227: s = coco_string_create(L"invalid parameter_type"); break;
-			case 228: s = coco_string_create(L"invalid net_type"); break;
-			case 229: s = coco_string_create(L"invalid output_variable_type"); break;
-			case 230: s = coco_string_create(L"invalid drive_strength"); break;
-			case 231: s = coco_string_create(L"invalid drive_strength"); break;
-			case 232: s = coco_string_create(L"invalid charge_strength"); break;
-			case 233: s = coco_string_create(L"invalid real_type"); break;
-			case 234: s = coco_string_create(L"invalid variable_type"); break;
-			case 235: s = coco_string_create(L"invalid strength0"); break;
-			case 236: s = coco_string_create(L"invalid strength1"); break;
-			case 237: s = coco_string_create(L"invalid delay_value"); break;
-			case 238: s = coco_string_create(L"invalid expression_nlr"); break;
-			case 239: s = coco_string_create(L"invalid specparam_assignment"); break;
-			case 240: s = coco_string_create(L"invalid function_range_or_type"); break;
-			case 241: s = coco_string_create(L"invalid function_item_declaration"); break;
-			case 242: s = coco_string_create(L"invalid block_item_declaration"); break;
-			case 243: s = coco_string_create(L"invalid tf_input_declaration"); break;
-			case 244: s = coco_string_create(L"invalid task_item_declaration"); break;
-			case 245: s = coco_string_create(L"invalid tf_output_declaration"); break;
-			case 246: s = coco_string_create(L"invalid tf_inout_declaration"); break;
-			case 247: s = coco_string_create(L"invalid task_port_item"); break;
-			case 248: s = coco_string_create(L"invalid task_port_type"); break;
-			case 249: s = coco_string_create(L"invalid cmos_switchtype"); break;
-			case 250: s = coco_string_create(L"invalid enable_gatetype"); break;
-			case 251: s = coco_string_create(L"invalid mos_switchtype"); break;
-			case 252: s = coco_string_create(L"invalid n_input_gatetype"); break;
-			case 253: s = coco_string_create(L"invalid n_output_gatetype"); break;
-			case 254: s = coco_string_create(L"invalid pass_en_switchtype"); break;
-			case 255: s = coco_string_create(L"invalid pass_switchtype"); break;
-			case 256: s = coco_string_create(L"invalid pulldown_strength"); break;
-			case 257: s = coco_string_create(L"invalid pulldown_strength"); break;
-			case 258: s = coco_string_create(L"invalid pullup_strength"); break;
-			case 259: s = coco_string_create(L"invalid pullup_strength"); break;
-			case 260: s = coco_string_create(L"invalid net_lvalue"); break;
-			case 261: s = coco_string_create(L"invalid constant_primary"); break;
-			case 262: s = coco_string_create(L"invalid generate_block_or_null"); break;
-			case 263: s = coco_string_create(L"invalid case_generate_item"); break;
-			case 264: s = coco_string_create(L"invalid udp_port_declaration"); break;
-			case 265: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
-			case 266: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
-			case 267: s = coco_string_create(L"invalid level_or_edge_symbol"); break;
-			case 268: s = coco_string_create(L"invalid level_symbol"); break;
-			case 269: s = coco_string_create(L"invalid number"); break;
-			case 270: s = coco_string_create(L"invalid number"); break;
-			case 271: s = coco_string_create(L"invalid number"); break;
-			case 272: s = coco_string_create(L"invalid edge_descriptor"); break;
-			case 273: s = coco_string_create(L"invalid statement"); break;
-			case 274: s = coco_string_create(L"invalid procedural_continuous_assignments"); break;
-			case 275: s = coco_string_create(L"invalid variable_lvalue"); break;
-			case 276: s = coco_string_create(L"invalid variable_or_net_lvalue"); break;
-			case 277: s = coco_string_create(L"invalid delay_or_event_control"); break;
-			case 278: s = coco_string_create(L"invalid case_statement"); break;
-			case 279: s = coco_string_create(L"invalid loop_statement"); break;
-			case 280: s = coco_string_create(L"invalid event_control"); break;
-			case 281: s = coco_string_create(L"invalid event_control"); break;
-			case 282: s = coco_string_create(L"invalid event_expression"); break;
-			case 283: s = coco_string_create(L"invalid procedural_timing_control"); break;
-			case 284: s = coco_string_create(L"invalid case_item"); break;
-			case 285: s = coco_string_create(L"invalid specify_item"); break;
-			case 286: s = coco_string_create(L"invalid pulsestyle_declaration"); break;
-			case 287: s = coco_string_create(L"invalid showcancelled_declaration"); break;
-			case 288: s = coco_string_create(L"invalid path_declaration"); break;
-			case 289: s = coco_string_create(L"invalid system_timing_check"); break;
-			case 290: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
-			case 291: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
-			case 292: s = coco_string_create(L"invalid state_dependent_path_declaration"); break;
-			case 293: s = coco_string_create(L"invalid parallel_or_full_path_description"); break;
-			case 294: s = coco_string_create(L"invalid polarity_operator"); break;
-			case 295: s = coco_string_create(L"invalid edge_identifier"); break;
-			case 296: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
-			case 297: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
-			case 298: s = coco_string_create(L"invalid timing_check_event_control"); break;
-			case 299: s = coco_string_create(L"invalid constant_expression_nlr"); break;
-			case 300: s = coco_string_create(L"invalid primary"); break;
-			case 301: s = coco_string_create(L"invalid module_path_primary"); break;
-			case 302: s = coco_string_create(L"invalid parameter_value_assignment_or_delay2"); break;
-			case 303: s = coco_string_create(L"invalid port_connection_or_output_terminal"); break;
-			case 304: s = coco_string_create(L"invalid primary_2"); break;
+			case 1: s = coco_string_create(L"T_Literals_ expected"); break;
+			case 2: s = coco_string_create(L"T_Bang expected"); break;
+			case 3: s = coco_string_create(L"T_BangEq expected"); break;
+			case 4: s = coco_string_create(L"T_Bang2Eq expected"); break;
+			case 5: s = coco_string_create(L"T_Hash expected"); break;
+			case 6: s = coco_string_create(L"T_Percent expected"); break;
+			case 7: s = coco_string_create(L"T_Amp expected"); break;
+			case 8: s = coco_string_create(L"T_2Amp expected"); break;
+			case 9: s = coco_string_create(L"T_3Amp expected"); break;
+			case 10: s = coco_string_create(L"T_Lpar expected"); break;
+			case 11: s = coco_string_create(L"T_Latt expected"); break;
+			case 12: s = coco_string_create(L"T_Rpar expected"); break;
+			case 13: s = coco_string_create(L"T_Star expected"); break;
+			case 14: s = coco_string_create(L"T_Ratt expected"); break;
+			case 15: s = coco_string_create(L"T_2Star expected"); break;
+			case 16: s = coco_string_create(L"T_Rcmt expected"); break;
+			case 17: s = coco_string_create(L"T_StarGt expected"); break;
+			case 18: s = coco_string_create(L"T_Plus expected"); break;
+			case 19: s = coco_string_create(L"T_PlusColon expected"); break;
+			case 20: s = coco_string_create(L"T_Comma expected"); break;
+			case 21: s = coco_string_create(L"T_Minus expected"); break;
+			case 22: s = coco_string_create(L"T_MinusColon expected"); break;
+			case 23: s = coco_string_create(L"T_MinusGt expected"); break;
+			case 24: s = coco_string_create(L"T_Dot expected"); break;
+			case 25: s = coco_string_create(L"T_Slash expected"); break;
+			case 26: s = coco_string_create(L"T_Lcmt expected"); break;
+			case 27: s = coco_string_create(L"T_Colon expected"); break;
+			case 28: s = coco_string_create(L"T_Semi expected"); break;
+			case 29: s = coco_string_create(L"T_Lt expected"); break;
+			case 30: s = coco_string_create(L"T_2Lt expected"); break;
+			case 31: s = coco_string_create(L"T_3Lt expected"); break;
+			case 32: s = coco_string_create(L"T_Leq expected"); break;
+			case 33: s = coco_string_create(L"T_Eq expected"); break;
+			case 34: s = coco_string_create(L"T_2Eq expected"); break;
+			case 35: s = coco_string_create(L"T_3Eq expected"); break;
+			case 36: s = coco_string_create(L"T_EqGt expected"); break;
+			case 37: s = coco_string_create(L"T_Gt expected"); break;
+			case 38: s = coco_string_create(L"T_Geq expected"); break;
+			case 39: s = coco_string_create(L"T_2Gt expected"); break;
+			case 40: s = coco_string_create(L"T_3Gt expected"); break;
+			case 41: s = coco_string_create(L"T_Qmark expected"); break;
+			case 42: s = coco_string_create(L"T_At expected"); break;
+			case 43: s = coco_string_create(L"T_Lbrack expected"); break;
+			case 44: s = coco_string_create(L"T_Rbrack expected"); break;
+			case 45: s = coco_string_create(L"T_Hat expected"); break;
+			case 46: s = coco_string_create(L"T_HatTilde expected"); break;
+			case 47: s = coco_string_create(L"T_Lbrace expected"); break;
+			case 48: s = coco_string_create(L"T_Bar expected"); break;
+			case 49: s = coco_string_create(L"T_2Bar expected"); break;
+			case 50: s = coco_string_create(L"T_Rbrace expected"); break;
+			case 51: s = coco_string_create(L"T_Tilde expected"); break;
+			case 52: s = coco_string_create(L"T_TildeAmp expected"); break;
+			case 53: s = coco_string_create(L"T_TildeHat expected"); break;
+			case 54: s = coco_string_create(L"T_TildeBar expected"); break;
+			case 55: s = coco_string_create(L"T_Keywords_ expected"); break;
+			case 56: s = coco_string_create(L"T_dlr_fullskew expected"); break;
+			case 57: s = coco_string_create(L"T_dlr_hold expected"); break;
+			case 58: s = coco_string_create(L"T_dlr_nochange expected"); break;
+			case 59: s = coco_string_create(L"T_dlr_period expected"); break;
+			case 60: s = coco_string_create(L"T_dlr_recovery expected"); break;
+			case 61: s = coco_string_create(L"T_dlr_recrem expected"); break;
+			case 62: s = coco_string_create(L"T_dlr_removal expected"); break;
+			case 63: s = coco_string_create(L"T_dlr_setup expected"); break;
+			case 64: s = coco_string_create(L"T_dlr_setuphold expected"); break;
+			case 65: s = coco_string_create(L"T_dlr_skew expected"); break;
+			case 66: s = coco_string_create(L"T_dlr_timeskew expected"); break;
+			case 67: s = coco_string_create(L"T_dlr_width expected"); break;
+			case 68: s = coco_string_create(L"T_PATHPULSE_dlr expected"); break;
+			case 69: s = coco_string_create(L"T_always expected"); break;
+			case 70: s = coco_string_create(L"T_and expected"); break;
+			case 71: s = coco_string_create(L"T_assign expected"); break;
+			case 72: s = coco_string_create(L"T_automatic expected"); break;
+			case 73: s = coco_string_create(L"T_begin expected"); break;
+			case 74: s = coco_string_create(L"T_buf expected"); break;
+			case 75: s = coco_string_create(L"T_bufif0 expected"); break;
+			case 76: s = coco_string_create(L"T_bufif1 expected"); break;
+			case 77: s = coco_string_create(L"T_case expected"); break;
+			case 78: s = coco_string_create(L"T_casex expected"); break;
+			case 79: s = coco_string_create(L"T_casez expected"); break;
+			case 80: s = coco_string_create(L"T_cell expected"); break;
+			case 81: s = coco_string_create(L"T_cmos expected"); break;
+			case 82: s = coco_string_create(L"T_config expected"); break;
+			case 83: s = coco_string_create(L"T_deassign expected"); break;
+			case 84: s = coco_string_create(L"T_default expected"); break;
+			case 85: s = coco_string_create(L"T_defparam expected"); break;
+			case 86: s = coco_string_create(L"T_design expected"); break;
+			case 87: s = coco_string_create(L"T_disable expected"); break;
+			case 88: s = coco_string_create(L"T_edge expected"); break;
+			case 89: s = coco_string_create(L"T_else expected"); break;
+			case 90: s = coco_string_create(L"T_end expected"); break;
+			case 91: s = coco_string_create(L"T_endcase expected"); break;
+			case 92: s = coco_string_create(L"T_endconfig expected"); break;
+			case 93: s = coco_string_create(L"T_endfunction expected"); break;
+			case 94: s = coco_string_create(L"T_endgenerate expected"); break;
+			case 95: s = coco_string_create(L"T_endmodule expected"); break;
+			case 96: s = coco_string_create(L"T_endprimitive expected"); break;
+			case 97: s = coco_string_create(L"T_endspecify expected"); break;
+			case 98: s = coco_string_create(L"T_endtable expected"); break;
+			case 99: s = coco_string_create(L"T_endtask expected"); break;
+			case 100: s = coco_string_create(L"T_event expected"); break;
+			case 101: s = coco_string_create(L"T_for expected"); break;
+			case 102: s = coco_string_create(L"T_force expected"); break;
+			case 103: s = coco_string_create(L"T_forever expected"); break;
+			case 104: s = coco_string_create(L"T_fork expected"); break;
+			case 105: s = coco_string_create(L"T_function expected"); break;
+			case 106: s = coco_string_create(L"T_generate expected"); break;
+			case 107: s = coco_string_create(L"T_genvar expected"); break;
+			case 108: s = coco_string_create(L"T_highz0 expected"); break;
+			case 109: s = coco_string_create(L"T_highz1 expected"); break;
+			case 110: s = coco_string_create(L"T_if expected"); break;
+			case 111: s = coco_string_create(L"T_ifnone expected"); break;
+			case 112: s = coco_string_create(L"T_incdir expected"); break;
+			case 113: s = coco_string_create(L"T_include expected"); break;
+			case 114: s = coco_string_create(L"T_initial expected"); break;
+			case 115: s = coco_string_create(L"T_inout expected"); break;
+			case 116: s = coco_string_create(L"T_input expected"); break;
+			case 117: s = coco_string_create(L"T_instance expected"); break;
+			case 118: s = coco_string_create(L"T_integer expected"); break;
+			case 119: s = coco_string_create(L"T_join expected"); break;
+			case 120: s = coco_string_create(L"T_large expected"); break;
+			case 121: s = coco_string_create(L"T_liblist expected"); break;
+			case 122: s = coco_string_create(L"T_library expected"); break;
+			case 123: s = coco_string_create(L"T_localparam expected"); break;
+			case 124: s = coco_string_create(L"T_macromodule expected"); break;
+			case 125: s = coco_string_create(L"T_medium expected"); break;
+			case 126: s = coco_string_create(L"T_module expected"); break;
+			case 127: s = coco_string_create(L"T_nand expected"); break;
+			case 128: s = coco_string_create(L"T_negedge expected"); break;
+			case 129: s = coco_string_create(L"T_nmos expected"); break;
+			case 130: s = coco_string_create(L"T_nor expected"); break;
+			case 131: s = coco_string_create(L"T_noshowcancelled expected"); break;
+			case 132: s = coco_string_create(L"T_not expected"); break;
+			case 133: s = coco_string_create(L"T_notif0 expected"); break;
+			case 134: s = coco_string_create(L"T_notif1 expected"); break;
+			case 135: s = coco_string_create(L"T_or expected"); break;
+			case 136: s = coco_string_create(L"T_output expected"); break;
+			case 137: s = coco_string_create(L"T_parameter expected"); break;
+			case 138: s = coco_string_create(L"T_pmos expected"); break;
+			case 139: s = coco_string_create(L"T_posedge expected"); break;
+			case 140: s = coco_string_create(L"T_primitive expected"); break;
+			case 141: s = coco_string_create(L"T_pull0 expected"); break;
+			case 142: s = coco_string_create(L"T_pull1 expected"); break;
+			case 143: s = coco_string_create(L"T_pulldown expected"); break;
+			case 144: s = coco_string_create(L"T_pullup expected"); break;
+			case 145: s = coco_string_create(L"T_pulsestyle_ondetect expected"); break;
+			case 146: s = coco_string_create(L"T_pulsestyle_onevent expected"); break;
+			case 147: s = coco_string_create(L"T_rcmos expected"); break;
+			case 148: s = coco_string_create(L"T_real expected"); break;
+			case 149: s = coco_string_create(L"T_realtime expected"); break;
+			case 150: s = coco_string_create(L"T_reg expected"); break;
+			case 151: s = coco_string_create(L"T_release expected"); break;
+			case 152: s = coco_string_create(L"T_repeat expected"); break;
+			case 153: s = coco_string_create(L"T_rnmos expected"); break;
+			case 154: s = coco_string_create(L"T_rpmos expected"); break;
+			case 155: s = coco_string_create(L"T_rtran expected"); break;
+			case 156: s = coco_string_create(L"T_rtranif0 expected"); break;
+			case 157: s = coco_string_create(L"T_rtranif1 expected"); break;
+			case 158: s = coco_string_create(L"T_scalared expected"); break;
+			case 159: s = coco_string_create(L"T_showcancelled expected"); break;
+			case 160: s = coco_string_create(L"T_signed expected"); break;
+			case 161: s = coco_string_create(L"T_small expected"); break;
+			case 162: s = coco_string_create(L"T_specify expected"); break;
+			case 163: s = coco_string_create(L"T_specparam expected"); break;
+			case 164: s = coco_string_create(L"T_strong0 expected"); break;
+			case 165: s = coco_string_create(L"T_strong1 expected"); break;
+			case 166: s = coco_string_create(L"T_supply0 expected"); break;
+			case 167: s = coco_string_create(L"T_supply1 expected"); break;
+			case 168: s = coco_string_create(L"T_table expected"); break;
+			case 169: s = coco_string_create(L"T_task expected"); break;
+			case 170: s = coco_string_create(L"T_time expected"); break;
+			case 171: s = coco_string_create(L"T_tran expected"); break;
+			case 172: s = coco_string_create(L"T_tranif0 expected"); break;
+			case 173: s = coco_string_create(L"T_tranif1 expected"); break;
+			case 174: s = coco_string_create(L"T_tri expected"); break;
+			case 175: s = coco_string_create(L"T_tri0 expected"); break;
+			case 176: s = coco_string_create(L"T_tri1 expected"); break;
+			case 177: s = coco_string_create(L"T_triand expected"); break;
+			case 178: s = coco_string_create(L"T_trior expected"); break;
+			case 179: s = coco_string_create(L"T_trireg expected"); break;
+			case 180: s = coco_string_create(L"T_use expected"); break;
+			case 181: s = coco_string_create(L"T_uwire expected"); break;
+			case 182: s = coco_string_create(L"T_vectored expected"); break;
+			case 183: s = coco_string_create(L"T_wait expected"); break;
+			case 184: s = coco_string_create(L"T_wand expected"); break;
+			case 185: s = coco_string_create(L"T_weak0 expected"); break;
+			case 186: s = coco_string_create(L"T_weak1 expected"); break;
+			case 187: s = coco_string_create(L"T_while expected"); break;
+			case 188: s = coco_string_create(L"T_wire expected"); break;
+			case 189: s = coco_string_create(L"T_wor expected"); break;
+			case 190: s = coco_string_create(L"T_xnor expected"); break;
+			case 191: s = coco_string_create(L"T_xor expected"); break;
+			case 192: s = coco_string_create(L"T_Specials_ expected"); break;
+			case 193: s = coco_string_create(L"T_real_number expected"); break;
+			case 194: s = coco_string_create(L"T_natural_number expected"); break;
+			case 195: s = coco_string_create(L"T_sizedbased_number expected"); break;
+			case 196: s = coco_string_create(L"T_based_number expected"); break;
+			case 197: s = coco_string_create(L"T_base_format expected"); break;
+			case 198: s = coco_string_create(L"T_base_value expected"); break;
+			case 199: s = coco_string_create(L"T_string expected"); break;
+			case 200: s = coco_string_create(L"T_identifier expected"); break;
+			case 201: s = coco_string_create(L"T_system_name expected"); break;
+			case 202: s = coco_string_create(L"T_Attribute expected"); break;
+			case 203: s = coco_string_create(L"T_Comment expected"); break;
+			case 204: s = coco_string_create(L"T_MacroUsage expected"); break;
+			case 205: s = coco_string_create(L"T_Section expected"); break;
+			case 206: s = coco_string_create(L"T_SectionEnd expected"); break;
+			case 207: s = coco_string_create(L"T_CoDi expected"); break;
+			case 208: s = coco_string_create(L"T_LineCont expected"); break;
+			case 209: s = coco_string_create(L"T_Eof expected"); break;
+			case 210: s = coco_string_create(L"T_MaxToken_ expected"); break;
+			case 211: s = coco_string_create(L"??? expected"); break;
+			case 212: s = coco_string_create(L"invalid udp_declaration"); break;
+			case 213: s = coco_string_create(L"invalid file_path_spec"); break;
+			case 214: s = coco_string_create(L"invalid module_keyword"); break;
+			case 215: s = coco_string_create(L"invalid module_item"); break;
+			case 216: s = coco_string_create(L"invalid parameter_declaration"); break;
+			case 217: s = coco_string_create(L"invalid port"); break;
+			case 218: s = coco_string_create(L"invalid port_declaration"); break;
+			case 219: s = coco_string_create(L"invalid port_expression"); break;
+			case 220: s = coco_string_create(L"invalid output_declaration"); break;
+			case 221: s = coco_string_create(L"invalid non_port_module_item"); break;
+			case 222: s = coco_string_create(L"invalid module_or_generate_item"); break;
+			case 223: s = coco_string_create(L"invalid module_or_generate_item_declaration"); break;
+			case 224: s = coco_string_create(L"invalid local_parameter_declaration"); break;
+			case 225: s = coco_string_create(L"invalid gate_instantiation"); break;
+			case 226: s = coco_string_create(L"invalid loop_generate_construct"); break;
+			case 227: s = coco_string_create(L"invalid conditional_generate_construct"); break;
+			case 228: s = coco_string_create(L"invalid net_declaration"); break;
+			case 229: s = coco_string_create(L"invalid config_rule_statement"); break;
+			case 230: s = coco_string_create(L"invalid config_rule_statement"); break;
+			case 231: s = coco_string_create(L"invalid parameter_type"); break;
+			case 232: s = coco_string_create(L"invalid net_type"); break;
+			case 233: s = coco_string_create(L"invalid output_variable_type"); break;
+			case 234: s = coco_string_create(L"invalid drive_strength"); break;
+			case 235: s = coco_string_create(L"invalid drive_strength"); break;
+			case 236: s = coco_string_create(L"invalid charge_strength"); break;
+			case 237: s = coco_string_create(L"invalid real_type"); break;
+			case 238: s = coco_string_create(L"invalid variable_type"); break;
+			case 239: s = coco_string_create(L"invalid strength0"); break;
+			case 240: s = coco_string_create(L"invalid strength1"); break;
+			case 241: s = coco_string_create(L"invalid delay_value"); break;
+			case 242: s = coco_string_create(L"invalid expression_nlr"); break;
+			case 243: s = coco_string_create(L"invalid specparam_assignment"); break;
+			case 244: s = coco_string_create(L"invalid function_range_or_type"); break;
+			case 245: s = coco_string_create(L"invalid function_item_declaration"); break;
+			case 246: s = coco_string_create(L"invalid block_item_declaration"); break;
+			case 247: s = coco_string_create(L"invalid tf_input_declaration"); break;
+			case 248: s = coco_string_create(L"invalid task_item_declaration"); break;
+			case 249: s = coco_string_create(L"invalid tf_output_declaration"); break;
+			case 250: s = coco_string_create(L"invalid tf_inout_declaration"); break;
+			case 251: s = coco_string_create(L"invalid task_port_item"); break;
+			case 252: s = coco_string_create(L"invalid task_port_type"); break;
+			case 253: s = coco_string_create(L"invalid cmos_switchtype"); break;
+			case 254: s = coco_string_create(L"invalid enable_gatetype"); break;
+			case 255: s = coco_string_create(L"invalid mos_switchtype"); break;
+			case 256: s = coco_string_create(L"invalid n_input_gatetype"); break;
+			case 257: s = coco_string_create(L"invalid n_output_gatetype"); break;
+			case 258: s = coco_string_create(L"invalid pass_en_switchtype"); break;
+			case 259: s = coco_string_create(L"invalid pass_switchtype"); break;
+			case 260: s = coco_string_create(L"invalid pulldown_strength"); break;
+			case 261: s = coco_string_create(L"invalid pulldown_strength"); break;
+			case 262: s = coco_string_create(L"invalid pullup_strength"); break;
+			case 263: s = coco_string_create(L"invalid pullup_strength"); break;
+			case 264: s = coco_string_create(L"invalid net_lvalue"); break;
+			case 265: s = coco_string_create(L"invalid unary_operator"); break;
+			case 266: s = coco_string_create(L"invalid binary_operator"); break;
+			case 267: s = coco_string_create(L"invalid constant_primary"); break;
+			case 268: s = coco_string_create(L"invalid generate_block_or_null"); break;
+			case 269: s = coco_string_create(L"invalid case_generate_item"); break;
+			case 270: s = coco_string_create(L"invalid udp_port_declaration"); break;
+			case 271: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
+			case 272: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
+			case 273: s = coco_string_create(L"invalid level_or_edge_symbol"); break;
+			case 274: s = coco_string_create(L"invalid level_symbol"); break;
+			case 275: s = coco_string_create(L"invalid number"); break;
+			case 276: s = coco_string_create(L"invalid number"); break;
+			case 277: s = coco_string_create(L"invalid number"); break;
+			case 278: s = coco_string_create(L"invalid edge_descriptor"); break;
+			case 279: s = coco_string_create(L"invalid statement"); break;
+			case 280: s = coco_string_create(L"invalid procedural_continuous_assignments"); break;
+			case 281: s = coco_string_create(L"invalid variable_lvalue"); break;
+			case 282: s = coco_string_create(L"invalid variable_or_net_lvalue"); break;
+			case 283: s = coco_string_create(L"invalid delay_or_event_control"); break;
+			case 284: s = coco_string_create(L"invalid case_statement"); break;
+			case 285: s = coco_string_create(L"invalid loop_statement"); break;
+			case 286: s = coco_string_create(L"invalid event_control"); break;
+			case 287: s = coco_string_create(L"invalid event_control"); break;
+			case 288: s = coco_string_create(L"invalid event_expression"); break;
+			case 289: s = coco_string_create(L"invalid procedural_timing_control"); break;
+			case 290: s = coco_string_create(L"invalid case_item"); break;
+			case 291: s = coco_string_create(L"invalid specify_item"); break;
+			case 292: s = coco_string_create(L"invalid pulsestyle_declaration"); break;
+			case 293: s = coco_string_create(L"invalid showcancelled_declaration"); break;
+			case 294: s = coco_string_create(L"invalid path_declaration"); break;
+			case 295: s = coco_string_create(L"invalid system_timing_check"); break;
+			case 296: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
+			case 297: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
+			case 298: s = coco_string_create(L"invalid state_dependent_path_declaration"); break;
+			case 299: s = coco_string_create(L"invalid parallel_or_full_path_description"); break;
+			case 300: s = coco_string_create(L"invalid polarity_operator"); break;
+			case 301: s = coco_string_create(L"invalid edge_identifier"); break;
+			case 302: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
+			case 303: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
+			case 304: s = coco_string_create(L"invalid timing_check_event_control"); break;
+			case 305: s = coco_string_create(L"invalid constant_expression_nlr"); break;
+			case 306: s = coco_string_create(L"invalid primary"); break;
+			case 307: s = coco_string_create(L"invalid unary_module_path_operator"); break;
+			case 308: s = coco_string_create(L"invalid module_path_primary"); break;
+			case 309: s = coco_string_create(L"invalid binary_module_path_operator"); break;
+			case 310: s = coco_string_create(L"invalid parameter_value_assignment_or_delay2"); break;
+			case 311: s = coco_string_create(L"invalid port_connection_or_output_terminal"); break;
+			case 312: s = coco_string_create(L"invalid primary_2"); break;
 
 		default:
 		{

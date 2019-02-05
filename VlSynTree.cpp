@@ -10,9 +10,13 @@ SynTree::SynTree(quint16 r, const Token& t ):d_tok(r){
 
 const char* SynTree::rToStr( quint16 r ) {
 	switch(r) {
-		case R_Attribute: return "attribute_instance";
-		case R_MacroUsage: return "text_macro_usage";
 		case R_always_construct: return "always_construct";
+		case R_attr_name: return "attr_name";
+		case R_attr_spec: return "attr_spec";
+		case R_attribute_instance: return "attribute_instance";
+		case R_base_format: return "base_format";
+		case R_base_value: return "base_value";
+		case R_based_number: return "based_number";
 		case R_block_integer_declaration: return "block_integer_declaration";
 		case R_block_real_declaration: return "block_real_declaration";
 		case R_block_real_type: return "block_real_type";
@@ -42,6 +46,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_delay_or_event_control: return "delay_or_event_control";
 		case R_delayed_data: return "delayed_data";
 		case R_delayed_reference: return "delayed_reference";
+		case R_description: return "description";
 		case R_design_statement: return "design_statement";
 		case R_dimension: return "dimension";
 		case R_disable_statement: return "disable_statement";
@@ -69,7 +74,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_expression_2: return "expression_2";
 		case R_file_path_spec: return "file_path_spec";
 		case R_function_declaration: return "function_declaration";
-		case R_function_range_or_type: return "function_range_or_type";
 		case R_gate_instantiation: return "gate_instantiation";
 		case R_generate_block: return "generate_block";
 		case R_generate_region: return "generate_region";
@@ -80,6 +84,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_hierarchical_identifier: return "hierarchical_identifier";
 		case R_hierarchical_identifier_range: return "hierarchical_identifier_range";
 		case R_hierarchical_identifier_range_const: return "hierarchical_identifier_range_const";
+		case R_identifier: return "identifier";
 		case R_if_generate_construct: return "if_generate_construct";
 		case R_include_statement: return "include_statement";
 		case R_initial_construct: return "initial_construct";
@@ -90,8 +95,11 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_integer_declaration: return "integer_declaration";
 		case R_liblist_clause: return "liblist_clause";
 		case R_library_declaration: return "library_declaration";
+		case R_library_description: return "library_description";
 		case R_list_of_event_identifiers: return "list_of_event_identifiers";
 		case R_list_of_net_decl_assignments_or_identifiers: return "list_of_net_decl_assignments_or_identifiers";
+		case R_list_of_parameter_assignments: return "list_of_parameter_assignments";
+		case R_list_of_port_connections: return "list_of_port_connections";
 		case R_list_of_port_declarations: return "list_of_port_declarations";
 		case R_list_of_ports: return "list_of_ports";
 		case R_list_of_variable_port_identifiers: return "list_of_variable_port_identifiers";
@@ -100,6 +108,8 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_loop_statement: return "loop_statement";
 		case R_mintypmax_expression: return "mintypmax_expression";
 		case R_module_declaration: return "module_declaration";
+		case R_module_instance: return "module_instance";
+		case R_module_instance_identifier: return "module_instance_identifier";
 		case R_module_or_udp_instance: return "module_or_udp_instance";
 		case R_module_or_udp_instantiation: return "module_or_udp_instantiation";
 		case R_module_parameter_port_list: return "module_parameter_port_list";
@@ -109,17 +119,24 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_n_input_gate_instance: return "n_input_gate_instance";
 		case R_n_output_gate_instance: return "n_output_gate_instance";
 		case R_name_of_gate_instance: return "name_of_gate_instance";
+		case R_name_of_module_instance: return "name_of_module_instance";
+		case R_name_of_udp_instance: return "name_of_udp_instance";
 		case R_named_parameter_assignment: return "named_parameter_assignment";
+		case R_natural_number: return "natural_number";
 		case R_net_assignment: return "net_assignment";
 		case R_net_declaration: return "net_declaration";
 		case R_net_lvalue: return "net_lvalue";
 		case R_number: return "number";
+		case R_ordered_or_named_port_connection: return "ordered_or_named_port_connection";
+		case R_ordered_parameter_assignment: return "ordered_parameter_assignment";
 		case R_output_declaration: return "output_declaration";
+		case R_output_symbol: return "output_symbol";
 		case R_par_block: return "par_block";
 		case R_parallel_or_full_path_description: return "parallel_or_full_path_description";
 		case R_param_assignment: return "param_assignment";
 		case R_parameter_declaration: return "parameter_declaration";
 		case R_parameter_override: return "parameter_override";
+		case R_parameter_value_assignment: return "parameter_value_assignment";
 		case R_parameter_value_assignment_or_delay2: return "parameter_value_assignment_or_delay2";
 		case R_pass_enable_switch_instance: return "pass_enable_switch_instance";
 		case R_pass_switch_instance: return "pass_switch_instance";
@@ -129,7 +146,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_port_expression: return "port_expression";
 		case R_port_reference: return "port_reference";
 		case R_procedural_continuous_assignments: return "procedural_continuous_assignments";
-		case R_procedural_timing_control_statement: return "procedural_timing_control_statement";
 		case R_pull_gate_instance: return "pull_gate_instance";
 		case R_pulldown_strength: return "pulldown_strength";
 		case R_pullup_strength: return "pullup_strength";
@@ -138,6 +154,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_range: return "range";
 		case R_range_expression: return "range_expression";
 		case R_real_declaration: return "real_declaration";
+		case R_real_number: return "real_number";
 		case R_real_type: return "real_type";
 		case R_realtime_declaration: return "realtime_declaration";
 		case R_reg_declaration: return "reg_declaration";
@@ -148,6 +165,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_simple_or_edge_sensitive_path_declaration: return "simple_or_edge_sensitive_path_declaration";
 		case R_simple_or_edge_sensitive_path_description: return "simple_or_edge_sensitive_path_description";
 		case R_simple_path_declaration: return "simple_path_declaration";
+		case R_sizedbased_number: return "sizedbased_number";
 		case R_specify_block: return "specify_block";
 		case R_specify_input_or_output_terminal_descriptor: return "specify_input_or_output_terminal_descriptor";
 		case R_specify_input_terminal_descriptor: return "specify_input_terminal_descriptor";
@@ -155,6 +173,8 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_specparam_assignment: return "specparam_assignment";
 		case R_specparam_declaration: return "specparam_declaration";
 		case R_state_dependent_path_declaration: return "state_dependent_path_declaration";
+		case R_string: return "string";
+		case R_system_name: return "system_name";
 		case R_system_task_enable: return "system_task_enable";
 		case R_task_declaration: return "task_declaration";
 		case R_tf_inout_declaration: return "tf_inout_declaration";
@@ -167,6 +187,8 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_udp_declaration_port_list: return "udp_declaration_port_list";
 		case R_udp_initial_statement: return "udp_initial_statement";
 		case R_udp_input_declaration: return "udp_input_declaration";
+		case R_udp_instance: return "udp_instance";
+		case R_udp_instance_identifier: return "udp_instance_identifier";
 		case R_udp_output_declaration: return "udp_output_declaration";
 		case R_udp_port_list: return "udp_port_list";
 		case R_udp_reg_declaration: return "udp_reg_declaration";
@@ -176,5 +198,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_variable_or_net_lvalue: return "variable_or_net_lvalue";
 		case R_variable_type: return "variable_type";
 		case R_wait_statement: return "wait_statement";
-	default: if(r<R_First) return tokenName(r); else return "";
-}}
+	default: if(r<R_First) return tokenTypeName(r); else return "";
+}
+}
