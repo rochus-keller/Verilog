@@ -257,10 +257,17 @@ public:
 	};
 	TokDummy d_dummy;
 	TokDummy *la;			// lookahead token
-    QList<Vl::Token> d_sections;
+	QList<Vl::Token> d_sections;
 	
 	int peek( quint8 la = 1 );
 
+	void RunParser()
+    {
+        d_stack.push(&d_root);
+        Parse();
+        d_stack.pop();
+    }
+    
 Vl::SynTree d_root;
 	QStack<Vl::SynTree*> d_stack;
 	void addTerminal() {
