@@ -62,7 +62,7 @@ bool Parser::parseFile(PpLexer* in, Errors* err)
     Q_ASSERT( err );
     Coco::Parser p(in,err);
     int errs = err->getErrCount();
-    p.Parse();
+    p.RunParser();
     errs = err->getErrCount() - errs;
     //dumpTree( &p.d_root );
     if( errs == 0 )
