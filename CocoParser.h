@@ -268,7 +268,7 @@ public:
         d_stack.pop();
     }
   
-  Vl::SynTree d_root;
+	Vl::SynTree d_root;
 	QStack<Vl::SynTree*> d_stack;
 	void addTerminal() {
 		Vl::SynTree* n = new Vl::SynTree( d_cur ); d_stack.top()->d_children.append(n);
