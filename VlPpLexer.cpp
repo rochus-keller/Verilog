@@ -240,10 +240,16 @@ Token PpLexer::nextTokenImp()
             else
                 return token( Tok_Plus );
         case '-':
-            if( lookAhead(1) == ':' )
+            switch( lookAhead(1) )
+            {
+            case ':':
                 return token( Tok_MinusColon, 2 );
-            else
+            case '>':
+                return token( Tok_MinusGt, 2 );
+            default:
                 return token( Tok_Minus );
+            }
+            break;
         case '!':
             if( lookAhead(1) == '=' )
             {
@@ -297,8 +303,12 @@ Token PpLexer::nextTokenImp()
                 return token( Tok_Eq );
         case '&':
             if( lookAhead(1) == '&' )
-                return token( Tok_2Amp, 2 );
-            else
+            {
+                if( lookAhead(2) == '&' )
+                    return token( Tok_3Amp, 3 );
+                else
+                    return token( Tok_2Amp, 2 );
+            }else
                 return token( Tok_Amp );
         case '|':
             if( lookAhead(1) == '|' )
