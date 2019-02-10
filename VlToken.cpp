@@ -129,6 +129,8 @@ namespace Vl
             return "&";
         case Tok_2Amp:
             return "&&";
+        case Tok_3Amp:
+            return "&&&";
         case Tok_Bar:
             return "|";
         case Tok_2Bar:
@@ -163,6 +165,8 @@ namespace Vl
             return "=>";
         case Tok_StarGt:
             return "*>";
+        case Tok_MinusGt:
+            return "->";
         case Tok_Lpar:
             return "(";
         case Tok_Rpar:
@@ -551,6 +555,8 @@ namespace Vl
             return "Tok_Amp";
         case Tok_2Amp:
             return "Tok_2Amp";
+        case Tok_3Amp:
+            return "Tok_3Amp";
         case Tok_Bar:
             return "Tok_Bar";
         case Tok_2Bar:
@@ -585,6 +591,8 @@ namespace Vl
             return "Tok_EqGt";
         case Tok_StarGt:
             return "Tok_StarGt";
+        case Tok_MinusGt:
+            return "Tok_MinusGt";
         case Tok_Lpar:
             return "Tok_Lpar";
         case Tok_Rpar:

@@ -289,7 +289,7 @@ void Parser::unary_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(204,__FUNCTION__); break;
+		default: SynErr(206,__FUNCTION__); break;
 		}
 }
 
@@ -420,7 +420,7 @@ void Parser::binary_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(205,__FUNCTION__); break;
+		default: SynErr(207,__FUNCTION__); break;
 		}
 }
 
@@ -471,7 +471,7 @@ void Parser::unary_module_path_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(206,__FUNCTION__); break;
+		default: SynErr(208,__FUNCTION__); break;
 		}
 }
 
@@ -522,7 +522,7 @@ void Parser::binary_module_path_operator() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(207,__FUNCTION__); break;
+		default: SynErr(209,__FUNCTION__); break;
 		}
 }
 
@@ -567,7 +567,7 @@ void Parser::udp_declaration() {
 			udp_port_list();
 		} else if (la->kind == _Toutput) {
 			udp_declaration_port_list();
-		} else SynErr(208,__FUNCTION__);
+		} else SynErr(210,__FUNCTION__);
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		Expect(_TSemi,__FUNCTION__);
@@ -645,7 +645,7 @@ void Parser::file_path_spec() {
 			identifier();
 		} else if (la->kind == _TString) {
 			string();
-		} else SynErr(209,__FUNCTION__);
+		} else SynErr(211,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -656,7 +656,7 @@ void Parser::module_keyword() {
 		} else if (la->kind == _Tmacromodule) {
 			Get();
 			addTerminal(); 
-		} else SynErr(210,__FUNCTION__);
+		} else SynErr(212,__FUNCTION__);
 }
 
 void Parser::module_identifier() {
@@ -711,7 +711,7 @@ void Parser::module_item() {
 			addTerminal(); 
 		} else if (StartOf(4)) {
 			non_port_module_item();
-		} else SynErr(211,__FUNCTION__);
+		} else SynErr(213,__FUNCTION__);
 }
 
 void Parser::parameter_declaration() {
@@ -728,7 +728,7 @@ void Parser::parameter_declaration() {
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(212,__FUNCTION__);
+		} else SynErr(214,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
@@ -748,7 +748,7 @@ void Parser::port() {
 			}
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(213,__FUNCTION__);
+		} else SynErr(215,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -759,7 +759,7 @@ void Parser::port_declaration() {
 			input_declaration();
 		} else if (la->kind == _Toutput) {
 			output_declaration();
-		} else SynErr(214,__FUNCTION__);
+		} else SynErr(216,__FUNCTION__);
 }
 
 void Parser::port_expression() {
@@ -777,7 +777,7 @@ void Parser::port_expression() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(215,__FUNCTION__);
+		} else SynErr(217,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -885,7 +885,7 @@ void Parser::output_declaration() {
 		} else if (la->kind == _Tinteger || la->kind == _Ttime) {
 			output_variable_type();
 			list_of_variable_port_identifiers();
-		} else SynErr(216,__FUNCTION__);
+		} else SynErr(218,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -902,7 +902,7 @@ void Parser::non_port_module_item() {
 			addTerminal(); 
 		} else if (la->kind == _Tspecparam) {
 			specparam_declaration();
-		} else SynErr(217,__FUNCTION__);
+		} else SynErr(219,__FUNCTION__);
 }
 
 void Parser::module_or_generate_item() {
@@ -949,7 +949,7 @@ void Parser::module_or_generate_item() {
 			conditional_generate_construct();
 			break;
 		}
-		default: SynErr(218,__FUNCTION__); break;
+		default: SynErr(220,__FUNCTION__); break;
 		}
 }
 
@@ -995,7 +995,7 @@ void Parser::module_or_generate_item_declaration() {
 			function_declaration();
 			break;
 		}
-		default: SynErr(219,__FUNCTION__); break;
+		default: SynErr(221,__FUNCTION__); break;
 		}
 }
 
@@ -1013,7 +1013,7 @@ void Parser::local_parameter_declaration() {
 			}
 		} else if (StartOf(5)) {
 			parameter_type();
-		} else SynErr(220,__FUNCTION__);
+		} else SynErr(222,__FUNCTION__);
 		list_of_param_assignments();
 		d_stack.pop(); 
 }
@@ -1032,7 +1032,7 @@ void Parser::continuous_assign() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_continuous_assign, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_Tassign,__FUNCTION__);
 		addTerminal(); 
-		if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+		if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _THash) {
@@ -1064,7 +1064,7 @@ void Parser::gate_instantiation() {
 		}
 		case _Tbufif0: case _Tbufif1: case _Tnotif0: case _Tnotif1: {
 			enable_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _THash) {
@@ -1097,7 +1097,7 @@ void Parser::gate_instantiation() {
 		}
 		case _Tand: case _Tnand: case _Tnor: case _Tor: case _Txnor: case _Txor: {
 			n_input_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _THash) {
@@ -1115,7 +1115,7 @@ void Parser::gate_instantiation() {
 		}
 		case _Tbuf: case _Tnot: {
 			n_output_gatetype();
-			if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _THash) {
@@ -1161,7 +1161,7 @@ void Parser::gate_instantiation() {
 		case _Tpulldown: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Tweak0 ) ) {
 				pulldown_strength();
 			}
 			pull_gate_instance();
@@ -1177,7 +1177,7 @@ void Parser::gate_instantiation() {
 		case _Tpullup: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+			if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Tweak0 ) ) {
 				pullup_strength();
 			}
 			pull_gate_instance();
@@ -1190,7 +1190,7 @@ void Parser::gate_instantiation() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(221,__FUNCTION__); break;
+		default: SynErr(223,__FUNCTION__); break;
 		}
 		d_stack.pop(); 
 }
@@ -1198,7 +1198,7 @@ void Parser::gate_instantiation() {
 void Parser::module_or_udp_instantiation() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instantiation, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		identifier();
-		if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+		if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _THash) {
@@ -1250,7 +1250,7 @@ void Parser::loop_generate_construct() {
 			generate_block();
 		} else if (StartOf(8)) {
 			module_or_generate_item();
-		} else SynErr(222,__FUNCTION__);
+		} else SynErr(224,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -1259,7 +1259,7 @@ void Parser::conditional_generate_construct() {
 			if_generate_construct();
 		} else if (la->kind == _Tcase) {
 			case_generate_construct();
-		} else SynErr(223,__FUNCTION__);
+		} else SynErr(225,__FUNCTION__);
 }
 
 void Parser::net_declaration() {
@@ -1269,8 +1269,8 @@ void Parser::net_declaration() {
 		} else if (la->kind == _Ttrireg) {
 			Get();
 			addTerminal(); 
-		} else SynErr(224,__FUNCTION__);
-		if (peek(1) == _TLpar && ( peek(2) == _Thighz0 || peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tstrong1 || peek(2) == _Tstrong0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 || peek(2) == _Tpull1 || peek(2) == _Tweak1 || peek(2) == _Tpull0 ) ) {
+		} else SynErr(226,__FUNCTION__);
+		if (peek(1) == _TLpar && ( peek(2) == _Tsupply1 || peek(2) == _Tsupply0 || peek(2) == _Tweak1 || peek(2) == _Tpull0 || peek(2) == _Tstrong0 || peek(2) == _Tpull1 || peek(2) == _Tstrong1 || peek(2) == _Thighz0 || peek(2) == _Tweak0 || peek(2) == _Thighz1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _TLpar) {
@@ -1512,12 +1512,12 @@ void Parser::config_rule_statement() {
 			inst_clause();
 		} else if (la->kind == _Tcell) {
 			cell_clause();
-		} else SynErr(225,__FUNCTION__);
+		} else SynErr(227,__FUNCTION__);
 		if (la->kind == _Tliblist) {
 			liblist_clause();
 		} else if (la->kind == _Tuse) {
 			use_clause();
-		} else SynErr(226,__FUNCTION__);
+		} else SynErr(228,__FUNCTION__);
 		Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
@@ -1629,7 +1629,7 @@ void Parser::parameter_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(227,__FUNCTION__);
+		} else SynErr(229,__FUNCTION__);
 }
 
 void Parser::list_of_param_assignments() {
@@ -1707,7 +1707,7 @@ void Parser::net_type() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(228,__FUNCTION__); break;
+		default: SynErr(230,__FUNCTION__); break;
 		}
 }
 
@@ -1748,7 +1748,7 @@ void Parser::output_variable_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(229,__FUNCTION__);
+		} else SynErr(231,__FUNCTION__);
 }
 
 void Parser::list_of_event_identifiers() {
@@ -1855,7 +1855,7 @@ void Parser::drive_strength() {
 		} else if (la->kind == _Thighz1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(230,__FUNCTION__);
+		} else SynErr(232,__FUNCTION__);
 		Expect(_TComma,__FUNCTION__);
 		addTerminal(); 
 		if (StartOf(16)) {
@@ -1868,7 +1868,7 @@ void Parser::drive_strength() {
 		} else if (la->kind == _Thighz0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(231,__FUNCTION__);
+		} else SynErr(233,__FUNCTION__);
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
@@ -1887,7 +1887,7 @@ void Parser::charge_strength() {
 		} else if (la->kind == _Tlarge) {
 			Get();
 			addTerminal(); 
-		} else SynErr(232,__FUNCTION__);
+		} else SynErr(234,__FUNCTION__);
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
@@ -1917,7 +1917,7 @@ void Parser::real_type() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(233,__FUNCTION__);
+		} else SynErr(235,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -1948,7 +1948,7 @@ void Parser::variable_type() {
 			Get();
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(234,__FUNCTION__);
+		} else SynErr(236,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -1969,7 +1969,7 @@ void Parser::strength0() {
 		} else if (la->kind == _Tweak0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(235,__FUNCTION__);
+		} else SynErr(237,__FUNCTION__);
 }
 
 void Parser::strength1() {
@@ -1985,7 +1985,7 @@ void Parser::strength1() {
 		} else if (la->kind == _Tweak1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(236,__FUNCTION__);
+		} else SynErr(238,__FUNCTION__);
 }
 
 void Parser::delay() {
@@ -2018,7 +2018,7 @@ void Parser::delay_value() {
 			unsigned_or_real_number();
 		} else if (la->kind == _TIdent) {
 			identifier();
-		} else SynErr(237,__FUNCTION__);
+		} else SynErr(239,__FUNCTION__);
 }
 
 void Parser::mintypmax_expression() {
@@ -2046,7 +2046,7 @@ void Parser::expression_nlr() {
 			Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			expression();
-		} else SynErr(238,__FUNCTION__);
+		} else SynErr(240,__FUNCTION__);
 }
 
 void Parser::delay2() {
@@ -2088,7 +2088,7 @@ void Parser::specparam_assignment() {
 			constant_mintypmax_expression();
 		} else if (la->kind == _TPathPulse) {
 			pulse_control_specparam();
-		} else SynErr(239,__FUNCTION__);
+		} else SynErr(241,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2183,7 +2183,7 @@ void Parser::function_range_or_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(240,__FUNCTION__);
+		} else SynErr(242,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -2207,7 +2207,7 @@ void Parser::function_item_declaration() {
 			tf_input_declaration();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(241,__FUNCTION__);
+		} else SynErr(243,__FUNCTION__);
 }
 
 void Parser::function_statement() {
@@ -2252,7 +2252,7 @@ void Parser::block_item_declaration() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(242,__FUNCTION__); break;
+		default: SynErr(244,__FUNCTION__); break;
 		}
 }
 
@@ -2274,7 +2274,7 @@ void Parser::tf_input_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(243,__FUNCTION__);
+		} else SynErr(245,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
@@ -2307,7 +2307,7 @@ void Parser::task_item_declaration() {
 			tf_inout_declaration();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(244,__FUNCTION__);
+		} else SynErr(246,__FUNCTION__);
 }
 
 void Parser::statement_or_null() {
@@ -2334,7 +2334,7 @@ void Parser::tf_output_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(245,__FUNCTION__);
+		} else SynErr(247,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
@@ -2357,7 +2357,7 @@ void Parser::tf_inout_declaration() {
 			}
 		} else if (StartOf(5)) {
 			task_port_type();
-		} else SynErr(246,__FUNCTION__);
+		} else SynErr(248,__FUNCTION__);
 		list_of_port_identifiers();
 		d_stack.pop(); 
 }
@@ -2369,7 +2369,7 @@ void Parser::task_port_item() {
 			tf_output_declaration();
 		} else if (la->kind == _Tinout) {
 			tf_inout_declaration();
-		} else SynErr(247,__FUNCTION__);
+		} else SynErr(249,__FUNCTION__);
 }
 
 void Parser::task_port_type() {
@@ -2385,7 +2385,7 @@ void Parser::task_port_type() {
 		} else if (la->kind == _Ttime) {
 			Get();
 			addTerminal(); 
-		} else SynErr(248,__FUNCTION__);
+		} else SynErr(250,__FUNCTION__);
 }
 
 void Parser::block_reg_declaration() {
@@ -2488,7 +2488,7 @@ void Parser::cmos_switchtype() {
 		} else if (la->kind == _Trcmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(249,__FUNCTION__);
+		} else SynErr(251,__FUNCTION__);
 }
 
 void Parser::cmos_switch_instance() {
@@ -2526,7 +2526,7 @@ void Parser::enable_gatetype() {
 		} else if (la->kind == _Tnotif1) {
 			Get();
 			addTerminal(); 
-		} else SynErr(250,__FUNCTION__);
+		} else SynErr(252,__FUNCTION__);
 }
 
 void Parser::enable_gate_instance() {
@@ -2561,7 +2561,7 @@ void Parser::mos_switchtype() {
 		} else if (la->kind == _Trpmos) {
 			Get();
 			addTerminal(); 
-		} else SynErr(251,__FUNCTION__);
+		} else SynErr(253,__FUNCTION__);
 }
 
 void Parser::mos_switch_instance() {
@@ -2615,7 +2615,7 @@ void Parser::n_input_gatetype() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(252,__FUNCTION__); break;
+		default: SynErr(254,__FUNCTION__); break;
 		}
 }
 
@@ -2647,7 +2647,7 @@ void Parser::n_output_gatetype() {
 		} else if (la->kind == _Tnot) {
 			Get();
 			addTerminal(); 
-		} else SynErr(253,__FUNCTION__);
+		} else SynErr(255,__FUNCTION__);
 }
 
 void Parser::n_output_gate_instance() {
@@ -2681,7 +2681,7 @@ void Parser::pass_en_switchtype() {
 		} else if (la->kind == _Trtranif0) {
 			Get();
 			addTerminal(); 
-		} else SynErr(254,__FUNCTION__);
+		} else SynErr(256,__FUNCTION__);
 }
 
 void Parser::pass_enable_switch_instance() {
@@ -2710,7 +2710,7 @@ void Parser::pass_switchtype() {
 		} else if (la->kind == _Trtran) {
 			Get();
 			addTerminal(); 
-		} else SynErr(255,__FUNCTION__);
+		} else SynErr(257,__FUNCTION__);
 }
 
 void Parser::pass_switch_instance() {
@@ -2737,7 +2737,7 @@ void Parser::pulldown_strength() {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(256,__FUNCTION__);
+		} else SynErr(258,__FUNCTION__);
 		if (la->kind == _TComma) {
 			Get();
 			addTerminal(); 
@@ -2745,7 +2745,7 @@ void Parser::pulldown_strength() {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(257,__FUNCTION__);
+			} else SynErr(259,__FUNCTION__);
 		}
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
@@ -2773,7 +2773,7 @@ void Parser::pullup_strength() {
 			strength0();
 		} else if (StartOf(16)) {
 			strength1();
-		} else SynErr(258,__FUNCTION__);
+		} else SynErr(260,__FUNCTION__);
 		if (la->kind == _TComma) {
 			Get();
 			addTerminal(); 
@@ -2781,7 +2781,7 @@ void Parser::pullup_strength() {
 				strength1();
 			} else if (StartOf(15)) {
 				strength0();
-			} else SynErr(259,__FUNCTION__);
+			} else SynErr(261,__FUNCTION__);
 		}
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
@@ -2856,7 +2856,7 @@ void Parser::net_lvalue() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(260,__FUNCTION__);
+		} else SynErr(262,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3021,7 +3021,7 @@ void Parser::constant_primary() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(261,__FUNCTION__);
+		} else SynErr(263,__FUNCTION__);
 }
 
 void Parser::if_generate_construct() {
@@ -3068,7 +3068,7 @@ void Parser::generate_block_or_null() {
 		} else if (la->kind == _TSemi) {
 			Get();
 			addTerminal(); 
-		} else SynErr(262,__FUNCTION__);
+		} else SynErr(264,__FUNCTION__);
 }
 
 void Parser::case_generate_item() {
@@ -3091,7 +3091,7 @@ void Parser::case_generate_item() {
 				addTerminal(); 
 			}
 			generate_block_or_null();
-		} else SynErr(263,__FUNCTION__);
+		} else SynErr(265,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3144,7 +3144,7 @@ void Parser::udp_port_declaration() {
 			udp_reg_declaration();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(264,__FUNCTION__);
+		} else SynErr(266,__FUNCTION__);
 }
 
 void Parser::udp_body() {
@@ -3242,7 +3242,7 @@ void Parser::sequential_or_combinatorial_entry() {
 		} else if (la->kind == _TMinus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(265,__FUNCTION__);
+		} else SynErr(267,__FUNCTION__);
 		if (la->kind == _TColon) {
 			Get();
 			addTerminal(); 
@@ -3251,7 +3251,7 @@ void Parser::sequential_or_combinatorial_entry() {
 			} else if (la->kind == _TMinus) {
 				Get();
 				addTerminal(); 
-			} else SynErr(266,__FUNCTION__);
+			} else SynErr(268,__FUNCTION__);
 		}
 		Expect(_TSemi,__FUNCTION__);
 		addTerminal(); 
@@ -3273,7 +3273,7 @@ void Parser::level_or_edge_symbol() {
 		} else if (la->kind == _TStar) {
 			Get();
 			addTerminal(); 
-		} else SynErr(267,__FUNCTION__);
+		} else SynErr(269,__FUNCTION__);
 }
 
 void Parser::level_symbol() {
@@ -3284,7 +3284,7 @@ void Parser::level_symbol() {
 		} else if (la->kind == _TQmark) {
 			Get();
 			addTerminal(); 
-		} else SynErr(268,__FUNCTION__);
+		} else SynErr(270,__FUNCTION__);
 }
 
 void Parser::number() {
@@ -3302,7 +3302,7 @@ void Parser::number() {
 						base_value();
 					} else if (la->kind == _TNatural) {
 						natural_number();
-					} else SynErr(269,__FUNCTION__);
+					} else SynErr(271,__FUNCTION__);
 				}
 			}
 		} else if (la->kind == _TSizedBased) {
@@ -3315,8 +3315,8 @@ void Parser::number() {
 				base_value();
 			} else if (la->kind == _TNatural) {
 				natural_number();
-			} else SynErr(270,__FUNCTION__);
-		} else SynErr(271,__FUNCTION__);
+			} else SynErr(272,__FUNCTION__);
+		} else SynErr(273,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3326,7 +3326,7 @@ void Parser::edge_descriptor() {
 			identifier();
 		} else if (StartOf(18)) {
 			number();
-		} else SynErr(272,__FUNCTION__);
+		} else SynErr(274,__FUNCTION__);
 		if (StartOf(17)) {
 			if (la->kind == _TIdent) {
 				identifier();
@@ -3377,7 +3377,7 @@ void Parser::statement() {
 			disable_statement();
 			break;
 		}
-		case _TMinus: {
+		case _TMinusGt: {
 			event_trigger();
 			break;
 		}
@@ -3416,7 +3416,7 @@ void Parser::statement() {
 			addTerminal(); 
 			break;
 		}
-		default: SynErr(273,__FUNCTION__); break;
+		default: SynErr(275,__FUNCTION__); break;
 		}
 }
 
@@ -3441,7 +3441,7 @@ void Parser::procedural_continuous_assignments() {
 			Get();
 			addTerminal(); 
 			variable_or_net_lvalue();
-		} else SynErr(274,__FUNCTION__);
+		} else SynErr(276,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3469,7 +3469,7 @@ void Parser::variable_lvalue() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(275,__FUNCTION__);
+		} else SynErr(277,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3488,7 +3488,7 @@ void Parser::variable_or_net_lvalue() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(276,__FUNCTION__);
+		} else SynErr(278,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3586,7 +3586,7 @@ void Parser::delay_or_event_control() {
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			event_control();
-		} else SynErr(277,__FUNCTION__);
+		} else SynErr(279,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3634,7 +3634,7 @@ void Parser::case_statement() {
 			}
 			Expect(_Tendcase,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(278,__FUNCTION__);
+		} else SynErr(280,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3668,9 +3668,7 @@ void Parser::disable_statement() {
 
 void Parser::event_trigger() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_event_trigger, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		Expect(_TMinus,__FUNCTION__);
-		addTerminal(); 
-		Expect(_TGt,__FUNCTION__);
+		Expect(_TMinusGt,__FUNCTION__);
 		addTerminal(); 
 		hierarchical_identifier_range();
 		Expect(_TSemi,__FUNCTION__);
@@ -3717,7 +3715,7 @@ void Parser::loop_statement() {
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 			statement();
-		} else SynErr(279,__FUNCTION__);
+		} else SynErr(281,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3781,7 +3779,7 @@ void Parser::event_control() {
 			} else if (la->kind == _TStar) {
 				Get();
 				addTerminal(); 
-			} else SynErr(280,__FUNCTION__);
+			} else SynErr(282,__FUNCTION__);
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _TStar) {
@@ -3789,7 +3787,7 @@ void Parser::event_control() {
 			addTerminal(); 
 		} else if (la->kind == _TIdent) {
 			hierarchical_event_identifier();
-		} else SynErr(281,__FUNCTION__);
+		} else SynErr(283,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3837,7 +3835,7 @@ void Parser::event_expression() {
 			addTerminal(); 
 			expression();
 			event_expression_nlr();
-		} else SynErr(282,__FUNCTION__);
+		} else SynErr(284,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3892,7 +3890,7 @@ void Parser::procedural_timing_control() {
 			delay_control();
 		} else if (la->kind == _TAt) {
 			event_control();
-		} else SynErr(283,__FUNCTION__);
+		} else SynErr(285,__FUNCTION__);
 }
 
 void Parser::case_item() {
@@ -3915,7 +3913,7 @@ void Parser::case_item() {
 				addTerminal(); 
 			}
 			statement_or_null();
-		} else SynErr(284,__FUNCTION__);
+		} else SynErr(286,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3934,7 +3932,7 @@ void Parser::specify_item() {
 			path_declaration();
 		} else if (StartOf(29)) {
 			system_timing_check();
-		} else SynErr(285,__FUNCTION__);
+		} else SynErr(287,__FUNCTION__);
 }
 
 void Parser::pulsestyle_declaration() {
@@ -3951,7 +3949,7 @@ void Parser::pulsestyle_declaration() {
 			list_of_path_outputs();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(286,__FUNCTION__);
+		} else SynErr(288,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3969,7 +3967,7 @@ void Parser::showcancelled_declaration() {
 			list_of_path_outputs();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(287,__FUNCTION__);
+		} else SynErr(289,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -3982,7 +3980,7 @@ void Parser::path_declaration() {
 			state_dependent_path_declaration();
 			Expect(_TSemi,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(288,__FUNCTION__);
+		} else SynErr(290,__FUNCTION__);
 }
 
 void Parser::system_timing_check() {
@@ -4035,7 +4033,7 @@ void Parser::system_timing_check() {
 			dlr_nochange_timing_check();
 			break;
 		}
-		default: SynErr(289,__FUNCTION__); break;
+		default: SynErr(291,__FUNCTION__); break;
 		}
 }
 
@@ -4071,7 +4069,7 @@ void Parser::simple_or_edge_sensitive_path_declaration() {
 			if (la->kind == _TIdent) {
 				list_of_path_outputs();
 			}
-		} else SynErr(290,__FUNCTION__);
+		} else SynErr(292,__FUNCTION__);
 		if (la->kind == _TLpar) {
 			Get();
 			addTerminal(); 
@@ -4085,7 +4083,7 @@ void Parser::simple_or_edge_sensitive_path_declaration() {
 			} else if (la->kind == _TMinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(291,__FUNCTION__);
+			} else SynErr(293,__FUNCTION__);
 			data_source_expression();
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
@@ -4116,7 +4114,7 @@ void Parser::state_dependent_path_declaration() {
 			Get();
 			addTerminal(); 
 			simple_path_declaration();
-		} else SynErr(292,__FUNCTION__);
+		} else SynErr(294,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -4136,7 +4134,7 @@ void Parser::parallel_or_full_path_description() {
 			Get();
 			addTerminal(); 
 			list_of_path_outputs();
-		} else SynErr(293,__FUNCTION__);
+		} else SynErr(295,__FUNCTION__);
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
@@ -4158,7 +4156,7 @@ void Parser::polarity_operator() {
 		} else if (la->kind == _TMinus) {
 			Get();
 			addTerminal(); 
-		} else SynErr(294,__FUNCTION__);
+		} else SynErr(296,__FUNCTION__);
 }
 
 void Parser::specify_output_terminal_descriptor() {
@@ -4246,7 +4244,7 @@ void Parser::edge_identifier() {
 		} else if (la->kind == _Tnegedge) {
 			Get();
 			addTerminal(); 
-		} else SynErr(295,__FUNCTION__);
+		} else SynErr(297,__FUNCTION__);
 }
 
 void Parser::data_source_expression() {
@@ -4276,7 +4274,7 @@ void Parser::simple_or_edge_sensitive_path_description() {
 			if (la->kind == _TIdent) {
 				list_of_path_outputs();
 			}
-		} else SynErr(296,__FUNCTION__);
+		} else SynErr(298,__FUNCTION__);
 		if (la->kind == _TLpar) {
 			Get();
 			addTerminal(); 
@@ -4290,7 +4288,7 @@ void Parser::simple_or_edge_sensitive_path_description() {
 			} else if (la->kind == _TMinusColon) {
 				Get();
 				addTerminal(); 
-			} else SynErr(297,__FUNCTION__);
+			} else SynErr(299,__FUNCTION__);
 			data_source_expression();
 			Expect(_TRpar,__FUNCTION__);
 			addTerminal(); 
@@ -4805,10 +4803,8 @@ void Parser::controlled_timing_check_event() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_controlled_timing_check_event, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		timing_check_event_control();
 		specify_terminal_descriptor();
-		if (la->kind == _T2Amp) {
+		if (la->kind == _T3Amp) {
 			Get();
-			addTerminal(); 
-			Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4821,10 +4817,8 @@ void Parser::timing_check_event() {
 			timing_check_event_control();
 		}
 		specify_terminal_descriptor();
-		if (la->kind == _T2Amp) {
+		if (la->kind == _T3Amp) {
 			Get();
-			addTerminal(); 
-			Expect(_TAmp,__FUNCTION__);
 			addTerminal(); 
 			timing_check_condition();
 		}
@@ -4844,7 +4838,7 @@ void Parser::timing_check_event_control() {
 			addTerminal(); 
 		} else if (la->kind == _Tedge) {
 			edge_control_specifier();
-		} else SynErr(298,__FUNCTION__);
+		} else SynErr(300,__FUNCTION__);
 }
 
 void Parser::specify_terminal_descriptor() {
@@ -4921,7 +4915,7 @@ void Parser::constant_expression_nlr() {
 			Expect(_TColon,__FUNCTION__);
 			addTerminal(); 
 			constant_expression();
-		} else SynErr(299,__FUNCTION__);
+		} else SynErr(301,__FUNCTION__);
 }
 
 void Parser::width_constant_expression() {
@@ -4986,7 +4980,7 @@ void Parser::primary() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(300,__FUNCTION__);
+		} else SynErr(302,__FUNCTION__);
 }
 
 void Parser::module_path_primary() {
@@ -5045,7 +5039,7 @@ void Parser::module_path_primary() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(301,__FUNCTION__);
+		} else SynErr(303,__FUNCTION__);
 }
 
 void Parser::module_path_expression_nlr() {
@@ -5154,7 +5148,7 @@ void Parser::parameter_value_assignment_or_delay2() {
 				addTerminal(); 
 				named_parameter_assignment();
 			}
-		} else SynErr(302,__FUNCTION__);
+		} else SynErr(304,__FUNCTION__);
 		Expect(_TRpar,__FUNCTION__);
 		addTerminal(); 
 		d_stack.pop(); 
@@ -5200,7 +5194,7 @@ void Parser::port_connection_or_output_terminal() {
 			if (StartOf(23)) {
 				expression_2();
 			}
-		} else SynErr(303,__FUNCTION__);
+		} else SynErr(305,__FUNCTION__);
 		d_stack.pop(); 
 }
 
@@ -5275,7 +5269,7 @@ void Parser::primary_2() {
 			}
 			Expect(_TRbrace,__FUNCTION__);
 			addTerminal(); 
-		} else SynErr(304,__FUNCTION__);
+		} else SynErr(306,__FUNCTION__);
 }
 
 
@@ -5378,7 +5372,7 @@ void Parser::Parse() {
 }
 
 Parser::Parser(Vl::PpLexer *scanner, Vl::Errors* err) {
-	maxT = 203;
+	maxT = 205;
 
 	ParserInitCaller<Parser>::CallInit(this);
 	la = &d_dummy;
@@ -5392,43 +5386,43 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[36][205] = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,T,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,T,T,x, x,T,x,x, x,T,T,T, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,T, T,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,T,T,x, x,T,x,x, x,T,x,x, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,x, T,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,T,T,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,T,T,T, T,T,x,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,T,T,x, x,x,x,x, x,T,T,T, T,T,x,x, x,T,x,x, T,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,T,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, T,x,T,x, x,T,x,x, x,T,x,x, x,T,x,x, x,x,T,x, x,x,T,x, T,T,x,T, T,T,T,x, x,T,x,x, x,x,T,T, x,x,T,T, T,T,x,x, T,T,T,T, T,x,x,x, x,x,x,x, x,T,T,x, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, T,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,T, T,T,T,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, T,x,x,x, x,x,T,x, T,x,x,x, T,T,T,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, T,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x},
-		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, T,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,x,T, T,T,T,T, x,x,x,x, x}
+	static bool set[36][207] = {
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,x,T, T,T,T,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,T,T, T,x,x,T, x,x,x,T, T,T,x,T, x,x,x,x, T,x,x,x, T,x,T,T, x,T,T,T, T,T,T,T, x,x,x,x, T,T,x,x, T,T,T,T, x,x,T,T, T,T,T,x, x,x,x,T, T,x,x,T, T,x,T,T, T,T,T,T, T,T,T,T, T,x,x,T, x,x,T,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,x,T, T,T,T,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,T,T, T,x,x,T, x,x,x,T, x,x,x,T, x,x,x,x, T,x,x,x, T,x,T,T, x,T,T,T, T,x,T,T, x,x,x,x, T,T,x,x, T,T,T,T, x,x,T,T, T,T,T,x, x,x,x,T, T,x,x,T, T,x,T,T, T,T,T,T, T,T,T,T, T,x,x,T, x,x,T,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,T, T,T,T,T, x,x,x,T, x,x,T,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,T, T,x,x,x, x,x,x,T, T,T,T,T, x,x,x,T, x,x,T,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,x,T, T,T,T,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,T,x, T,x,x,T, x,x,x,T, x,x,x,T, x,x,x,x, T,x,x,x, T,x,T,T, x,T,T,T, T,x,x,T, x,x,x,x, T,T,x,x, T,T,T,T, x,x,T,T, T,T,T,x, x,x,x,x, x,x,x,T, T,x,T,T, T,T,T,T, T,T,T,T, T,x,x,T, x,x,T,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,T,T,T, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, x,x,x},
+		{x,T,T,x, T,T,x,x, x,T,T,T, T,T,x,T, T,T,T,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,T,x,x, x,x,T,x, x,x,x,x, x,x,T,x, x,x,x,x, T,x,T,x, x,x,T,T, T,x,x,x, T,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,T,T,T, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,T,T,T, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,T,T,T, T,T,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, T,x,x,x, x,T,T,T, x,x,x,T, x,T,T,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,x, x,x,x,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,x,x, x,x,x},
+		{x,T,T,T, x,x,T,T, T,T,T,T, x,x,x,x, x,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,T,T, T,T,x,x, x,x,x}
 	};
 
 
@@ -5476,292 +5470,294 @@ void Errors::SynErr(const QString& sourcePath, int line, int col, int n, Vl::Err
 			case 16: s = coco_string_create(L"T3Eq expected"); break;
 			case 17: s = coco_string_create(L"TAmp expected"); break;
 			case 18: s = coco_string_create(L"T2Amp expected"); break;
-			case 19: s = coco_string_create(L"TBar expected"); break;
-			case 20: s = coco_string_create(L"T2Bar expected"); break;
-			case 21: s = coco_string_create(L"TStar expected"); break;
-			case 22: s = coco_string_create(L"T2Star expected"); break;
-			case 23: s = coco_string_create(L"TLt expected"); break;
-			case 24: s = coco_string_create(L"TLeq expected"); break;
-			case 25: s = coco_string_create(L"T2Lt expected"); break;
-			case 26: s = coco_string_create(L"T3Lt expected"); break;
-			case 27: s = coco_string_create(L"TGt expected"); break;
-			case 28: s = coco_string_create(L"TGeq expected"); break;
-			case 29: s = coco_string_create(L"T2Gt expected"); break;
-			case 30: s = coco_string_create(L"T3Gt expected"); break;
-			case 31: s = coco_string_create(L"THash expected"); break;
-			case 32: s = coco_string_create(L"TAt expected"); break;
-			case 33: s = coco_string_create(L"TQmark expected"); break;
-			case 34: s = coco_string_create(L"TEqGt expected"); break;
-			case 35: s = coco_string_create(L"TStarGt expected"); break;
-			case 36: s = coco_string_create(L"TLpar expected"); break;
-			case 37: s = coco_string_create(L"TRpar expected"); break;
-			case 38: s = coco_string_create(L"TLbrack expected"); break;
-			case 39: s = coco_string_create(L"TRbrack expected"); break;
-			case 40: s = coco_string_create(L"TLbrace expected"); break;
-			case 41: s = coco_string_create(L"TRbrace expected"); break;
-			case 42: s = coco_string_create(L"TLatt expected"); break;
-			case 43: s = coco_string_create(L"TRatt expected"); break;
-			case 44: s = coco_string_create(L"TLcmt expected"); break;
-			case 45: s = coco_string_create(L"TRcmt expected"); break;
-			case 46: s = coco_string_create(L"TComma expected"); break;
-			case 47: s = coco_string_create(L"TDot expected"); break;
-			case 48: s = coco_string_create(L"TSemi expected"); break;
-			case 49: s = coco_string_create(L"TColon expected"); break;
-			case 50: s = coco_string_create(L"TPlusColon expected"); break;
-			case 51: s = coco_string_create(L"TMinusColon expected"); break;
-			case 52: s = coco_string_create(L"Talways expected"); break;
-			case 53: s = coco_string_create(L"Tand expected"); break;
-			case 54: s = coco_string_create(L"Tassign expected"); break;
-			case 55: s = coco_string_create(L"Tautomatic expected"); break;
-			case 56: s = coco_string_create(L"Tbegin expected"); break;
-			case 57: s = coco_string_create(L"Tbuf expected"); break;
-			case 58: s = coco_string_create(L"Tbufif0 expected"); break;
-			case 59: s = coco_string_create(L"Tbufif1 expected"); break;
-			case 60: s = coco_string_create(L"Tcase expected"); break;
-			case 61: s = coco_string_create(L"Tcasex expected"); break;
-			case 62: s = coco_string_create(L"Tcasez expected"); break;
-			case 63: s = coco_string_create(L"Tcell expected"); break;
-			case 64: s = coco_string_create(L"Tcmos expected"); break;
-			case 65: s = coco_string_create(L"Tconfig expected"); break;
-			case 66: s = coco_string_create(L"Tdeassign expected"); break;
-			case 67: s = coco_string_create(L"Tdefault expected"); break;
-			case 68: s = coco_string_create(L"Tdefparam expected"); break;
-			case 69: s = coco_string_create(L"Tdesign expected"); break;
-			case 70: s = coco_string_create(L"Tdisable expected"); break;
-			case 71: s = coco_string_create(L"Tedge expected"); break;
-			case 72: s = coco_string_create(L"Telse expected"); break;
-			case 73: s = coco_string_create(L"Tend expected"); break;
-			case 74: s = coco_string_create(L"Tendcase expected"); break;
-			case 75: s = coco_string_create(L"Tendconfig expected"); break;
-			case 76: s = coco_string_create(L"Tendfunction expected"); break;
-			case 77: s = coco_string_create(L"Tendgenerate expected"); break;
-			case 78: s = coco_string_create(L"Tendmodule expected"); break;
-			case 79: s = coco_string_create(L"Tendprimitive expected"); break;
-			case 80: s = coco_string_create(L"Tendspecify expected"); break;
-			case 81: s = coco_string_create(L"Tendtable expected"); break;
-			case 82: s = coco_string_create(L"Tendtask expected"); break;
-			case 83: s = coco_string_create(L"Tevent expected"); break;
-			case 84: s = coco_string_create(L"Tfor expected"); break;
-			case 85: s = coco_string_create(L"Tforce expected"); break;
-			case 86: s = coco_string_create(L"Tforever expected"); break;
-			case 87: s = coco_string_create(L"Tfork expected"); break;
-			case 88: s = coco_string_create(L"Tfunction expected"); break;
-			case 89: s = coco_string_create(L"Tgenerate expected"); break;
-			case 90: s = coco_string_create(L"Tgenvar expected"); break;
-			case 91: s = coco_string_create(L"Thighz0 expected"); break;
-			case 92: s = coco_string_create(L"Thighz1 expected"); break;
-			case 93: s = coco_string_create(L"Tif expected"); break;
-			case 94: s = coco_string_create(L"Tifnone expected"); break;
-			case 95: s = coco_string_create(L"Tincdir expected"); break;
-			case 96: s = coco_string_create(L"Tinclude expected"); break;
-			case 97: s = coco_string_create(L"Tinitial expected"); break;
-			case 98: s = coco_string_create(L"Tinout expected"); break;
-			case 99: s = coco_string_create(L"Tinput expected"); break;
-			case 100: s = coco_string_create(L"Tinstance expected"); break;
-			case 101: s = coco_string_create(L"Tinteger expected"); break;
-			case 102: s = coco_string_create(L"Tjoin expected"); break;
-			case 103: s = coco_string_create(L"Tlarge expected"); break;
-			case 104: s = coco_string_create(L"Tliblist expected"); break;
-			case 105: s = coco_string_create(L"Tlibrary expected"); break;
-			case 106: s = coco_string_create(L"Tlocalparam expected"); break;
-			case 107: s = coco_string_create(L"Tmacromodule expected"); break;
-			case 108: s = coco_string_create(L"Tmedium expected"); break;
-			case 109: s = coco_string_create(L"Tmodule expected"); break;
-			case 110: s = coco_string_create(L"Tnand expected"); break;
-			case 111: s = coco_string_create(L"Tnegedge expected"); break;
-			case 112: s = coco_string_create(L"Tnmos expected"); break;
-			case 113: s = coco_string_create(L"Tnor expected"); break;
-			case 114: s = coco_string_create(L"Tnoshowcancelled expected"); break;
-			case 115: s = coco_string_create(L"Tnot expected"); break;
-			case 116: s = coco_string_create(L"Tnotif0 expected"); break;
-			case 117: s = coco_string_create(L"Tnotif1 expected"); break;
-			case 118: s = coco_string_create(L"Tor expected"); break;
-			case 119: s = coco_string_create(L"Toutput expected"); break;
-			case 120: s = coco_string_create(L"Tparameter expected"); break;
-			case 121: s = coco_string_create(L"Tpmos expected"); break;
-			case 122: s = coco_string_create(L"Tposedge expected"); break;
-			case 123: s = coco_string_create(L"Tprimitive expected"); break;
-			case 124: s = coco_string_create(L"Tpull0 expected"); break;
-			case 125: s = coco_string_create(L"Tpull1 expected"); break;
-			case 126: s = coco_string_create(L"Tpulldown expected"); break;
-			case 127: s = coco_string_create(L"Tpullup expected"); break;
-			case 128: s = coco_string_create(L"Tpulsestyle_onevent expected"); break;
-			case 129: s = coco_string_create(L"Tpulsestyle_ondetect expected"); break;
-			case 130: s = coco_string_create(L"Trcmos expected"); break;
-			case 131: s = coco_string_create(L"Treal expected"); break;
-			case 132: s = coco_string_create(L"Trealtime expected"); break;
-			case 133: s = coco_string_create(L"Treg expected"); break;
-			case 134: s = coco_string_create(L"Trelease expected"); break;
-			case 135: s = coco_string_create(L"Trepeat expected"); break;
-			case 136: s = coco_string_create(L"Trnmos expected"); break;
-			case 137: s = coco_string_create(L"Trpmos expected"); break;
-			case 138: s = coco_string_create(L"Trtran expected"); break;
-			case 139: s = coco_string_create(L"Trtranif0 expected"); break;
-			case 140: s = coco_string_create(L"Trtranif1 expected"); break;
-			case 141: s = coco_string_create(L"Tscalared expected"); break;
-			case 142: s = coco_string_create(L"Tshowcancelled expected"); break;
-			case 143: s = coco_string_create(L"Tsigned expected"); break;
-			case 144: s = coco_string_create(L"Tsmall expected"); break;
-			case 145: s = coco_string_create(L"Tspecify expected"); break;
-			case 146: s = coco_string_create(L"Tspecparam expected"); break;
-			case 147: s = coco_string_create(L"Tstrong0 expected"); break;
-			case 148: s = coco_string_create(L"Tstrong1 expected"); break;
-			case 149: s = coco_string_create(L"Tsupply0 expected"); break;
-			case 150: s = coco_string_create(L"Tsupply1 expected"); break;
-			case 151: s = coco_string_create(L"Ttable expected"); break;
-			case 152: s = coco_string_create(L"Ttask expected"); break;
-			case 153: s = coco_string_create(L"Ttime expected"); break;
-			case 154: s = coco_string_create(L"Ttran expected"); break;
-			case 155: s = coco_string_create(L"Ttranif0 expected"); break;
-			case 156: s = coco_string_create(L"Ttranif1 expected"); break;
-			case 157: s = coco_string_create(L"Ttri expected"); break;
-			case 158: s = coco_string_create(L"Ttri0 expected"); break;
-			case 159: s = coco_string_create(L"Ttri1 expected"); break;
-			case 160: s = coco_string_create(L"Ttriand expected"); break;
-			case 161: s = coco_string_create(L"Ttrior expected"); break;
-			case 162: s = coco_string_create(L"Ttrireg expected"); break;
-			case 163: s = coco_string_create(L"Tunsigned expected"); break;
-			case 164: s = coco_string_create(L"Tuse expected"); break;
-			case 165: s = coco_string_create(L"Tuwire expected"); break;
-			case 166: s = coco_string_create(L"Tvectored expected"); break;
-			case 167: s = coco_string_create(L"Twait expected"); break;
-			case 168: s = coco_string_create(L"Twand expected"); break;
-			case 169: s = coco_string_create(L"Tweak0 expected"); break;
-			case 170: s = coco_string_create(L"Tweak1 expected"); break;
-			case 171: s = coco_string_create(L"Twhile expected"); break;
-			case 172: s = coco_string_create(L"Twire expected"); break;
-			case 173: s = coco_string_create(L"Twor expected"); break;
-			case 174: s = coco_string_create(L"Txnor expected"); break;
-			case 175: s = coco_string_create(L"Txor expected"); break;
-			case 176: s = coco_string_create(L"TmaxKeyword expected"); break;
-			case 177: s = coco_string_create(L"TPathPulse expected"); break;
-			case 178: s = coco_string_create(L"TSetup expected"); break;
-			case 179: s = coco_string_create(L"THold expected"); break;
-			case 180: s = coco_string_create(L"TSetupHold expected"); break;
-			case 181: s = coco_string_create(L"TRecovery expected"); break;
-			case 182: s = coco_string_create(L"TRemoval expected"); break;
-			case 183: s = coco_string_create(L"TRecrem expected"); break;
-			case 184: s = coco_string_create(L"TSkew expected"); break;
-			case 185: s = coco_string_create(L"TTimeSkew expected"); break;
-			case 186: s = coco_string_create(L"TFullSkew expected"); break;
-			case 187: s = coco_string_create(L"TPeriod expected"); break;
-			case 188: s = coco_string_create(L"TWidth expected"); break;
-			case 189: s = coco_string_create(L"TNoChange expected"); break;
-			case 190: s = coco_string_create(L"TmaxSystemName expected"); break;
-			case 191: s = coco_string_create(L"TString expected"); break;
-			case 192: s = coco_string_create(L"TIdent expected"); break;
-			case 193: s = coco_string_create(L"TSysName expected"); break;
-			case 194: s = coco_string_create(L"TCoDi expected"); break;
-			case 195: s = coco_string_create(L"TRealnum expected"); break;
-			case 196: s = coco_string_create(L"TNatural expected"); break;
-			case 197: s = coco_string_create(L"TSizedBased expected"); break;
-			case 198: s = coco_string_create(L"TBasedInt expected"); break;
-			case 199: s = coco_string_create(L"TBaseFormat expected"); break;
-			case 200: s = coco_string_create(L"TBaseValue expected"); break;
-			case 201: s = coco_string_create(L"TAttribute expected"); break;
-			case 202: s = coco_string_create(L"TMacroUsage expected"); break;
-			case 203: s = coco_string_create(L"??? expected"); break;
-			case 204: s = coco_string_create(L"invalid unary_operator"); break;
-			case 205: s = coco_string_create(L"invalid binary_operator"); break;
-			case 206: s = coco_string_create(L"invalid unary_module_path_operator"); break;
-			case 207: s = coco_string_create(L"invalid binary_module_path_operator"); break;
-			case 208: s = coco_string_create(L"invalid udp_declaration"); break;
-			case 209: s = coco_string_create(L"invalid file_path_spec"); break;
-			case 210: s = coco_string_create(L"invalid module_keyword"); break;
-			case 211: s = coco_string_create(L"invalid module_item"); break;
-			case 212: s = coco_string_create(L"invalid parameter_declaration"); break;
-			case 213: s = coco_string_create(L"invalid port"); break;
-			case 214: s = coco_string_create(L"invalid port_declaration"); break;
-			case 215: s = coco_string_create(L"invalid port_expression"); break;
-			case 216: s = coco_string_create(L"invalid output_declaration"); break;
-			case 217: s = coco_string_create(L"invalid non_port_module_item"); break;
-			case 218: s = coco_string_create(L"invalid module_or_generate_item"); break;
-			case 219: s = coco_string_create(L"invalid module_or_generate_item_declaration"); break;
-			case 220: s = coco_string_create(L"invalid local_parameter_declaration"); break;
-			case 221: s = coco_string_create(L"invalid gate_instantiation"); break;
-			case 222: s = coco_string_create(L"invalid loop_generate_construct"); break;
-			case 223: s = coco_string_create(L"invalid conditional_generate_construct"); break;
-			case 224: s = coco_string_create(L"invalid net_declaration"); break;
-			case 225: s = coco_string_create(L"invalid config_rule_statement"); break;
-			case 226: s = coco_string_create(L"invalid config_rule_statement"); break;
-			case 227: s = coco_string_create(L"invalid parameter_type"); break;
-			case 228: s = coco_string_create(L"invalid net_type"); break;
-			case 229: s = coco_string_create(L"invalid output_variable_type"); break;
-			case 230: s = coco_string_create(L"invalid drive_strength"); break;
-			case 231: s = coco_string_create(L"invalid drive_strength"); break;
-			case 232: s = coco_string_create(L"invalid charge_strength"); break;
-			case 233: s = coco_string_create(L"invalid real_type"); break;
-			case 234: s = coco_string_create(L"invalid variable_type"); break;
-			case 235: s = coco_string_create(L"invalid strength0"); break;
-			case 236: s = coco_string_create(L"invalid strength1"); break;
-			case 237: s = coco_string_create(L"invalid delay_value"); break;
-			case 238: s = coco_string_create(L"invalid expression_nlr"); break;
-			case 239: s = coco_string_create(L"invalid specparam_assignment"); break;
-			case 240: s = coco_string_create(L"invalid function_range_or_type"); break;
-			case 241: s = coco_string_create(L"invalid function_item_declaration"); break;
-			case 242: s = coco_string_create(L"invalid block_item_declaration"); break;
-			case 243: s = coco_string_create(L"invalid tf_input_declaration"); break;
-			case 244: s = coco_string_create(L"invalid task_item_declaration"); break;
-			case 245: s = coco_string_create(L"invalid tf_output_declaration"); break;
-			case 246: s = coco_string_create(L"invalid tf_inout_declaration"); break;
-			case 247: s = coco_string_create(L"invalid task_port_item"); break;
-			case 248: s = coco_string_create(L"invalid task_port_type"); break;
-			case 249: s = coco_string_create(L"invalid cmos_switchtype"); break;
-			case 250: s = coco_string_create(L"invalid enable_gatetype"); break;
-			case 251: s = coco_string_create(L"invalid mos_switchtype"); break;
-			case 252: s = coco_string_create(L"invalid n_input_gatetype"); break;
-			case 253: s = coco_string_create(L"invalid n_output_gatetype"); break;
-			case 254: s = coco_string_create(L"invalid pass_en_switchtype"); break;
-			case 255: s = coco_string_create(L"invalid pass_switchtype"); break;
-			case 256: s = coco_string_create(L"invalid pulldown_strength"); break;
-			case 257: s = coco_string_create(L"invalid pulldown_strength"); break;
-			case 258: s = coco_string_create(L"invalid pullup_strength"); break;
-			case 259: s = coco_string_create(L"invalid pullup_strength"); break;
-			case 260: s = coco_string_create(L"invalid net_lvalue"); break;
-			case 261: s = coco_string_create(L"invalid constant_primary"); break;
-			case 262: s = coco_string_create(L"invalid generate_block_or_null"); break;
-			case 263: s = coco_string_create(L"invalid case_generate_item"); break;
-			case 264: s = coco_string_create(L"invalid udp_port_declaration"); break;
-			case 265: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
-			case 266: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
-			case 267: s = coco_string_create(L"invalid level_or_edge_symbol"); break;
-			case 268: s = coco_string_create(L"invalid level_symbol"); break;
-			case 269: s = coco_string_create(L"invalid number"); break;
-			case 270: s = coco_string_create(L"invalid number"); break;
+			case 19: s = coco_string_create(L"T3Amp expected"); break;
+			case 20: s = coco_string_create(L"TBar expected"); break;
+			case 21: s = coco_string_create(L"T2Bar expected"); break;
+			case 22: s = coco_string_create(L"TStar expected"); break;
+			case 23: s = coco_string_create(L"T2Star expected"); break;
+			case 24: s = coco_string_create(L"TLt expected"); break;
+			case 25: s = coco_string_create(L"TLeq expected"); break;
+			case 26: s = coco_string_create(L"T2Lt expected"); break;
+			case 27: s = coco_string_create(L"T3Lt expected"); break;
+			case 28: s = coco_string_create(L"TGt expected"); break;
+			case 29: s = coco_string_create(L"TGeq expected"); break;
+			case 30: s = coco_string_create(L"T2Gt expected"); break;
+			case 31: s = coco_string_create(L"T3Gt expected"); break;
+			case 32: s = coco_string_create(L"THash expected"); break;
+			case 33: s = coco_string_create(L"TAt expected"); break;
+			case 34: s = coco_string_create(L"TQmark expected"); break;
+			case 35: s = coco_string_create(L"TEqGt expected"); break;
+			case 36: s = coco_string_create(L"TStarGt expected"); break;
+			case 37: s = coco_string_create(L"TMinusGt expected"); break;
+			case 38: s = coco_string_create(L"TLpar expected"); break;
+			case 39: s = coco_string_create(L"TRpar expected"); break;
+			case 40: s = coco_string_create(L"TLbrack expected"); break;
+			case 41: s = coco_string_create(L"TRbrack expected"); break;
+			case 42: s = coco_string_create(L"TLbrace expected"); break;
+			case 43: s = coco_string_create(L"TRbrace expected"); break;
+			case 44: s = coco_string_create(L"TLatt expected"); break;
+			case 45: s = coco_string_create(L"TRatt expected"); break;
+			case 46: s = coco_string_create(L"TLcmt expected"); break;
+			case 47: s = coco_string_create(L"TRcmt expected"); break;
+			case 48: s = coco_string_create(L"TComma expected"); break;
+			case 49: s = coco_string_create(L"TDot expected"); break;
+			case 50: s = coco_string_create(L"TSemi expected"); break;
+			case 51: s = coco_string_create(L"TColon expected"); break;
+			case 52: s = coco_string_create(L"TPlusColon expected"); break;
+			case 53: s = coco_string_create(L"TMinusColon expected"); break;
+			case 54: s = coco_string_create(L"Talways expected"); break;
+			case 55: s = coco_string_create(L"Tand expected"); break;
+			case 56: s = coco_string_create(L"Tassign expected"); break;
+			case 57: s = coco_string_create(L"Tautomatic expected"); break;
+			case 58: s = coco_string_create(L"Tbegin expected"); break;
+			case 59: s = coco_string_create(L"Tbuf expected"); break;
+			case 60: s = coco_string_create(L"Tbufif0 expected"); break;
+			case 61: s = coco_string_create(L"Tbufif1 expected"); break;
+			case 62: s = coco_string_create(L"Tcase expected"); break;
+			case 63: s = coco_string_create(L"Tcasex expected"); break;
+			case 64: s = coco_string_create(L"Tcasez expected"); break;
+			case 65: s = coco_string_create(L"Tcell expected"); break;
+			case 66: s = coco_string_create(L"Tcmos expected"); break;
+			case 67: s = coco_string_create(L"Tconfig expected"); break;
+			case 68: s = coco_string_create(L"Tdeassign expected"); break;
+			case 69: s = coco_string_create(L"Tdefault expected"); break;
+			case 70: s = coco_string_create(L"Tdefparam expected"); break;
+			case 71: s = coco_string_create(L"Tdesign expected"); break;
+			case 72: s = coco_string_create(L"Tdisable expected"); break;
+			case 73: s = coco_string_create(L"Tedge expected"); break;
+			case 74: s = coco_string_create(L"Telse expected"); break;
+			case 75: s = coco_string_create(L"Tend expected"); break;
+			case 76: s = coco_string_create(L"Tendcase expected"); break;
+			case 77: s = coco_string_create(L"Tendconfig expected"); break;
+			case 78: s = coco_string_create(L"Tendfunction expected"); break;
+			case 79: s = coco_string_create(L"Tendgenerate expected"); break;
+			case 80: s = coco_string_create(L"Tendmodule expected"); break;
+			case 81: s = coco_string_create(L"Tendprimitive expected"); break;
+			case 82: s = coco_string_create(L"Tendspecify expected"); break;
+			case 83: s = coco_string_create(L"Tendtable expected"); break;
+			case 84: s = coco_string_create(L"Tendtask expected"); break;
+			case 85: s = coco_string_create(L"Tevent expected"); break;
+			case 86: s = coco_string_create(L"Tfor expected"); break;
+			case 87: s = coco_string_create(L"Tforce expected"); break;
+			case 88: s = coco_string_create(L"Tforever expected"); break;
+			case 89: s = coco_string_create(L"Tfork expected"); break;
+			case 90: s = coco_string_create(L"Tfunction expected"); break;
+			case 91: s = coco_string_create(L"Tgenerate expected"); break;
+			case 92: s = coco_string_create(L"Tgenvar expected"); break;
+			case 93: s = coco_string_create(L"Thighz0 expected"); break;
+			case 94: s = coco_string_create(L"Thighz1 expected"); break;
+			case 95: s = coco_string_create(L"Tif expected"); break;
+			case 96: s = coco_string_create(L"Tifnone expected"); break;
+			case 97: s = coco_string_create(L"Tincdir expected"); break;
+			case 98: s = coco_string_create(L"Tinclude expected"); break;
+			case 99: s = coco_string_create(L"Tinitial expected"); break;
+			case 100: s = coco_string_create(L"Tinout expected"); break;
+			case 101: s = coco_string_create(L"Tinput expected"); break;
+			case 102: s = coco_string_create(L"Tinstance expected"); break;
+			case 103: s = coco_string_create(L"Tinteger expected"); break;
+			case 104: s = coco_string_create(L"Tjoin expected"); break;
+			case 105: s = coco_string_create(L"Tlarge expected"); break;
+			case 106: s = coco_string_create(L"Tliblist expected"); break;
+			case 107: s = coco_string_create(L"Tlibrary expected"); break;
+			case 108: s = coco_string_create(L"Tlocalparam expected"); break;
+			case 109: s = coco_string_create(L"Tmacromodule expected"); break;
+			case 110: s = coco_string_create(L"Tmedium expected"); break;
+			case 111: s = coco_string_create(L"Tmodule expected"); break;
+			case 112: s = coco_string_create(L"Tnand expected"); break;
+			case 113: s = coco_string_create(L"Tnegedge expected"); break;
+			case 114: s = coco_string_create(L"Tnmos expected"); break;
+			case 115: s = coco_string_create(L"Tnor expected"); break;
+			case 116: s = coco_string_create(L"Tnoshowcancelled expected"); break;
+			case 117: s = coco_string_create(L"Tnot expected"); break;
+			case 118: s = coco_string_create(L"Tnotif0 expected"); break;
+			case 119: s = coco_string_create(L"Tnotif1 expected"); break;
+			case 120: s = coco_string_create(L"Tor expected"); break;
+			case 121: s = coco_string_create(L"Toutput expected"); break;
+			case 122: s = coco_string_create(L"Tparameter expected"); break;
+			case 123: s = coco_string_create(L"Tpmos expected"); break;
+			case 124: s = coco_string_create(L"Tposedge expected"); break;
+			case 125: s = coco_string_create(L"Tprimitive expected"); break;
+			case 126: s = coco_string_create(L"Tpull0 expected"); break;
+			case 127: s = coco_string_create(L"Tpull1 expected"); break;
+			case 128: s = coco_string_create(L"Tpulldown expected"); break;
+			case 129: s = coco_string_create(L"Tpullup expected"); break;
+			case 130: s = coco_string_create(L"Tpulsestyle_onevent expected"); break;
+			case 131: s = coco_string_create(L"Tpulsestyle_ondetect expected"); break;
+			case 132: s = coco_string_create(L"Trcmos expected"); break;
+			case 133: s = coco_string_create(L"Treal expected"); break;
+			case 134: s = coco_string_create(L"Trealtime expected"); break;
+			case 135: s = coco_string_create(L"Treg expected"); break;
+			case 136: s = coco_string_create(L"Trelease expected"); break;
+			case 137: s = coco_string_create(L"Trepeat expected"); break;
+			case 138: s = coco_string_create(L"Trnmos expected"); break;
+			case 139: s = coco_string_create(L"Trpmos expected"); break;
+			case 140: s = coco_string_create(L"Trtran expected"); break;
+			case 141: s = coco_string_create(L"Trtranif0 expected"); break;
+			case 142: s = coco_string_create(L"Trtranif1 expected"); break;
+			case 143: s = coco_string_create(L"Tscalared expected"); break;
+			case 144: s = coco_string_create(L"Tshowcancelled expected"); break;
+			case 145: s = coco_string_create(L"Tsigned expected"); break;
+			case 146: s = coco_string_create(L"Tsmall expected"); break;
+			case 147: s = coco_string_create(L"Tspecify expected"); break;
+			case 148: s = coco_string_create(L"Tspecparam expected"); break;
+			case 149: s = coco_string_create(L"Tstrong0 expected"); break;
+			case 150: s = coco_string_create(L"Tstrong1 expected"); break;
+			case 151: s = coco_string_create(L"Tsupply0 expected"); break;
+			case 152: s = coco_string_create(L"Tsupply1 expected"); break;
+			case 153: s = coco_string_create(L"Ttable expected"); break;
+			case 154: s = coco_string_create(L"Ttask expected"); break;
+			case 155: s = coco_string_create(L"Ttime expected"); break;
+			case 156: s = coco_string_create(L"Ttran expected"); break;
+			case 157: s = coco_string_create(L"Ttranif0 expected"); break;
+			case 158: s = coco_string_create(L"Ttranif1 expected"); break;
+			case 159: s = coco_string_create(L"Ttri expected"); break;
+			case 160: s = coco_string_create(L"Ttri0 expected"); break;
+			case 161: s = coco_string_create(L"Ttri1 expected"); break;
+			case 162: s = coco_string_create(L"Ttriand expected"); break;
+			case 163: s = coco_string_create(L"Ttrior expected"); break;
+			case 164: s = coco_string_create(L"Ttrireg expected"); break;
+			case 165: s = coco_string_create(L"Tunsigned expected"); break;
+			case 166: s = coco_string_create(L"Tuse expected"); break;
+			case 167: s = coco_string_create(L"Tuwire expected"); break;
+			case 168: s = coco_string_create(L"Tvectored expected"); break;
+			case 169: s = coco_string_create(L"Twait expected"); break;
+			case 170: s = coco_string_create(L"Twand expected"); break;
+			case 171: s = coco_string_create(L"Tweak0 expected"); break;
+			case 172: s = coco_string_create(L"Tweak1 expected"); break;
+			case 173: s = coco_string_create(L"Twhile expected"); break;
+			case 174: s = coco_string_create(L"Twire expected"); break;
+			case 175: s = coco_string_create(L"Twor expected"); break;
+			case 176: s = coco_string_create(L"Txnor expected"); break;
+			case 177: s = coco_string_create(L"Txor expected"); break;
+			case 178: s = coco_string_create(L"TmaxKeyword expected"); break;
+			case 179: s = coco_string_create(L"TPathPulse expected"); break;
+			case 180: s = coco_string_create(L"TSetup expected"); break;
+			case 181: s = coco_string_create(L"THold expected"); break;
+			case 182: s = coco_string_create(L"TSetupHold expected"); break;
+			case 183: s = coco_string_create(L"TRecovery expected"); break;
+			case 184: s = coco_string_create(L"TRemoval expected"); break;
+			case 185: s = coco_string_create(L"TRecrem expected"); break;
+			case 186: s = coco_string_create(L"TSkew expected"); break;
+			case 187: s = coco_string_create(L"TTimeSkew expected"); break;
+			case 188: s = coco_string_create(L"TFullSkew expected"); break;
+			case 189: s = coco_string_create(L"TPeriod expected"); break;
+			case 190: s = coco_string_create(L"TWidth expected"); break;
+			case 191: s = coco_string_create(L"TNoChange expected"); break;
+			case 192: s = coco_string_create(L"TmaxSystemName expected"); break;
+			case 193: s = coco_string_create(L"TString expected"); break;
+			case 194: s = coco_string_create(L"TIdent expected"); break;
+			case 195: s = coco_string_create(L"TSysName expected"); break;
+			case 196: s = coco_string_create(L"TCoDi expected"); break;
+			case 197: s = coco_string_create(L"TRealnum expected"); break;
+			case 198: s = coco_string_create(L"TNatural expected"); break;
+			case 199: s = coco_string_create(L"TSizedBased expected"); break;
+			case 200: s = coco_string_create(L"TBasedInt expected"); break;
+			case 201: s = coco_string_create(L"TBaseFormat expected"); break;
+			case 202: s = coco_string_create(L"TBaseValue expected"); break;
+			case 203: s = coco_string_create(L"TAttribute expected"); break;
+			case 204: s = coco_string_create(L"TMacroUsage expected"); break;
+			case 205: s = coco_string_create(L"??? expected"); break;
+			case 206: s = coco_string_create(L"invalid unary_operator"); break;
+			case 207: s = coco_string_create(L"invalid binary_operator"); break;
+			case 208: s = coco_string_create(L"invalid unary_module_path_operator"); break;
+			case 209: s = coco_string_create(L"invalid binary_module_path_operator"); break;
+			case 210: s = coco_string_create(L"invalid udp_declaration"); break;
+			case 211: s = coco_string_create(L"invalid file_path_spec"); break;
+			case 212: s = coco_string_create(L"invalid module_keyword"); break;
+			case 213: s = coco_string_create(L"invalid module_item"); break;
+			case 214: s = coco_string_create(L"invalid parameter_declaration"); break;
+			case 215: s = coco_string_create(L"invalid port"); break;
+			case 216: s = coco_string_create(L"invalid port_declaration"); break;
+			case 217: s = coco_string_create(L"invalid port_expression"); break;
+			case 218: s = coco_string_create(L"invalid output_declaration"); break;
+			case 219: s = coco_string_create(L"invalid non_port_module_item"); break;
+			case 220: s = coco_string_create(L"invalid module_or_generate_item"); break;
+			case 221: s = coco_string_create(L"invalid module_or_generate_item_declaration"); break;
+			case 222: s = coco_string_create(L"invalid local_parameter_declaration"); break;
+			case 223: s = coco_string_create(L"invalid gate_instantiation"); break;
+			case 224: s = coco_string_create(L"invalid loop_generate_construct"); break;
+			case 225: s = coco_string_create(L"invalid conditional_generate_construct"); break;
+			case 226: s = coco_string_create(L"invalid net_declaration"); break;
+			case 227: s = coco_string_create(L"invalid config_rule_statement"); break;
+			case 228: s = coco_string_create(L"invalid config_rule_statement"); break;
+			case 229: s = coco_string_create(L"invalid parameter_type"); break;
+			case 230: s = coco_string_create(L"invalid net_type"); break;
+			case 231: s = coco_string_create(L"invalid output_variable_type"); break;
+			case 232: s = coco_string_create(L"invalid drive_strength"); break;
+			case 233: s = coco_string_create(L"invalid drive_strength"); break;
+			case 234: s = coco_string_create(L"invalid charge_strength"); break;
+			case 235: s = coco_string_create(L"invalid real_type"); break;
+			case 236: s = coco_string_create(L"invalid variable_type"); break;
+			case 237: s = coco_string_create(L"invalid strength0"); break;
+			case 238: s = coco_string_create(L"invalid strength1"); break;
+			case 239: s = coco_string_create(L"invalid delay_value"); break;
+			case 240: s = coco_string_create(L"invalid expression_nlr"); break;
+			case 241: s = coco_string_create(L"invalid specparam_assignment"); break;
+			case 242: s = coco_string_create(L"invalid function_range_or_type"); break;
+			case 243: s = coco_string_create(L"invalid function_item_declaration"); break;
+			case 244: s = coco_string_create(L"invalid block_item_declaration"); break;
+			case 245: s = coco_string_create(L"invalid tf_input_declaration"); break;
+			case 246: s = coco_string_create(L"invalid task_item_declaration"); break;
+			case 247: s = coco_string_create(L"invalid tf_output_declaration"); break;
+			case 248: s = coco_string_create(L"invalid tf_inout_declaration"); break;
+			case 249: s = coco_string_create(L"invalid task_port_item"); break;
+			case 250: s = coco_string_create(L"invalid task_port_type"); break;
+			case 251: s = coco_string_create(L"invalid cmos_switchtype"); break;
+			case 252: s = coco_string_create(L"invalid enable_gatetype"); break;
+			case 253: s = coco_string_create(L"invalid mos_switchtype"); break;
+			case 254: s = coco_string_create(L"invalid n_input_gatetype"); break;
+			case 255: s = coco_string_create(L"invalid n_output_gatetype"); break;
+			case 256: s = coco_string_create(L"invalid pass_en_switchtype"); break;
+			case 257: s = coco_string_create(L"invalid pass_switchtype"); break;
+			case 258: s = coco_string_create(L"invalid pulldown_strength"); break;
+			case 259: s = coco_string_create(L"invalid pulldown_strength"); break;
+			case 260: s = coco_string_create(L"invalid pullup_strength"); break;
+			case 261: s = coco_string_create(L"invalid pullup_strength"); break;
+			case 262: s = coco_string_create(L"invalid net_lvalue"); break;
+			case 263: s = coco_string_create(L"invalid constant_primary"); break;
+			case 264: s = coco_string_create(L"invalid generate_block_or_null"); break;
+			case 265: s = coco_string_create(L"invalid case_generate_item"); break;
+			case 266: s = coco_string_create(L"invalid udp_port_declaration"); break;
+			case 267: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
+			case 268: s = coco_string_create(L"invalid sequential_or_combinatorial_entry"); break;
+			case 269: s = coco_string_create(L"invalid level_or_edge_symbol"); break;
+			case 270: s = coco_string_create(L"invalid level_symbol"); break;
 			case 271: s = coco_string_create(L"invalid number"); break;
-			case 272: s = coco_string_create(L"invalid edge_descriptor"); break;
-			case 273: s = coco_string_create(L"invalid statement"); break;
-			case 274: s = coco_string_create(L"invalid procedural_continuous_assignments"); break;
-			case 275: s = coco_string_create(L"invalid variable_lvalue"); break;
-			case 276: s = coco_string_create(L"invalid variable_or_net_lvalue"); break;
-			case 277: s = coco_string_create(L"invalid delay_or_event_control"); break;
-			case 278: s = coco_string_create(L"invalid case_statement"); break;
-			case 279: s = coco_string_create(L"invalid loop_statement"); break;
-			case 280: s = coco_string_create(L"invalid event_control"); break;
-			case 281: s = coco_string_create(L"invalid event_control"); break;
-			case 282: s = coco_string_create(L"invalid event_expression"); break;
-			case 283: s = coco_string_create(L"invalid procedural_timing_control"); break;
-			case 284: s = coco_string_create(L"invalid case_item"); break;
-			case 285: s = coco_string_create(L"invalid specify_item"); break;
-			case 286: s = coco_string_create(L"invalid pulsestyle_declaration"); break;
-			case 287: s = coco_string_create(L"invalid showcancelled_declaration"); break;
-			case 288: s = coco_string_create(L"invalid path_declaration"); break;
-			case 289: s = coco_string_create(L"invalid system_timing_check"); break;
-			case 290: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
-			case 291: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
-			case 292: s = coco_string_create(L"invalid state_dependent_path_declaration"); break;
-			case 293: s = coco_string_create(L"invalid parallel_or_full_path_description"); break;
-			case 294: s = coco_string_create(L"invalid polarity_operator"); break;
-			case 295: s = coco_string_create(L"invalid edge_identifier"); break;
-			case 296: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
-			case 297: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
-			case 298: s = coco_string_create(L"invalid timing_check_event_control"); break;
-			case 299: s = coco_string_create(L"invalid constant_expression_nlr"); break;
-			case 300: s = coco_string_create(L"invalid primary"); break;
-			case 301: s = coco_string_create(L"invalid module_path_primary"); break;
-			case 302: s = coco_string_create(L"invalid parameter_value_assignment_or_delay2"); break;
-			case 303: s = coco_string_create(L"invalid port_connection_or_output_terminal"); break;
-			case 304: s = coco_string_create(L"invalid primary_2"); break;
+			case 272: s = coco_string_create(L"invalid number"); break;
+			case 273: s = coco_string_create(L"invalid number"); break;
+			case 274: s = coco_string_create(L"invalid edge_descriptor"); break;
+			case 275: s = coco_string_create(L"invalid statement"); break;
+			case 276: s = coco_string_create(L"invalid procedural_continuous_assignments"); break;
+			case 277: s = coco_string_create(L"invalid variable_lvalue"); break;
+			case 278: s = coco_string_create(L"invalid variable_or_net_lvalue"); break;
+			case 279: s = coco_string_create(L"invalid delay_or_event_control"); break;
+			case 280: s = coco_string_create(L"invalid case_statement"); break;
+			case 281: s = coco_string_create(L"invalid loop_statement"); break;
+			case 282: s = coco_string_create(L"invalid event_control"); break;
+			case 283: s = coco_string_create(L"invalid event_control"); break;
+			case 284: s = coco_string_create(L"invalid event_expression"); break;
+			case 285: s = coco_string_create(L"invalid procedural_timing_control"); break;
+			case 286: s = coco_string_create(L"invalid case_item"); break;
+			case 287: s = coco_string_create(L"invalid specify_item"); break;
+			case 288: s = coco_string_create(L"invalid pulsestyle_declaration"); break;
+			case 289: s = coco_string_create(L"invalid showcancelled_declaration"); break;
+			case 290: s = coco_string_create(L"invalid path_declaration"); break;
+			case 291: s = coco_string_create(L"invalid system_timing_check"); break;
+			case 292: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
+			case 293: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_declaration"); break;
+			case 294: s = coco_string_create(L"invalid state_dependent_path_declaration"); break;
+			case 295: s = coco_string_create(L"invalid parallel_or_full_path_description"); break;
+			case 296: s = coco_string_create(L"invalid polarity_operator"); break;
+			case 297: s = coco_string_create(L"invalid edge_identifier"); break;
+			case 298: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
+			case 299: s = coco_string_create(L"invalid simple_or_edge_sensitive_path_description"); break;
+			case 300: s = coco_string_create(L"invalid timing_check_event_control"); break;
+			case 301: s = coco_string_create(L"invalid constant_expression_nlr"); break;
+			case 302: s = coco_string_create(L"invalid primary"); break;
+			case 303: s = coco_string_create(L"invalid module_path_primary"); break;
+			case 304: s = coco_string_create(L"invalid parameter_value_assignment_or_delay2"); break;
+			case 305: s = coco_string_create(L"invalid port_connection_or_output_terminal"); break;
+			case 306: s = coco_string_create(L"invalid primary_2"); break;
 
 		default:
 		{

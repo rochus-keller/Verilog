@@ -47,6 +47,7 @@ namespace Vl
         Tok_3Eq,            // ===
         Tok_Amp,            // &
         Tok_2Amp,           // &&
+        Tok_3Amp,           // &&&
         Tok_Bar,            // |
         Tok_2Bar,           // ||
         Tok_Star,           // *
@@ -64,6 +65,7 @@ namespace Vl
         Tok_Qmark,          // ?
         Tok_EqGt,           // =>
         Tok_StarGt,         // *>
+        Tok_MinusGt,        // ->
 
         // brackets
         Tok_Lpar,           // (
