@@ -1261,20 +1261,19 @@ void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& sc
 void CrossRefModel::clearFile(Scope* global, const QString& file)
 {
     SymRefList children = global->d_children;
-    for( int i = 0; i < children.size(); i++ )
-    {
-        if( children[i]->d_tok.d_sourcePath == file )
-        {
-            Q_ASSERT( !children[i]->d_tok.d_val.isEmpty() );
-            global->d_names.remove( children[i]->d_tok.d_val );
-            children[i] = 0; // statt löschen einfach auf Null setzen, geht schneller
-        }
-    }
     global->d_children.clear();
     for( int i = 0; i < children.size(); i++ )
     {
-        if( children[i].constData() != 0 )
+        if( children[i]->d_tok.d_sourcePath != file )
             global->d_children.append(children[i]);
+    }
+    Scope::Names::iterator i = global->d_names.begin();
+    while( i != global->d_names.end() )
+    {
+        if( i.value()->d_tok.d_sourcePath == file )
+            i = global->d_names.erase(i);
+        else
+            ++i;
     }
 }
 
