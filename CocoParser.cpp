@@ -721,7 +721,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_bufif0: case _T_bufif1: case _T_notif0: case _T_notif1: {
 			enable_gatetype();
-			if (la->kind == _T_Lpar) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -754,7 +754,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_and: case _T_nand: case _T_nor: case _T_or: case _T_xnor: case _T_xor: {
 			n_input_gatetype();
-			if (la->kind == _T_Lpar) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -772,7 +772,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_buf: case _T_not: {
 			n_output_gatetype();
-			if (la->kind == _T_Lpar) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -818,7 +818,7 @@ void Parser::gate_instantiation() {
 		case _T_pulldown: {
 			Get();
 			addTerminal(); 
-			if (la->kind == _T_Lpar) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 ) ) {
 				pulldown_strength();
 			}
 			pull_gate_instance();
@@ -834,7 +834,7 @@ void Parser::gate_instantiation() {
 		case _T_pullup: {
 			Get();
 			addTerminal(); 
-			if (la->kind == _T_Lpar) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 ) ) {
 				pullup_strength();
 			}
 			pull_gate_instance();
@@ -855,7 +855,7 @@ void Parser::gate_instantiation() {
 void Parser::module_or_udp_instantiation() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instantiation, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_identifier,__FUNCTION__);
-		if (la->kind == _T_Lpar) {
+		if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _T_Hash) {
@@ -927,7 +927,7 @@ void Parser::net_declaration() {
 			Get();
 			addTerminal(); 
 		} else SynErr(228,__FUNCTION__);
-		if (la->kind == _T_Lpar) {
+		if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak0 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _T_Lpar) {
@@ -1149,7 +1149,7 @@ void Parser::design_statement() {
 		Expect(_T_design,__FUNCTION__);
 		addTerminal(); 
 		while (la->kind == _T_identifier) {
-			if (la->kind == _T_identifier) {
+			if (peek(1) == _T_identifier && peek(2) == _T_Dot ) {
 				library_identifier();
 				Expect(_T_Dot,__FUNCTION__);
 				addTerminal(); 
@@ -1203,7 +1203,7 @@ void Parser::cell_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_cell_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_cell,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _T_identifier) {
+		if (peek(1) == _T_identifier && peek(2) == _T_Dot ) {
 			library_identifier();
 			Expect(_T_Dot,__FUNCTION__);
 			addTerminal(); 
@@ -1226,7 +1226,7 @@ void Parser::use_clause() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_use_clause, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_use,__FUNCTION__);
 		addTerminal(); 
-		if (la->kind == _T_identifier) {
+		if (peek(1) == _T_identifier && peek(2) == _T_Dot ) {
 			library_identifier();
 			Expect(_T_Dot,__FUNCTION__);
 			addTerminal(); 
@@ -1291,8 +1291,8 @@ void Parser::parameter_type() {
 
 void Parser::list_of_param_assignments() {
 		param_assignment();
-		while (la->kind == _T_Comma) {
-			Get();
+		while (peek(1) == _T_Comma && peek(2) == _T_identifier ) {
+			Expect(_T_Comma,__FUNCTION__);
 			addTerminal(); 
 			param_assignment();
 		}
@@ -1370,8 +1370,8 @@ void Parser::net_type() {
 
 void Parser::list_of_port_identifiers() {
 		port_identifier();
-		while (la->kind == _T_Comma) {
-			Get();
+		while (peek(1) == _T_Comma && peek(2) == _T_identifier ) {
+			Expect(_T_Comma,__FUNCTION__);
 			addTerminal(); 
 			port_identifier();
 		}
@@ -1385,8 +1385,8 @@ void Parser::list_of_variable_port_identifiers() {
 			addTerminal(); 
 			constant_expression();
 		}
-		while (la->kind == _T_Comma) {
-			Get();
+		while (peek(1) == _T_Comma && peek(2) == _T_identifier ) {
+			Expect(_T_Comma,__FUNCTION__);
 			addTerminal(); 
 			port_identifier();
 			if (la->kind == _T_Eq) {
@@ -2811,6 +2811,11 @@ void Parser::constant_primary() {
 			Get();
 			addTerminal(); 
 			constant_mintypmax_expression();
+			while (la->kind == _T_Comma) {
+				Get();
+				addTerminal(); 
+				constant_mintypmax_expression();
+			}
 			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
 		} else if (la->kind == _T_identifier || la->kind == _T_system_name) {
@@ -3067,24 +3072,22 @@ void Parser::udp_initial_statement() {
 void Parser::sequential_or_combinatorial_entry() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_sequential_or_combinatorial_entry, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		while (StartOf(26)) {
-			level_or_edge_symbol();
-		}
-		if (la->kind == _T_Lpar) {
-			Get();
-			addTerminal(); 
-			level_symbol();
 			if (StartOf(27)) {
+				level_or_edge_symbol();
+			} else {
+				Get();
+				addTerminal(); 
 				level_symbol();
+				if (StartOf(28)) {
+					level_symbol();
+				}
+				Expect(_T_Rpar,__FUNCTION__);
+				addTerminal(); 
 			}
-			Expect(_T_Rpar,__FUNCTION__);
-			addTerminal(); 
-		}
-		while (StartOf(26)) {
-			level_or_edge_symbol();
 		}
 		Expect(_T_Colon,__FUNCTION__);
 		addTerminal(); 
-		if (StartOf(27)) {
+		if (StartOf(28)) {
 			level_symbol();
 		} else if (la->kind == _T_Minus) {
 			Get();
@@ -3093,7 +3096,7 @@ void Parser::sequential_or_combinatorial_entry() {
 		if (la->kind == _T_Colon) {
 			Get();
 			addTerminal(); 
-			if (StartOf(27)) {
+			if (StartOf(28)) {
 				level_symbol();
 			} else if (la->kind == _T_Minus) {
 				Get();
@@ -3597,7 +3600,7 @@ void Parser::event_control() {
 		if (la->kind == _T_Lpar) {
 			Get();
 			addTerminal(); 
-			if (StartOf(28)) {
+			if (StartOf(29)) {
 				event_expression();
 			} else if (la->kind == _T_Star) {
 				Get();
@@ -3753,7 +3756,7 @@ void Parser::specify_item() {
 			showcancelled_declaration();
 		} else if (la->kind == _T_Lpar || la->kind == _T_if || la->kind == _T_ifnone) {
 			path_declaration();
-		} else if (StartOf(29)) {
+		} else if (StartOf(30)) {
 			system_timing_check();
 		} else SynErr(291,__FUNCTION__);
 }
@@ -3996,15 +3999,7 @@ void Parser::simple_path_declaration() {
 
 void Parser::path_delay_value() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_path_delay_value, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (la->kind == _T_Lpar) {
-			Get();
-			addTerminal(); 
-		}
 		list_of_path_delay_expressions();
-		if (la->kind == _T_Rpar) {
-			Get();
-			addTerminal(); 
-		}
 		d_stack.pop(); 
 }
 
@@ -4109,7 +4104,7 @@ void Parser::simple_or_edge_sensitive_path_description() {
 
 void Parser::module_path_expression() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_path_expression, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
-		if (StartOf(30)) {
+		if (StartOf(31)) {
 			unary_module_path_operator();
 		}
 		module_path_primary();
@@ -4691,7 +4686,7 @@ void Parser::specify_input_or_output_terminal_descriptor() {
 void Parser::scalar_timing_check_condition() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_scalar_timing_check_condition, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		expression();
-		if (StartOf(31)) {
+		if (StartOf(32)) {
 			if (la->kind == _T_2Eq) {
 				Get();
 				addTerminal(); 
@@ -4903,8 +4898,8 @@ void Parser::module_path_primary() {
 }
 
 void Parser::module_path_expression_nlr() {
-		if (StartOf(32)) {
-			if (StartOf(33)) {
+		if (StartOf(33)) {
+			if (StartOf(34)) {
 				binary_module_path_operator();
 				module_path_expression();
 				module_path_expression_nlr();
@@ -5075,7 +5070,7 @@ void Parser::module_or_udp_instance() {
 		}
 		Expect(_T_Lpar,__FUNCTION__);
 		addTerminal(); 
-		if (StartOf(34)) {
+		if (StartOf(35)) {
 			port_connection_or_output_terminal();
 			while (la->kind == _T_Comma) {
 				Get();
@@ -5101,7 +5096,7 @@ void Parser::port_connection_or_output_terminal() {
 			}
 			Expect(_T_Rpar,__FUNCTION__);
 			addTerminal(); 
-		} else if (StartOf(35)) {
+		} else if (StartOf(36)) {
 			if (StartOf(23)) {
 				expression_2();
 			}
@@ -5297,7 +5292,7 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[36][213] = {
+	static bool set[37][213] = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,T,x, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
@@ -5324,6 +5319,7 @@ bool Parser::StartOf(int s) {
 		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x},
 		{x,x,T,x, x,x,x,T, x,x,T,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,x,T, T,T,x,x, x,x,x,x, x,x,x,x, x},
