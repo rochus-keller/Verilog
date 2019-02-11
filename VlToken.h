@@ -25,7 +25,6 @@
 
 namespace Vl
 {
-
     TokenType matchReservedWord( const QByteArray& );
     const char* tokenToString( quint8 ); // Pretty with punctuation chars
     QByteArray tokenToString( quint8, const QByteArray& ); // Pretty with punctuation chars and value für IDENT etc.
