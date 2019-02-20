@@ -194,15 +194,6 @@ namespace Vl {
 			case Tok_wor: return "wor";
 			case Tok_xnor: return "xnor";
 			case Tok_xor: return "xor";
-			case Tok_real_number: return "real_number";
-			case Tok_natural_number: return "natural_number";
-			case Tok_sizedbased_number: return "sizedbased_number";
-			case Tok_based_number: return "based_number";
-			case Tok_base_format: return "base_format";
-			case Tok_base_value: return "base_value";
-			case Tok_string: return "string";
-			case Tok_identifier: return "identifier";
-			case Tok_system_name: return "system_name";
 			case Tok_Attribute: return "Attribute";
 			case Tok_Comment: return "Comment";
 			case Tok_MacroUsage: return "MacroUsage";
@@ -210,6 +201,15 @@ namespace Vl {
 			case Tok_SectionEnd: return "SectionEnd";
 			case Tok_CoDi: return "CoDi";
 			case Tok_LineCont: return "LineCont";
+			case Tok_Realnum: return "Realnum";
+			case Tok_Natural: return "Natural";
+			case Tok_SizedBased: return "SizedBased";
+			case Tok_BasedInt: return "BasedInt";
+			case Tok_BaseFormat: return "BaseFormat";
+			case Tok_BaseValue: return "BaseValue";
+			case Tok_SysName: return "SysName";
+			case Tok_Ident: return "Ident";
+			case Tok_Str: return "Str";
 			case Tok_Eof: return "<eof>";
 			default: return "";
 		}
@@ -406,15 +406,6 @@ namespace Vl {
 			case Tok_wor: return "Tok_wor";
 			case Tok_xnor: return "Tok_xnor";
 			case Tok_xor: return "Tok_xor";
-			case Tok_real_number: return "Tok_real_number";
-			case Tok_natural_number: return "Tok_natural_number";
-			case Tok_sizedbased_number: return "Tok_sizedbased_number";
-			case Tok_based_number: return "Tok_based_number";
-			case Tok_base_format: return "Tok_base_format";
-			case Tok_base_value: return "Tok_base_value";
-			case Tok_string: return "Tok_string";
-			case Tok_identifier: return "Tok_identifier";
-			case Tok_system_name: return "Tok_system_name";
 			case Tok_Attribute: return "Tok_Attribute";
 			case Tok_Comment: return "Tok_Comment";
 			case Tok_MacroUsage: return "Tok_MacroUsage";
@@ -422,6 +413,15 @@ namespace Vl {
 			case Tok_SectionEnd: return "Tok_SectionEnd";
 			case Tok_CoDi: return "Tok_CoDi";
 			case Tok_LineCont: return "Tok_LineCont";
+			case Tok_Realnum: return "Tok_Realnum";
+			case Tok_Natural: return "Tok_Natural";
+			case Tok_SizedBased: return "Tok_SizedBased";
+			case Tok_BasedInt: return "Tok_BasedInt";
+			case Tok_BaseFormat: return "Tok_BaseFormat";
+			case Tok_BaseValue: return "Tok_BaseValue";
+			case Tok_SysName: return "Tok_SysName";
+			case Tok_Ident: return "Tok_Ident";
+			case Tok_Str: return "Tok_Str";
 			case Tok_Eof: return "Tok_Eof";
 			default: return "";
 		}

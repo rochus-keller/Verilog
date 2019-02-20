@@ -222,22 +222,22 @@ private:
 		_T_xnor=190,
 		_T_xor=191,
 		_T_Specials_=192,
-		_T_real_number=193,
-		_T_natural_number=194,
-		_T_sizedbased_number=195,
-		_T_based_number=196,
-		_T_base_format=197,
-		_T_base_value=198,
-		_T_string=199,
-		_T_identifier=200,
-		_T_system_name=201,
-		_T_Attribute=202,
-		_T_Comment=203,
-		_T_MacroUsage=204,
-		_T_Section=205,
-		_T_SectionEnd=206,
-		_T_CoDi=207,
-		_T_LineCont=208,
+		_T_Attribute=193,
+		_T_Comment=194,
+		_T_MacroUsage=195,
+		_T_Section=196,
+		_T_SectionEnd=197,
+		_T_CoDi=198,
+		_T_LineCont=199,
+		_T_Realnum=200,
+		_T_Natural=201,
+		_T_SizedBased=202,
+		_T_BasedInt=203,
+		_T_BaseFormat=204,
+		_T_BaseValue=205,
+		_T_SysName=206,
+		_T_Ident=207,
+		_T_Str=208,
 		_T_Eof=209,
 		_T_MaxToken_=210
 	};
@@ -296,6 +296,8 @@ Vl::SynTree d_root;
 	void include_statement();
 	void library_identifier();
 	void file_path_spec();
+	void identifier();
+	void string();
 	void module_keyword();
 	void module_identifier();
 	void module_parameter_port_list();
@@ -583,8 +585,15 @@ Vl::SynTree d_root;
 	void binary_module_path_operator();
 	void module_path_mintypmax_expression();
 	void range_expression();
+	void system_name();
 	void system_function_identifier();
 	void hierarchical_identifier_range_const();
+	void real_number();
+	void natural_number();
+	void based_number();
+	void base_format();
+	void base_value();
+	void sizedbased_number();
 	void parameter_value_assignment_or_delay2();
 	void module_or_udp_instance();
 	void port_connection_or_output_terminal();

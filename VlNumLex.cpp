@@ -123,17 +123,17 @@ TokenType NumLex::getTokenType() const
     if( d_kind == Unknown )
         return Tok_Invalid;
     else if( d_kind == Real )
-        return Tok_real_number;
+        return Tok_Realnum;
     else if( d_hasSize && d_hasBaseFormat && d_hasValue )
-        return Tok_sizedbased_number;
+        return Tok_SizedBased;
     else if( d_hasBaseFormat && d_hasValue )
-        return Tok_based_number;
+        return Tok_BasedInt;
     else if( d_hasBaseFormat )
-        return Tok_base_format;
+        return Tok_BaseFormat;
     else if( d_hasValue )
-        return Tok_base_value;
+        return Tok_BaseValue;
     else
-        return Tok_natural_number;
+        return Tok_Natural;
 }
 
 bool NumLex::error(const QString& str)

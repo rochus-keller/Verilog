@@ -419,7 +419,7 @@ quint16 CrossRefModel::calcTextLenOfDecl(const SynTree* st)
         case Tok_Semi:
         case Tok_Hash:
         case Tok_Lpar:
-        case Tok_identifier:
+        case Tok_Ident:
             return cur->d_tok.d_colNr - st->d_tok.d_colNr;
         case Tok_Lbrack:
             {
@@ -476,7 +476,7 @@ bool CrossRefModel::findSymbolBySourcePosImp(CrossRefModel::TreePath& path, quin
     {
         path.push_front(sub);
 
-        if( ( sub->d_tok.d_type == Tok_identifier || !onlyIdents ) &&
+        if( ( sub->d_tok.d_type == Tok_Ident || !onlyIdents ) &&
                 isHit( sub, line, col, path.last()->d_tok.d_sourcePath ) )
             return true;
 
@@ -539,7 +539,7 @@ void CrossRefModel::dump(const CrossRefModel::Symbol* node, int level, bool recu
     {
         if( tokenIsReservedWord( node->d_tok.d_type ) )
             str = node->d_tok.d_val.toUpper();
-        else if( node->d_tok.d_type >= Tok_string )
+        else if( node->d_tok.d_type > TT_Specials )
             str = SynTree::rToStr( node->d_tok.d_type ) + QByteArray(" ") +
                     QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
         else
@@ -750,7 +750,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             // we need trailing ) to be able to assign whitespace to production
             if( parentAst->d_tok.d_type == SynTree::R_module_or_udp_instance )
                 parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
-        }else if( child->d_tok.d_type == Tok_identifier )
+        }else if( child->d_tok.d_type == Tok_Ident )
         {
             Scope* scope = superScope;
             SymRefNc sym;

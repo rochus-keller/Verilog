@@ -493,7 +493,7 @@ Token PpLexer::processDirective(const Token& tok )
     else if( d == Cd_undef )
     {
         Token t = nextTokenImp();
-        if( t.d_type != Tok_identifier )
+        if( t.d_type != Tok_Ident )
             return error("expecting identifier after `undef");
         if( d_syms && !d_syms->contains(t.d_val) )
             warning( tr("unknown macro '%1'").arg(t.d_val.data()));
@@ -523,7 +523,7 @@ Token PpLexer::processDirective(const Token& tok )
 Token PpLexer::processInclude()
 {
     Token t = nextTokenImp();
-    if( t.d_type != Tok_string )
+    if( t.d_type != Tok_Str )
         return error( "expecting filename string after include directive" );
     const QString path = QString::fromLatin1(t.d_val);
     QFileInfo inc( path );
@@ -551,10 +551,10 @@ Token PpLexer::processDefine()
 {
     Token t = nextTokenImp();
     const bool reserved = tokenIsReservedWord(t.d_type);
-    if( t.d_type != Tok_identifier && !reserved )
+    if( t.d_type != Tok_Ident && !reserved )
         return error("expecting identifier after `define");
     if( reserved )
-        t.d_type = Tok_identifier; // we use the token here as normal ident
+        t.d_type = Tok_Ident; // we use the token here as normal ident
     const bool hasArgs = d_source.top().d_colNr < d_source.top().d_line.size() &&
             d_source.top().d_line[d_source.top().d_colNr] == '(';
             // zwischen Ident und Klammer darf kein Space sein!
@@ -594,7 +594,7 @@ Token PpLexer::processDefine()
         // Read Arguments
         while( t.isValid() && t.d_type != Tok_Rpar )
         {
-            if( t.d_type == Tok_identifier )
+            if( t.d_type == Tok_Ident )
                 def.d_args.append( t.d_val );
             else if( t.d_type != Tok_Comma && t.d_type != Tok_Rpar )
                 return error( tr("invalid token in define argument list of '%1': %2").
@@ -661,7 +661,7 @@ Token PpLexer::processCondition(Directive d)
     if( d == Cd_ifdef )
     {
         Token t = nextTokenImp();
-        if( t.d_type != Tok_identifier )
+        if( t.d_type != Tok_Ident )
             return error("expecting identifier after `ifdef");
         const bool tx = ( d_ifState.isEmpty() || d_ifState.top().second ) &&
                 d_syms != 0 && d_syms->contains(t.d_val);
@@ -674,7 +674,7 @@ Token PpLexer::processCondition(Directive d)
     }else if( d == Cd_ifndef )
     {
         Token t = nextTokenImp();
-        if( t.d_type != Tok_identifier )
+        if( t.d_type != Tok_Ident )
             return error("expecting identifier after `ifndef");
         const bool tx = ( d_ifState.isEmpty() || d_ifState.top().second ) &&
                 d_syms != 0 && !d_syms->contains(t.d_val);
@@ -691,7 +691,7 @@ Token PpLexer::processCondition(Directive d)
         else
         {
             Token t = nextTokenImp();
-            if( t.d_type != Tok_identifier )
+            if( t.d_type != Tok_Ident )
                 return error("expecting identifier after `elsif");
             const bool tx = ( d_ifState.size() == 1 || d_ifState[d_ifState.size()-2].second ) &&
                     d_ifState.top().first != IfActive && d_syms != 0 && d_syms->contains(t.d_val);
@@ -736,7 +736,7 @@ static void replaceFormalByActualArg( TokenList& inout, const QByteArray& formal
     TokenList out;
     for( int i = 0; i < inout.size(); i++ )
     {
-        if( inout[i].d_type == Tok_identifier && inout[i].d_val == formalArg )
+        if( inout[i].d_type == Tok_Ident && inout[i].d_val == formalArg )
             out << actualArg;
         else
             out << inout[i];
@@ -1063,7 +1063,7 @@ Token PpLexer::string()
                           tr("non terminated string").toUtf8() );
 	}
 
-    return token( Tok_string, off + 1, res );
+    return token( Tok_Str, off + 1, res );
 }
 
 Token PpLexer::ident()
@@ -1093,11 +1093,11 @@ Token PpLexer::ident()
             return token( tt, off );
     }
     else if( str[0] == '$' )
-        return token( Tok_system_name, off, str.mid(1) );
+        return token( Tok_SysName, off, str.mid(1) );
     else if( str[0] == '`' )
         return token( Tok_CoDi, off, str.mid(1) );
     else
-        return token( Tok_identifier, off, str );
+        return token( Tok_Ident, off, str );
 }
 
 Token PpLexer::extident()
@@ -1113,7 +1113,7 @@ Token PpLexer::extident()
             off++;
     }
     const QByteArray str = d_source.top().d_line.mid(d_source.top().d_colNr + 1, off - 1 );
-    return token( Tok_identifier, off, str );
+    return token( Tok_Ident, off, str );
 }
 
 Token PpLexer::pathident()
@@ -1134,7 +1134,7 @@ Token PpLexer::pathident()
             off++;
     }
     const QByteArray str = d_source.top().d_line.mid(d_source.top().d_colNr, off );
-    return token( Tok_identifier, off, str );
+    return token( Tok_Ident, off, str );
 }
 
 Token PpLexer::numeric()

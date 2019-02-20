@@ -67,16 +67,16 @@ namespace Vl
     {
         switch( t )
         {
-        case Tok_string:
-        case Tok_identifier:
-        case Tok_system_name:
+        case Tok_Str:
+        case Tok_Ident:
+        case Tok_SysName:
         case Tok_CoDi:
-        case Tok_real_number:
-        case Tok_natural_number:
-        case Tok_sizedbased_number:
-        case Tok_based_number:
-        case Tok_base_format:
-        case Tok_base_value:
+        case Tok_Realnum:
+        case Tok_Natural:
+        case Tok_SizedBased:
+        case Tok_BasedInt:
+        case Tok_BaseFormat:
+        case Tok_BaseValue:
         case Tok_Comment:
         case Tok_Attribute:
         case Tok_MacroUsage:
@@ -180,12 +180,12 @@ namespace Vl
     {
         switch( t )
         {
-        case Tok_real_number:
-        case Tok_natural_number:
-        case Tok_sizedbased_number:
-        case Tok_based_number:
-        case Tok_base_format:
-        case Tok_base_value:
+        case Tok_Realnum:
+        case Tok_Natural:
+        case Tok_SizedBased:
+        case Tok_BasedInt:
+        case Tok_BaseFormat:
+        case Tok_BaseValue:
             return true;
         }
         return false;

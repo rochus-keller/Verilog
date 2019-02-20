@@ -64,7 +64,7 @@ bool Parser::parseFile(PpLexer* in, Errors* err)
     int errs = err->getErrCount();
     p.RunParser();
     errs = err->getErrCount() - errs;
-    //dumpTree( &p.d_root );
+    // dumpTree( &p.d_root );
     if( errs == 0 )
     {
         d_st = p.d_root.d_children;
@@ -95,7 +95,7 @@ void Parser::dumpTree(SynTree* node, int level)
     {
         if( tokenIsReservedWord( node->d_tok.d_type ) )
             str = node->d_tok.d_val.toUpper();
-        else if( node->d_tok.d_type >= Tok_string )
+        else if( node->d_tok.d_type > TT_Specials )
             str = QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
         else
             str = QByteArray("\"") + node->d_tok.getName() + QByteArray("\"");

@@ -19,6 +19,7 @@
 
 INCLUDEPATH +=  ..
 
+INCLUDEPATH += ../Verilog
 
 SOURCES += \
     ../Verilog/VlParser.cpp \

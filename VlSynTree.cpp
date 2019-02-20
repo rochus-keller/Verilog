@@ -10,13 +10,19 @@ SynTree::SynTree(quint16 r, const Token& t ):d_tok(r){
 
 const char* SynTree::rToStr( quint16 r ) {
 	switch(r) {
+		case R_BaseFormat: return "BaseFormat";
+		case R_BaseValue: return "BaseValue";
+		case R_BasedInt: return "BasedInt";
+		case R_Ident: return "Ident";
+		case R_Natural: return "Natural";
+		case R_Realnum: return "Realnum";
+		case R_SizedBased: return "SizedBased";
+		case R_Str: return "Str";
+		case R_SysName: return "SysName";
 		case R_always_construct: return "always_construct";
 		case R_attr_name: return "attr_name";
 		case R_attr_spec: return "attr_spec";
 		case R_attribute_instance: return "attribute_instance";
-		case R_base_format: return "base_format";
-		case R_base_value: return "base_value";
-		case R_based_number: return "based_number";
 		case R_block_integer_declaration: return "block_integer_declaration";
 		case R_block_real_declaration: return "block_real_declaration";
 		case R_block_real_type: return "block_real_type";
@@ -84,7 +90,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_hierarchical_identifier: return "hierarchical_identifier";
 		case R_hierarchical_identifier_range: return "hierarchical_identifier_range";
 		case R_hierarchical_identifier_range_const: return "hierarchical_identifier_range_const";
-		case R_identifier: return "identifier";
 		case R_if_generate_construct: return "if_generate_construct";
 		case R_include_statement: return "include_statement";
 		case R_initial_construct: return "initial_construct";
@@ -122,7 +127,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_name_of_module_instance: return "name_of_module_instance";
 		case R_name_of_udp_instance: return "name_of_udp_instance";
 		case R_named_parameter_assignment: return "named_parameter_assignment";
-		case R_natural_number: return "natural_number";
 		case R_net_assignment: return "net_assignment";
 		case R_net_declaration: return "net_declaration";
 		case R_net_lvalue: return "net_lvalue";
@@ -154,7 +158,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_range: return "range";
 		case R_range_expression: return "range_expression";
 		case R_real_declaration: return "real_declaration";
-		case R_real_number: return "real_number";
 		case R_real_type: return "real_type";
 		case R_realtime_declaration: return "realtime_declaration";
 		case R_reg_declaration: return "reg_declaration";
@@ -165,7 +168,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_simple_or_edge_sensitive_path_declaration: return "simple_or_edge_sensitive_path_declaration";
 		case R_simple_or_edge_sensitive_path_description: return "simple_or_edge_sensitive_path_description";
 		case R_simple_path_declaration: return "simple_path_declaration";
-		case R_sizedbased_number: return "sizedbased_number";
 		case R_specify_block: return "specify_block";
 		case R_specify_input_or_output_terminal_descriptor: return "specify_input_or_output_terminal_descriptor";
 		case R_specify_input_terminal_descriptor: return "specify_input_terminal_descriptor";
@@ -173,8 +175,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_specparam_assignment: return "specparam_assignment";
 		case R_specparam_declaration: return "specparam_declaration";
 		case R_state_dependent_path_declaration: return "state_dependent_path_declaration";
-		case R_string: return "string";
-		case R_system_name: return "system_name";
 		case R_system_task_enable: return "system_task_enable";
 		case R_task_declaration: return "task_declaration";
 		case R_tf_inout_declaration: return "tf_inout_declaration";
