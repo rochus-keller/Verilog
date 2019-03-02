@@ -34,7 +34,7 @@ using namespace Vl;
 PpLexer::PpLexer(QObject *parent) :
     QObject(parent), d_lastT(Tok_Invalid), d_err(0), d_syms(0), d_ignoreComments(true),
     d_ignoreAttrs(true), d_ignoreHidden(true), d_packAttributes(true), d_packComments(true),
-    d_filePathMode(false), d_incs(0),d_fcache(0),d_sendMacroUsage(false)
+    d_filePathMode(false), d_incs(0),d_fcache(0),d_sendMacroUsage(false),d_supportSvExt(false)
 {
 }
 
@@ -48,6 +48,10 @@ bool PpLexer::setStream(QIODevice* in, const QString& sourcePath, bool reportErr
         ctx.d_in = in;
         ctx.d_sourcePath = sourcePath;
         d_source.push(ctx);
+        if( d_fcache != 0 && d_source.size() == 1 )
+        {
+            d_supportSvExt = d_fcache->supportSvExt(sourcePath);
+        }
         return true;
     }
 }
@@ -311,10 +315,24 @@ Token PpLexer::nextTokenImp()
             }else
                 return token( Tok_Amp );
         case '|':
-            if( lookAhead(1) == '|' )
-                return token( Tok_2Bar, 2 );
+            if( d_supportSvExt )
+                switch( lookAhead(1) )
+                {
+                case '|':
+                    return token( Tok_2Bar, 2 );
+                case '-':
+                    if( lookAhead(2) == '-' )
+                        return token(Tok_Bar2Minus,3);
+                    break;
+                case '=':
+                    if( lookAhead(2) == '=' )
+                        return token(Tok_Bar2Eq,3);
+                    break;
+                }
             else
-                return token( Tok_Bar );
+                if( lookAhead(1) == '|' )
+                    return token( Tok_2Bar, 2 );
+            return token( Tok_Bar );
         case '*':
             if( d_filePathMode )
                 return pathident();
@@ -367,6 +385,25 @@ Token PpLexer::nextTokenImp()
         case ')':
             return token( Tok_Rpar );
         case '[':
+            if( d_supportSvExt )
+                switch( lookAhead(1) )
+                {
+                case '*':
+                    if( lookAhead(2) == '*' )
+                        return token(Tok_Lbrack2Star,3);
+                    else
+                        return token(Tok_LbrackStar,2);
+                case '+':
+                    if( lookAhead(2) == '+' )
+                        return token(Tok_Lbrack2Plus,3);
+                    break;
+                case '-':
+                    if( lookAhead(2) == '-' )
+                        return token(Tok_Lbrack2Minus,3);
+                    break;
+                case '=':
+                    return token(Tok_LbrackEq,2);
+                }
             return token( Tok_Lbrack );
         case ']':
             return token( Tok_Rbrack );
@@ -385,6 +422,30 @@ Token PpLexer::nextTokenImp()
             d_filePathMode = false;
             return token( Tok_Semi );
         case '#':
+            if( d_supportSvExt )
+            {
+                switch( lookAhead(1) )
+                {
+                case '#':
+                    if( lookAhead(2) == '[' )
+                    {
+                        if( lookAhead(3) == '*' && lookAhead(4) == ']' )
+                            return token(Tok_2HashLbrackStarRbrack,5);
+                        else if( lookAhead(3) == '+' && lookAhead(4) == ']' )
+                            return token(Tok_2HashLbrackPlusRbrack,5);
+                    }else
+                        return token(Tok_2Hash,2);
+                    break;
+                case '-':
+                    if( lookAhead(2) == '-' )
+                        return token(Tok_Hash2Minus,3);
+                    break;
+                case '=':
+                    if( lookAhead(2) == '-' )
+                        return token(Tok_Hash2Eq,3);
+                    break;
+                }
+            }
             return token( Tok_Hash );
         case '@':
             return token( Tok_At );
@@ -394,6 +455,18 @@ Token PpLexer::nextTokenImp()
             else
                 return token( Tok_Qmark );
         case ':':
+            if( d_supportSvExt )
+            {
+                switch( lookAhead(1) )
+                {
+                case '/':
+                    if( lookAhead(2) != '/' ) // might be '//'
+                        return token(Tok_ColonSlash,2);
+                    break;
+                case '=':
+                    return token(Tok_ColonEq,2);
+                }
+            }
             return token( Tok_Colon );
         case '\\':
             if( lookAhead(1) == 0 )
@@ -411,6 +484,8 @@ Token PpLexer::nextTokenImp()
 			return numeric();
         }else if( QChar::fromLatin1( ch ).isLetter() || ch == '_' || ch == '$' || ch == '`' )
 		{
+            if( d_supportSvExt && ch == '$' && ( ::isspace(lookAhead(1)) || lookAhead(1) == 0 ) )
+                return token(Tok_Dlr);
             if( d_filePathMode )
                 return pathident();
             // Identifier oder Reserved Word
@@ -584,6 +659,7 @@ Token PpLexer::processDefine()
 
     PpLexer lex;
     lex.setErrors( d_err );
+    lex.setCache(d_fcache);
     QList<Token> toks = lex.tokens( line, source );
 
     int i = 0;
@@ -1081,8 +1157,10 @@ Token PpLexer::ident()
     const QByteArray str = d_source.top().d_line.mid(d_source.top().d_colNr, off );
     Q_ASSERT( !str.isEmpty() );
     TokenType tt = Tok_Invalid;
-    if( str[0] != '`' ) // && str[0] != '$' )
+    if( str[0] != '`' )
         tt = matchReservedWord( str );
+    if( !d_supportSvExt && tokenIsSvReservedWord(tt) )
+        tt = Tok_Invalid;
     if( tt != Tok_Invalid )
     {
         if( tt == Tok_library || tt == Tok_include )

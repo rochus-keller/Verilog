@@ -176,6 +176,7 @@ namespace Vl
         PpSymbols* getSyms() const { return d_syms; }
         Includes* getIncs() const { return d_incs; }
         Errors* getErrs() const { return d_errs; }
+        FileCache* getFcache() const { return d_fcache; }
 
         bool isEmpty() const;
 
@@ -191,7 +192,7 @@ namespace Vl
         SymRef findGlobal( const QByteArray& name ) const;
         SymRefList getGlobalSyms( const QString& file = QString() ) const;
         IdentDeclRefList getGlobalNames( const QString& file = QString() ) const;
-        static QList<Token> findTokenByPos(const QString& line, int col, int* pos );
+        static QList<Token> findTokenByPos(const QString& line, int col, int* pos, bool supportSv = false );
         static QString qualifiedName( const TreePath&, bool skipFirst = false );
         static QStringList qualifiedNameParts( const TreePath&, bool skipFirst = false );
         static const Scope* closestScope( const TreePath& );

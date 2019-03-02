@@ -30,6 +30,7 @@ namespace Vl
     QByteArray tokenToString( quint8, const QByteArray& ); // Pretty with punctuation chars and value für IDENT etc.
     const char* tokenName( quint8 ); // Just the names without punctuation chars
     bool tokenIsReservedWord( quint8 );
+    bool tokenIsSvReservedWord( quint8 );
     bool tokenIsNumber(quint8);
     bool tokenIsDelimiter(quint8);
     bool tokenIsType(quint8);

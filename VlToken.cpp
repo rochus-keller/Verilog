@@ -297,4 +297,44 @@ namespace Vl
             return false;
         }
     }
+
+    bool tokenIsSvReservedWord(quint8 t)
+    {
+        switch( t )
+        {
+        case Tok_logic:
+        case Tok_property:
+        case Tok_assert:
+        case Tok_assume:
+        case Tok_cover:
+        case Tok_restrict:
+        case Tok_iff:
+        case Tok_strong:
+        case Tok_weak:
+        case Tok_nexttime:
+        case Tok_s_nexttime:
+        case Tok_s_always:
+        case Tok_s_eventually:
+        case Tok_eventually:
+        case Tok_until:
+        case Tok_s_until:
+        case Tok_until_with:
+        case Tok_s_until_with:
+        case Tok_implies:
+        case Tok_accept_on:
+        case Tok_reject_on:
+        case Tok_sync_accept_on:
+        case Tok_sync_reject_on:
+        case Tok_dist:
+        case Tok_within:
+        case Tok_throughout:
+        case Tok_intersect:
+        case Tok_final:
+        case Tok_sequence:
+            // TODO: erweitern
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -38,6 +38,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_cell_clause: return "cell_clause";
 		case R_charge_strength: return "charge_strength";
 		case R_cmos_switch_instance: return "cmos_switch_instance";
+		case R_concurrent_assertion_item: return "concurrent_assertion_item";
 		case R_conditional_statement: return "conditional_statement";
 		case R_config_declaration: return "config_declaration";
 		case R_config_rule_statement: return "config_rule_statement";
@@ -46,6 +47,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_constant_range_expression: return "constant_range_expression";
 		case R_continuous_assign: return "continuous_assign";
 		case R_controlled_timing_check_event: return "controlled_timing_check_event";
+		case R_cover_sequence_statement: return "cover_sequence_statement";
 		case R_default_clause: return "default_clause";
 		case R_defparam_assignment: return "defparam_assignment";
 		case R_delay: return "delay";
@@ -56,6 +58,7 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_design_statement: return "design_statement";
 		case R_dimension: return "dimension";
 		case R_disable_statement: return "disable_statement";
+		case R_dist_item: return "dist_item";
 		case R_dlr_fullskew_timing_check: return "$fullskew_timing_check";
 		case R_dlr_hold_timing_check: return "$hold_timing_check";
 		case R_dlr_nochange_timing_check: return "$nochange_timing_check";
@@ -150,6 +153,9 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_port_expression: return "port_expression";
 		case R_port_reference: return "port_reference";
 		case R_procedural_continuous_assignments: return "procedural_continuous_assignments";
+		case R_property_case_item: return "property_case_item";
+		case R_property_expr: return "property_expr";
+		case R_property_spec: return "property_spec";
 		case R_pull_gate_instance: return "pull_gate_instance";
 		case R_pulldown_strength: return "pulldown_strength";
 		case R_pullup_strength: return "pullup_strength";
@@ -161,10 +167,15 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_real_type: return "real_type";
 		case R_realtime_declaration: return "realtime_declaration";
 		case R_reg_declaration: return "reg_declaration";
+		case R_restrict_property_statement: return "restrict_property_statement";
 		case R_scalar_timing_check_condition: return "scalar_timing_check_condition";
 		case R_seq_block: return "seq_block";
+		case R_sequence_expr: return "sequence_expr";
 		case R_sequential_or_combinatorial_entry: return "sequential_or_combinatorial_entry";
 		case R_showcancelled_declaration: return "showcancelled_declaration";
+		case R_simple_or_deferred_or_property_immediate_assert_statement: return "simple_or_deferred_or_property_immediate_assert_statement";
+		case R_simple_or_deferred_or_property_immediate_assume_statement: return "simple_or_deferred_or_property_immediate_assume_statement";
+		case R_simple_or_deferred_or_property_immediate_cover_statement: return "simple_or_deferred_or_property_immediate_cover_statement";
 		case R_simple_or_edge_sensitive_path_declaration: return "simple_or_edge_sensitive_path_declaration";
 		case R_simple_or_edge_sensitive_path_description: return "simple_or_edge_sensitive_path_description";
 		case R_simple_path_declaration: return "simple_path_declaration";

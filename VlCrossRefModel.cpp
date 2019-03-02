@@ -31,7 +31,7 @@
 #include <QBuffer>
 using namespace Vl;
 
-//#define _DUMP_AST
+// #define _DUMP_AST
 
 // für QtConcurrent::run braucht man extra eine separate Library mit minimalem Mehrwert
 class CrossRefModel::Worker : public QThread
@@ -302,13 +302,14 @@ CrossRefModel::IdentDeclRefList CrossRefModel::getGlobalNames(const QString& fil
     return res;
 }
 
-QList<Token> CrossRefModel::findTokenByPos(const QString& line, int col, int* pos)
+QList<Token> CrossRefModel::findTokenByPos(const QString& line, int col, int* pos, bool supportSv)
 {
     PpLexer l;
     l.setIgnoreAttrs(false);
     l.setPackAttrs(false);
     l.setIgnoreComments(false);
     l.setPackComments(false);
+    l.setSupportSvExt(supportSv);
 
     QList<Token> res = l.tokens(line);
     if( pos )
@@ -645,6 +646,19 @@ static bool isDecl( quint16 type )
     }
 }
 
+static bool isAssertion( quint16 type )
+{
+    switch( type )
+    {
+    case SynTree::R_simple_or_deferred_or_property_immediate_assert_statement:
+    case SynTree::R_simple_or_deferred_or_property_immediate_assume_statement:
+    case SynTree::R_simple_or_deferred_or_property_immediate_cover_statement:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static inline bool isHierarchy( quint16 type )
 {
     return type == SynTree::R_hierarchical_identifier ||
@@ -681,18 +695,10 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
 {
     Q_ASSERT( parentAst != 0 && superScope != 0 && !synPath.isEmpty() );
 
-    //int curUnnamed = 0;
-    foreach( const SynTree* child, synPath.front()->d_children )
+    Token label;
+    for( int i = 0; i < synPath.front()->d_children.size(); i++ )
     {
-//        if( child->d_tok.d_val == "yellowCounter" )
-//        {
-//            qDebug() << "synPath";
-//            foreach( const SynTree* tmp, synPath )
-//                qDebug() << SynTree::rToStr(tmp->d_tok.d_type) << tmp->d_tok.d_val;
-//            qDebug() << "child" << SynTree::rToStr(child->d_tok.d_type) << child->d_tok.d_val;
-//            qDebug() << "parentAst" << SynTree::rToStr(parentAst->d_tok.d_type) << parentAst->d_tok.d_val;
-//            qDebug() << "superScope" << SynTree::rToStr(superScope->d_tok.d_type) << superScope->d_tok.d_val;
-//        }
+        const SynTree* child = synPath.front()->d_children[i];
 
         if( hasScope(child) )
         {
@@ -705,9 +711,6 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                       curScope->d_tok.d_type == SynTree::R_seq_block ||
                       curScope->d_tok.d_type == SynTree::R_par_block ))
             {
-                // curScope->d_tok.d_val = QString("<block%1>").arg(curUnnamed++,2,10,QChar('0')).toUtf8();
-                //static int counter = 0;
-                //curScope->d_tok.d_val = QString("<%1>").arg(counter++,4,16,QChar('0')).toUtf8();
                 curScope->d_tok.d_val = ".";
             }
 #endif
@@ -718,7 +721,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             fillAst( curScope, curScope, synPath, err );
             synPath.pop_front();
         }else if( isDecl(child->d_tok.d_type) || isHierarchy(child->d_tok.d_type) ||
-                  isBlockStructure(child->d_tok.d_type) )
+                  isBlockStructure(child->d_tok.d_type) || isAssertion(child->d_tok.d_type) )
         {
             Branch* curParent = new Branch();
             curParent->d_tok = child->d_tok;
@@ -727,6 +730,20 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             else
                 curParent->d_super = parentAst;
             parentAst->d_children.append( SymRef(curParent) );
+
+            if( isAssertion(child->d_tok.d_type) && label.isValid() )
+            {
+                IdentDecl* id = new IdentDecl();
+                id->d_tok = label;
+                curParent->d_children.append(SymRef(id));
+                id->d_decl = curParent;
+                const IdentDecl*& slot = superScope->d_names[id->d_tok.d_val];
+                if( slot != 0 )
+                    err->error(Errors::Semantics, id->d_tok.d_sourcePath, id->d_tok.d_lineNr,id->d_tok.d_colNr,
+                                  tr("duplicate name: %1").arg(id->d_tok.d_val.data()) );
+                else
+                    slot = id;
+            }
 
             synPath.push_front(child);
             fillAst( curParent, superScope, synPath, err );
@@ -755,7 +772,12 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             Scope* scope = superScope;
             SymRefNc sym;
 
-            if( hasScope( synPath.front() ) )
+            if( i+1 < synPath.front()->d_children.size() && synPath.front()->d_children[i+1]->d_tok.d_type == Tok_Colon )
+            {
+                label = synPath.front()->d_children[i]->d_tok;
+                i++;
+                continue;
+            }else if( hasScope( synPath.front() ) )
             {
                 // hier kommen nur Idents an, die sich unmittelbar unter der Scope Production befinden, also
                 // z.B. nicht unter port etc. isDecl und hasScope sind eindeutig unterscheidbar
@@ -876,6 +898,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                     slot = id;
             }
         }
+        label = Token();
     }
 }
 
@@ -1068,7 +1091,9 @@ int CrossRefModel::parseFiles(const QStringList& files, ScopeRefList& scopes, If
         SectionList sec;
         int e = errs->getErrCount();
         int w = errs->getWrnCount();
+        //qDebug() << "start parseFiles" << file;
         parseStream( 0, file, scopes, idol, sec, errs, syms, incs, fcache );
+        //qDebug() << "end parseFiles" << file;
         secs[file] = sec;
         IfDefOutLists::const_iterator i;
         for( i = idol.begin(); i != idol.end(); ++i )
@@ -1143,9 +1168,9 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
         }
 
 #ifdef _DUMP_AST
-        qDebug() << "********** dumping" << file;
+        qDebug() << "********** dumping" << top->tok().d_sourcePath;
         dumpAst(top.constData(), 0 );
-        qDebug() << "********** end dump" << file;
+        qDebug() << "********** end dump" << top->tok().d_sourcePath;
 #endif
 //        qDebug() << "************** name table of" << file;
 //        Scope::Names::const_iterator n;

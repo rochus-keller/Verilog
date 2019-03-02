@@ -48,6 +48,7 @@ namespace Vl
         void setIgnoreAttrs( bool b ) { d_ignoreAttrs = b; }
         void setPackAttrs( bool b ) { d_packAttributes = b; }
         void setSendMacroUsage( bool b ) { d_sendMacroUsage = b; }
+        void setSupportSvExt( bool b ) { d_supportSvExt = b; }
 
         void setErrors(Errors* p) { d_err = p; }
         void setSyms(PpSymbols* p) { d_syms = p; }
@@ -137,6 +138,7 @@ namespace Vl
         bool d_ignoreAttrs;     // Ignore Tok_Latt and Tok_Ratt and everything between
         bool d_filePathMode;    // 'library' or 'include' detected, using pathident instead of ident up to ';'
         bool d_sendMacroUsage;  // deliver Tok_MacroUsage + actual args
+        bool d_supportSvExt;    // Support SystemVerilog12 extensions
     };
 }
 

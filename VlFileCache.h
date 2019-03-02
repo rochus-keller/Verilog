@@ -23,6 +23,7 @@
 #include <QHash>
 #include <QObject>
 #include <QReadWriteLock>
+#include <QStringList>
 
 class QIODevice;
 
@@ -38,6 +39,12 @@ namespace Vl
         void removeFile( const QString& path );
         QByteArray getFile( const QString& path, bool* found = 0) const;
 
+        void setSupportSvExt( bool b );
+        bool supportSvExt() const;
+        bool supportSvExt( const QString& path ) const;
+        void setSvSuffix( const QStringList& s);
+        QStringList svSuffix() const;
+
         // utility
         QByteArray fetchTextLineFromFile( const QString& path, int line, const QByteArray& defaultString = QByteArray() );
         QIODevice* createFileStreamForReading(const QString& path) const; // caller has to delete afterwards
@@ -45,6 +52,8 @@ namespace Vl
     private:
         typedef QHash<QString,QByteArray> Files;
         Files d_files; // path->content
+        QStringList d_svSuffix;
+        bool d_supportSvExt;
         mutable QReadWriteLock d_lock;
     };
 }
