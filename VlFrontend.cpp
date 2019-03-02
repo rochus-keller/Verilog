@@ -58,6 +58,7 @@ bool Vl::Frontend::process(const QString& file)
     w.d_lex->setSyms(d_ppSyms);
     w.d_lex->setIncs(d_incs);
     w.d_lex->setStream(file, true);
+    w.d_lex->setSupportSvExt(true);
     w.d_par = new Parser(this);
     w.d_file = file;
     const bool res = w.d_par->parseFile(w.d_lex,w.d_err);

@@ -650,9 +650,9 @@ static bool isAssertion( quint16 type )
 {
     switch( type )
     {
-    case SynTree::R_simple_or_deferred_or_property_immediate_assert_statement:
-    case SynTree::R_simple_or_deferred_or_property_immediate_assume_statement:
-    case SynTree::R_simple_or_deferred_or_property_immediate_cover_statement:
+    case SynTree::R_concurrent_or_immediate_assert_statement:
+    case SynTree::R_concurrent_or_immediate_assume_statement:
+    case SynTree::R_concurrent_or_immediate_cover_statement:
         return true;
     default:
         return false;

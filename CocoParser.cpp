@@ -727,7 +727,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_bufif0: case _T_bufif1: case _T_notif0: case _T_notif1: {
 			enable_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_highz0 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_highz1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -760,7 +760,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_and: case _T_nand: case _T_nor: case _T_or: case _T_xnor: case _T_xor: {
 			n_input_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_highz0 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_highz1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -778,7 +778,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_buf: case _T_not: {
 			n_output_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_highz0 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_highz1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -824,7 +824,7 @@ void Parser::gate_instantiation() {
 		case _T_pulldown: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 				pulldown_strength();
 			}
 			pull_gate_instance();
@@ -840,7 +840,7 @@ void Parser::gate_instantiation() {
 		case _T_pullup: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 				pullup_strength();
 			}
 			pull_gate_instance();
@@ -875,7 +875,7 @@ void Parser::concurrent_assertion_statement() {
 void Parser::module_or_udp_instantiation() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instantiation, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		identifier();
-		if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_highz0 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_highz1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+		if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _T_Hash) {
@@ -947,7 +947,7 @@ void Parser::net_declaration() {
 			Get();
 			addTerminal(); 
 		} else SynErr(274,__FUNCTION__);
-		if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_highz0 || peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_highz1 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 ) ) {
+		if (peek(1) == _T_Lpar && ( peek(2) == _T_weak1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_highz0 || peek(2) == _T_strong0 || peek(2) == _T_pull0 || peek(2) == _T_supply0 || peek(2) == _T_strong1 || peek(2) == _T_pull1 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _T_Lpar) {
@@ -5232,8 +5232,8 @@ void Parser::primary_2() {
 		} else SynErr(360,__FUNCTION__);
 }
 
-void Parser::simple_or_deferred_or_property_immediate_assert_statement() {
-		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_deferred_or_property_immediate_assert_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
+void Parser::concurrent_or_immediate_assert_statement() {
+		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_concurrent_or_immediate_assert_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_assert,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _T_Hash || la->kind == _T_final || la->kind == _T_property) {
@@ -5287,8 +5287,8 @@ void Parser::action_block() {
 		}
 }
 
-void Parser::simple_or_deferred_or_property_immediate_assume_statement() {
-		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_deferred_or_property_immediate_assume_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
+void Parser::concurrent_or_immediate_assume_statement() {
+		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_concurrent_or_immediate_assume_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_assume,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _T_Hash || la->kind == _T_final || la->kind == _T_property) {
@@ -5313,8 +5313,8 @@ void Parser::simple_or_deferred_or_property_immediate_assume_statement() {
 		d_stack.pop(); 
 }
 
-void Parser::simple_or_deferred_or_property_immediate_cover_statement() {
-		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_simple_or_deferred_or_property_immediate_cover_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
+void Parser::concurrent_or_immediate_cover_statement() {
+		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_concurrent_or_immediate_cover_statement, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		Expect(_T_cover,__FUNCTION__);
 		addTerminal(); 
 		if (la->kind == _T_Hash || la->kind == _T_final || la->kind == _T_property) {
@@ -5441,11 +5441,11 @@ void Parser::restrict_property_statement() {
 
 void Parser::simple_or_deferred_or_property_immediate_assertion_statement() {
 		if (la->kind == _T_assert) {
-			simple_or_deferred_or_property_immediate_assert_statement();
+			concurrent_or_immediate_assert_statement();
 		} else if (la->kind == _T_assume) {
-			simple_or_deferred_or_property_immediate_assume_statement();
+			concurrent_or_immediate_assume_statement();
 		} else if (la->kind == _T_cover) {
-			simple_or_deferred_or_property_immediate_cover_statement();
+			concurrent_or_immediate_cover_statement();
 		} else SynErr(364,__FUNCTION__);
 }
 

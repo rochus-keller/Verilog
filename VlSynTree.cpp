@@ -39,6 +39,9 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_charge_strength: return "charge_strength";
 		case R_cmos_switch_instance: return "cmos_switch_instance";
 		case R_concurrent_assertion_item: return "concurrent_assertion_item";
+		case R_concurrent_or_immediate_assert_statement: return "concurrent_or_immediate_assert_statement";
+		case R_concurrent_or_immediate_assume_statement: return "concurrent_or_immediate_assume_statement";
+		case R_concurrent_or_immediate_cover_statement: return "concurrent_or_immediate_cover_statement";
 		case R_conditional_statement: return "conditional_statement";
 		case R_config_declaration: return "config_declaration";
 		case R_config_rule_statement: return "config_rule_statement";
@@ -173,9 +176,6 @@ const char* SynTree::rToStr( quint16 r ) {
 		case R_sequence_expr: return "sequence_expr";
 		case R_sequential_or_combinatorial_entry: return "sequential_or_combinatorial_entry";
 		case R_showcancelled_declaration: return "showcancelled_declaration";
-		case R_simple_or_deferred_or_property_immediate_assert_statement: return "simple_or_deferred_or_property_immediate_assert_statement";
-		case R_simple_or_deferred_or_property_immediate_assume_statement: return "simple_or_deferred_or_property_immediate_assume_statement";
-		case R_simple_or_deferred_or_property_immediate_cover_statement: return "simple_or_deferred_or_property_immediate_cover_statement";
 		case R_simple_or_edge_sensitive_path_declaration: return "simple_or_edge_sensitive_path_declaration";
 		case R_simple_or_edge_sensitive_path_description: return "simple_or_edge_sensitive_path_description";
 		case R_simple_path_declaration: return "simple_path_declaration";
