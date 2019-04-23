@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QReadWriteLock>
 #include <QHash>
+#include <QSet>
 
 namespace Vl
 {

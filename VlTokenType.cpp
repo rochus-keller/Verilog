@@ -523,4 +523,2114 @@ namespace Vl {
 	bool tokenTypeIsSpecial( int r ) {
 		return r > TT_Specials && r < TT_Max;
 	}
+	static inline char at( const QByteArray& str, int i ){
+		return ( i >= 0 && i < str.size() ? str[i] : 0 );
+	}
+	TokenType tokenTypeFromString( const QByteArray& str, int* pos ) {
+		int i = ( pos != 0 ? *pos: 0 );
+		TokenType res = Tok_Invalid;
+		switch( at(str,i) ){
+		case '!':
+			if( at(str,i+1) == '=' ){
+				if( at(str,i+2) == '=' ){
+					res = Tok_Bang2Eq; i += 3;
+				} else {
+					res = Tok_BangEq; i += 2;
+				}
+			} else {
+				res = Tok_Bang; i += 1;
+			}
+			break;
+		case '#':
+			switch( at(str,i+1) ){
+			case '#':
+				if( at(str,i+2) == '[' ){
+					switch( at(str,i+3) ){
+					case '*':
+						if( at(str,i+4) == ']' ){
+							res = Tok_2HashLbrackStarRbrack; i += 5;
+						}
+						break;
+					case '+':
+						if( at(str,i+4) == ']' ){
+							res = Tok_2HashLbrackPlusRbrack; i += 5;
+						}
+						break;
+					}
+				} else {
+					res = Tok_2Hash; i += 2;
+				}
+				break;
+			case '-':
+				if( at(str,i+2) == '#' ){
+					res = Tok_Hash2Minus; i += 3;
+				}
+				break;
+			case '=':
+				if( at(str,i+2) == '#' ){
+					res = Tok_Hash2Eq; i += 3;
+				}
+				break;
+			default:
+				res = Tok_Hash; i += 1;
+				break;
+			}
+			break;
+		case '$':
+			switch( at(str,i+1) ){
+			case 'f':
+				if( at(str,i+2) == 'u' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'l' ){
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 'k' ){
+									if( at(str,i+7) == 'e' ){
+										if( at(str,i+8) == 'w' ){
+											res = Tok_dlr_fullskew; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'h':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'd' ){
+							res = Tok_dlr_hold; i += 5;
+						}
+					}
+				}
+				break;
+			case 'n':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 'c' ){
+						if( at(str,i+4) == 'h' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 'n' ){
+									if( at(str,i+7) == 'g' ){
+										if( at(str,i+8) == 'e' ){
+											res = Tok_dlr_nochange; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'p':
+				if( at(str,i+2) == 'e' ){
+					if( at(str,i+3) == 'r' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'o' ){
+								if( at(str,i+6) == 'd' ){
+									res = Tok_dlr_period; i += 7;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'r':
+				if( at(str,i+2) == 'e' ){
+					switch( at(str,i+3) ){
+					case 'c':
+						switch( at(str,i+4) ){
+						case 'o':
+							if( at(str,i+5) == 'v' ){
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'r' ){
+										if( at(str,i+8) == 'y' ){
+											res = Tok_dlr_recovery; i += 9;
+										}
+									}
+								}
+							}
+							break;
+						case 'r':
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 'm' ){
+									res = Tok_dlr_recrem; i += 7;
+								}
+							}
+							break;
+						}
+						break;
+					case 'm':
+						if( at(str,i+4) == 'o' ){
+							if( at(str,i+5) == 'v' ){
+								if( at(str,i+6) == 'a' ){
+									if( at(str,i+7) == 'l' ){
+										res = Tok_dlr_removal; i += 8;
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+				break;
+			case 's':
+				switch( at(str,i+2) ){
+				case 'e':
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'p' ){
+								if( at(str,i+6) == 'h' ){
+									if( at(str,i+7) == 'o' ){
+										if( at(str,i+8) == 'l' ){
+											if( at(str,i+9) == 'd' ){
+												res = Tok_dlr_setuphold; i += 10;
+											}
+										}
+									}
+								} else {
+									res = Tok_dlr_setup; i += 6;
+								}
+							}
+						}
+					}
+					break;
+				case 'k':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'w' ){
+							res = Tok_dlr_skew; i += 5;
+						}
+					}
+					break;
+				}
+				break;
+			case 't':
+				if( at(str,i+2) == 'i' ){
+					if( at(str,i+3) == 'm' ){
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 'k' ){
+									if( at(str,i+7) == 'e' ){
+										if( at(str,i+8) == 'w' ){
+											res = Tok_dlr_timeskew; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'w':
+				if( at(str,i+2) == 'i' ){
+					if( at(str,i+3) == 'd' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'h' ){
+								res = Tok_dlr_width; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			default:
+				res = Tok_Dlr; i += 1;
+				break;
+			}
+			break;
+		case '%':
+			res = Tok_Percent; i += 1;
+			break;
+		case '&':
+			if( at(str,i+1) == '&' ){
+				if( at(str,i+2) == '&' ){
+					res = Tok_3Amp; i += 3;
+				} else {
+					res = Tok_2Amp; i += 2;
+				}
+			} else {
+				res = Tok_Amp; i += 1;
+			}
+			break;
+		case '(':
+			if( at(str,i+1) == '*' ){
+				res = Tok_Latt; i += 2;
+			} else {
+				res = Tok_Lpar; i += 1;
+			}
+			break;
+		case ')':
+			res = Tok_Rpar; i += 1;
+			break;
+		case '*':
+			switch( at(str,i+1) ){
+			case ')':
+				res = Tok_Ratt; i += 2;
+				break;
+			case '*':
+				res = Tok_2Star; i += 2;
+				break;
+			case '/':
+				res = Tok_Rcmt; i += 2;
+				break;
+			case '>':
+				res = Tok_StarGt; i += 2;
+				break;
+			default:
+				res = Tok_Star; i += 1;
+				break;
+			}
+			break;
+		case '+':
+			if( at(str,i+1) == ':' ){
+				res = Tok_PlusColon; i += 2;
+			} else {
+				res = Tok_Plus; i += 1;
+			}
+			break;
+		case ',':
+			res = Tok_Comma; i += 1;
+			break;
+		case '-':
+			switch( at(str,i+1) ){
+			case ':':
+				res = Tok_MinusColon; i += 2;
+				break;
+			case '>':
+				res = Tok_MinusGt; i += 2;
+				break;
+			default:
+				res = Tok_Minus; i += 1;
+				break;
+			}
+			break;
+		case '.':
+			res = Tok_Dot; i += 1;
+			break;
+		case '/':
+			if( at(str,i+1) == '*' ){
+				res = Tok_Lcmt; i += 2;
+			} else {
+				res = Tok_Slash; i += 1;
+			}
+			break;
+		case ':':
+			switch( at(str,i+1) ){
+			case '/':
+				res = Tok_ColonSlash; i += 2;
+				break;
+			case '=':
+				res = Tok_ColonEq; i += 2;
+				break;
+			default:
+				res = Tok_Colon; i += 1;
+				break;
+			}
+			break;
+		case ';':
+			res = Tok_Semi; i += 1;
+			break;
+		case '<':
+			switch( at(str,i+1) ){
+			case '<':
+				if( at(str,i+2) == '<' ){
+					res = Tok_3Lt; i += 3;
+				} else {
+					res = Tok_2Lt; i += 2;
+				}
+				break;
+			case '=':
+				res = Tok_Leq; i += 2;
+				break;
+			default:
+				res = Tok_Lt; i += 1;
+				break;
+			}
+			break;
+		case '=':
+			switch( at(str,i+1) ){
+			case '=':
+				if( at(str,i+2) == '=' ){
+					res = Tok_3Eq; i += 3;
+				} else {
+					res = Tok_2Eq; i += 2;
+				}
+				break;
+			case '>':
+				res = Tok_EqGt; i += 2;
+				break;
+			default:
+				res = Tok_Eq; i += 1;
+				break;
+			}
+			break;
+		case '>':
+			switch( at(str,i+1) ){
+			case '=':
+				res = Tok_Geq; i += 2;
+				break;
+			case '>':
+				if( at(str,i+2) == '>' ){
+					res = Tok_3Gt; i += 3;
+				} else {
+					res = Tok_2Gt; i += 2;
+				}
+				break;
+			default:
+				res = Tok_Gt; i += 1;
+				break;
+			}
+			break;
+		case '?':
+			res = Tok_Qmark; i += 1;
+			break;
+		case '@':
+			res = Tok_At; i += 1;
+			break;
+		case 'P':
+			if( at(str,i+1) == 'A' ){
+				if( at(str,i+2) == 'T' ){
+					if( at(str,i+3) == 'H' ){
+						if( at(str,i+4) == 'P' ){
+							if( at(str,i+5) == 'U' ){
+								if( at(str,i+6) == 'L' ){
+									if( at(str,i+7) == 'S' ){
+										if( at(str,i+8) == 'E' ){
+											if( at(str,i+9) == '$' ){
+												res = Tok_PATHPULSE_dlr; i += 10;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			break;
+		case '[':
+			switch( at(str,i+1) ){
+			case '*':
+				if( at(str,i+2) == ']' ){
+					res = Tok_Lbrack2Star; i += 3;
+				} else {
+					res = Tok_LbrackStar; i += 2;
+				}
+				break;
+			case '+':
+				if( at(str,i+2) == ']' ){
+					res = Tok_Lbrack2Plus; i += 3;
+				}
+				break;
+			case '-':
+				if( at(str,i+2) == '>' ){
+					res = Tok_Lbrack2Minus; i += 3;
+				}
+				break;
+			case '=':
+				res = Tok_LbrackEq; i += 2;
+				break;
+			default:
+				res = Tok_Lbrack; i += 1;
+				break;
+			}
+			break;
+		case ']':
+			res = Tok_Rbrack; i += 1;
+			break;
+		case '^':
+			if( at(str,i+1) == '~' ){
+				res = Tok_HatTilde; i += 2;
+			} else {
+				res = Tok_Hat; i += 1;
+			}
+			break;
+		case 'a':
+			switch( at(str,i+1) ){
+			case 'c':
+				if( at(str,i+2) == 'c' ){
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'p' ){
+							if( at(str,i+5) == 't' ){
+								if( at(str,i+6) == '_' ){
+									if( at(str,i+7) == 'o' ){
+										if( at(str,i+8) == 'n' ){
+											res = Tok_accept_on; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'l':
+				if( at(str,i+2) == 'w' ){
+					if( at(str,i+3) == 'a' ){
+						if( at(str,i+4) == 'y' ){
+							if( at(str,i+5) == 's' ){
+								res = Tok_always; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			case 'n':
+				if( at(str,i+2) == 'd' ){
+					res = Tok_and; i += 3;
+				}
+				break;
+			case 's':
+				if( at(str,i+2) == 's' ){
+					switch( at(str,i+3) ){
+					case 'e':
+						if( at(str,i+4) == 'r' ){
+							if( at(str,i+5) == 't' ){
+								res = Tok_assert; i += 6;
+							}
+						}
+						break;
+					case 'i':
+						if( at(str,i+4) == 'g' ){
+							if( at(str,i+5) == 'n' ){
+								res = Tok_assign; i += 6;
+							}
+						}
+						break;
+					case 'u':
+						if( at(str,i+4) == 'm' ){
+							if( at(str,i+5) == 'e' ){
+								res = Tok_assume; i += 6;
+							}
+						}
+						break;
+					}
+				}
+				break;
+			case 'u':
+				if( at(str,i+2) == 't' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 'm' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 'c' ){
+											res = Tok_automatic; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'b':
+			switch( at(str,i+1) ){
+			case 'e':
+				if( at(str,i+2) == 'g' ){
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'n' ){
+							res = Tok_begin; i += 5;
+						}
+					}
+				}
+				break;
+			case 'u':
+				if( at(str,i+2) == 'f' ){
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'f' ){
+							switch( at(str,i+5) ){
+							case '0':
+								res = Tok_bufif0; i += 6;
+								break;
+							case '1':
+								res = Tok_bufif1; i += 6;
+								break;
+							}
+						}
+					} else {
+						res = Tok_buf; i += 3;
+					}
+				}
+				break;
+			}
+			break;
+		case 'c':
+			switch( at(str,i+1) ){
+			case 'a':
+				if( at(str,i+2) == 's' ){
+					if( at(str,i+3) == 'e' ){
+						switch( at(str,i+4) ){
+						case 'x':
+							res = Tok_casex; i += 5;
+							break;
+						case 'z':
+							res = Tok_casez; i += 5;
+							break;
+						default:
+							res = Tok_case; i += 4;
+							break;
+						}
+					}
+				}
+				break;
+			case 'e':
+				if( at(str,i+2) == 'l' ){
+					if( at(str,i+3) == 'l' ){
+						res = Tok_cell; i += 4;
+					}
+				}
+				break;
+			case 'm':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 's' ){
+						res = Tok_cmos; i += 4;
+					}
+				}
+				break;
+			case 'o':
+				switch( at(str,i+2) ){
+				case 'n':
+					if( at(str,i+3) == 'f' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'g' ){
+								res = Tok_config; i += 6;
+							}
+						}
+					}
+					break;
+				case 'v':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'r' ){
+							res = Tok_cover; i += 5;
+						}
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case 'd':
+			switch( at(str,i+1) ){
+			case 'e':
+				switch( at(str,i+2) ){
+				case 'a':
+					if( at(str,i+3) == 's' ){
+						if( at(str,i+4) == 's' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'g' ){
+									if( at(str,i+7) == 'n' ){
+										res = Tok_deassign; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'f':
+					switch( at(str,i+3) ){
+					case 'a':
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'l' ){
+								if( at(str,i+6) == 't' ){
+									res = Tok_default; i += 7;
+								}
+							}
+						}
+						break;
+					case 'p':
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 'r' ){
+								if( at(str,i+6) == 'a' ){
+									if( at(str,i+7) == 'm' ){
+										res = Tok_defparam; i += 8;
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 's':
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'g' ){
+							if( at(str,i+5) == 'n' ){
+								res = Tok_design; i += 6;
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'i':
+				if( at(str,i+2) == 's' ){
+					switch( at(str,i+3) ){
+					case 'a':
+						if( at(str,i+4) == 'b' ){
+							if( at(str,i+5) == 'l' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_disable; i += 7;
+								}
+							}
+						}
+						break;
+					case 't':
+						res = Tok_dist; i += 4;
+						break;
+					}
+				}
+				break;
+			}
+			break;
+		case 'e':
+			switch( at(str,i+1) ){
+			case 'd':
+				if( at(str,i+2) == 'g' ){
+					if( at(str,i+3) == 'e' ){
+						res = Tok_edge; i += 4;
+					}
+				}
+				break;
+			case 'l':
+				if( at(str,i+2) == 's' ){
+					if( at(str,i+3) == 'e' ){
+						res = Tok_else; i += 4;
+					}
+				}
+				break;
+			case 'n':
+				if( at(str,i+2) == 'd' ){
+					switch( at(str,i+3) ){
+					case 'c':
+						switch( at(str,i+4) ){
+						case 'a':
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_endcase; i += 7;
+								}
+							}
+							break;
+						case 'o':
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 'f' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 'g' ){
+											res = Tok_endconfig; i += 9;
+										}
+									}
+								}
+							}
+							break;
+						}
+						break;
+					case 'f':
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 't' ){
+										if( at(str,i+8) == 'i' ){
+											if( at(str,i+9) == 'o' ){
+												if( at(str,i+10) == 'n' ){
+													res = Tok_endfunction; i += 11;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 'g':
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'r' ){
+										if( at(str,i+8) == 'a' ){
+											if( at(str,i+9) == 't' ){
+												if( at(str,i+10) == 'e' ){
+													res = Tok_endgenerate; i += 11;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 'm':
+						if( at(str,i+4) == 'o' ){
+							if( at(str,i+5) == 'd' ){
+								if( at(str,i+6) == 'u' ){
+									if( at(str,i+7) == 'l' ){
+										if( at(str,i+8) == 'e' ){
+											res = Tok_endmodule; i += 9;
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 'p':
+						if( at(str,i+4) == 'r' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'm' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 't' ){
+											if( at(str,i+9) == 'i' ){
+												if( at(str,i+10) == 'v' ){
+													if( at(str,i+11) == 'e' ){
+														res = Tok_endprimitive; i += 12;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 's':
+						if( at(str,i+4) == 'p' ){
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 'f' ){
+											if( at(str,i+9) == 'y' ){
+												res = Tok_endspecify; i += 10;
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 't':
+						if( at(str,i+4) == 'a' ){
+							switch( at(str,i+5) ){
+							case 'b':
+								if( at(str,i+6) == 'l' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_endtable; i += 8;
+									}
+								}
+								break;
+							case 's':
+								if( at(str,i+6) == 'k' ){
+									res = Tok_endtask; i += 7;
+								}
+								break;
+							}
+						}
+						break;
+					default:
+						res = Tok_end; i += 3;
+						break;
+					}
+				}
+				break;
+			case 'v':
+				if( at(str,i+2) == 'e' ){
+					if( at(str,i+3) == 'n' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'u' ){
+								if( at(str,i+6) == 'a' ){
+									if( at(str,i+7) == 'l' ){
+										if( at(str,i+8) == 'l' ){
+											if( at(str,i+9) == 'y' ){
+												res = Tok_eventually; i += 10;
+											}
+										}
+									}
+								}
+							} else {
+								res = Tok_event; i += 5;
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'f':
+			switch( at(str,i+1) ){
+			case 'i':
+				if( at(str,i+2) == 'n' ){
+					if( at(str,i+3) == 'a' ){
+						if( at(str,i+4) == 'l' ){
+							res = Tok_final; i += 5;
+						}
+					}
+				}
+				break;
+			case 'o':
+				if( at(str,i+2) == 'r' ){
+					switch( at(str,i+3) ){
+					case 'c':
+						if( at(str,i+4) == 'e' ){
+							res = Tok_force; i += 5;
+						}
+						break;
+					case 'e':
+						if( at(str,i+4) == 'v' ){
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 'r' ){
+									res = Tok_forever; i += 7;
+								}
+							}
+						}
+						break;
+					case 'k':
+						res = Tok_fork; i += 4;
+						break;
+					default:
+						res = Tok_for; i += 3;
+						break;
+					}
+				}
+				break;
+			case 'u':
+				if( at(str,i+2) == 'n' ){
+					if( at(str,i+3) == 'c' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'o' ){
+									if( at(str,i+7) == 'n' ){
+										res = Tok_function; i += 8;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'g':
+			if( at(str,i+1) == 'e' ){
+				if( at(str,i+2) == 'n' ){
+					switch( at(str,i+3) ){
+					case 'e':
+						if( at(str,i+4) == 'r' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_generate; i += 8;
+									}
+								}
+							}
+						}
+						break;
+					case 'v':
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 'r' ){
+								res = Tok_genvar; i += 6;
+							}
+						}
+						break;
+					}
+				}
+			}
+			break;
+		case 'h':
+			if( at(str,i+1) == 'i' ){
+				if( at(str,i+2) == 'g' ){
+					if( at(str,i+3) == 'h' ){
+						if( at(str,i+4) == 'z' ){
+							switch( at(str,i+5) ){
+							case '0':
+								res = Tok_highz0; i += 6;
+								break;
+							case '1':
+								res = Tok_highz1; i += 6;
+								break;
+							}
+						}
+					}
+				}
+			}
+			break;
+		case 'i':
+			switch( at(str,i+1) ){
+			case 'f':
+				switch( at(str,i+2) ){
+				case 'f':
+					res = Tok_iff; i += 3;
+					break;
+				case 'n':
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 'n' ){
+							if( at(str,i+5) == 'e' ){
+								res = Tok_ifnone; i += 6;
+							}
+						}
+					}
+					break;
+				default:
+					res = Tok_if; i += 2;
+					break;
+				}
+				break;
+			case 'm':
+				if( at(str,i+2) == 'p' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 's' ){
+									res = Tok_implies; i += 7;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'n':
+				switch( at(str,i+2) ){
+				case 'c':
+					switch( at(str,i+3) ){
+					case 'd':
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'r' ){
+								res = Tok_incdir; i += 6;
+							}
+						}
+						break;
+					case 'l':
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'd' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_include; i += 7;
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 'i':
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 'l' ){
+									res = Tok_initial; i += 7;
+								}
+							}
+						}
+					}
+					break;
+				case 'o':
+					if( at(str,i+3) == 'u' ){
+						if( at(str,i+4) == 't' ){
+							res = Tok_inout; i += 5;
+						}
+					}
+					break;
+				case 'p':
+					if( at(str,i+3) == 'u' ){
+						if( at(str,i+4) == 't' ){
+							res = Tok_input; i += 5;
+						}
+					}
+					break;
+				case 's':
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_instance; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 't':
+					if( at(str,i+3) == 'e' ){
+						switch( at(str,i+4) ){
+						case 'g':
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 'r' ){
+									res = Tok_integer; i += 7;
+								}
+							}
+							break;
+						case 'r':
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'c' ){
+										if( at(str,i+8) == 't' ){
+											res = Tok_intersect; i += 9;
+										}
+									}
+								}
+							}
+							break;
+						}
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case 'j':
+			if( at(str,i+1) == 'o' ){
+				if( at(str,i+2) == 'i' ){
+					if( at(str,i+3) == 'n' ){
+						res = Tok_join; i += 4;
+					}
+				}
+			}
+			break;
+		case 'l':
+			switch( at(str,i+1) ){
+			case 'a':
+				if( at(str,i+2) == 'r' ){
+					if( at(str,i+3) == 'g' ){
+						if( at(str,i+4) == 'e' ){
+							res = Tok_large; i += 5;
+						}
+					}
+				}
+				break;
+			case 'i':
+				if( at(str,i+2) == 'b' ){
+					switch( at(str,i+3) ){
+					case 'l':
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 't' ){
+									res = Tok_liblist; i += 7;
+								}
+							}
+						}
+						break;
+					case 'r':
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 'r' ){
+								if( at(str,i+6) == 'y' ){
+									res = Tok_library; i += 7;
+								}
+							}
+						}
+						break;
+					}
+				}
+				break;
+			case 'o':
+				switch( at(str,i+2) ){
+				case 'c':
+					if( at(str,i+3) == 'a' ){
+						if( at(str,i+4) == 'l' ){
+							if( at(str,i+5) == 'p' ){
+								if( at(str,i+6) == 'a' ){
+									if( at(str,i+7) == 'r' ){
+										if( at(str,i+8) == 'a' ){
+											if( at(str,i+9) == 'm' ){
+												res = Tok_localparam; i += 10;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'g':
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'c' ){
+							res = Tok_logic; i += 5;
+						}
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case 'm':
+			switch( at(str,i+1) ){
+			case 'a':
+				if( at(str,i+2) == 'c' ){
+					if( at(str,i+3) == 'r' ){
+						if( at(str,i+4) == 'o' ){
+							if( at(str,i+5) == 'm' ){
+								if( at(str,i+6) == 'o' ){
+									if( at(str,i+7) == 'd' ){
+										if( at(str,i+8) == 'u' ){
+											if( at(str,i+9) == 'l' ){
+												if( at(str,i+10) == 'e' ){
+													res = Tok_macromodule; i += 11;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'e':
+				if( at(str,i+2) == 'd' ){
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'm' ){
+								res = Tok_medium; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			case 'o':
+				if( at(str,i+2) == 'd' ){
+					if( at(str,i+3) == 'u' ){
+						if( at(str,i+4) == 'l' ){
+							if( at(str,i+5) == 'e' ){
+								res = Tok_module; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'n':
+			switch( at(str,i+1) ){
+			case 'a':
+				if( at(str,i+2) == 'n' ){
+					if( at(str,i+3) == 'd' ){
+						res = Tok_nand; i += 4;
+					}
+				}
+				break;
+			case 'e':
+				switch( at(str,i+2) ){
+				case 'g':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'd' ){
+							if( at(str,i+5) == 'g' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_negedge; i += 7;
+								}
+							}
+						}
+					}
+					break;
+				case 'x':
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'm' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_nexttime; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'm':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 's' ){
+						res = Tok_nmos; i += 4;
+					}
+				}
+				break;
+			case 'o':
+				switch( at(str,i+2) ){
+				case 'r':
+					res = Tok_nor; i += 3;
+					break;
+				case 's':
+					if( at(str,i+3) == 'h' ){
+						if( at(str,i+4) == 'o' ){
+							if( at(str,i+5) == 'w' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 'a' ){
+										if( at(str,i+8) == 'n' ){
+											if( at(str,i+9) == 'c' ){
+												if( at(str,i+10) == 'e' ){
+													if( at(str,i+11) == 'l' ){
+														if( at(str,i+12) == 'l' ){
+															if( at(str,i+13) == 'e' ){
+																if( at(str,i+14) == 'd' ){
+																	res = Tok_noshowcancelled; i += 15;
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 't':
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'f' ){
+							switch( at(str,i+5) ){
+							case '0':
+								res = Tok_notif0; i += 6;
+								break;
+							case '1':
+								res = Tok_notif1; i += 6;
+								break;
+							}
+						}
+					} else {
+						res = Tok_not; i += 3;
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case 'o':
+			switch( at(str,i+1) ){
+			case 'r':
+				res = Tok_or; i += 2;
+				break;
+			case 'u':
+				if( at(str,i+2) == 't' ){
+					if( at(str,i+3) == 'p' ){
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 't' ){
+								res = Tok_output; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'p':
+			switch( at(str,i+1) ){
+			case 'a':
+				if( at(str,i+2) == 'r' ){
+					if( at(str,i+3) == 'a' ){
+						if( at(str,i+4) == 'm' ){
+							if( at(str,i+5) == 'e' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'e' ){
+										if( at(str,i+8) == 'r' ){
+											res = Tok_parameter; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'm':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 's' ){
+						res = Tok_pmos; i += 4;
+					}
+				}
+				break;
+			case 'o':
+				if( at(str,i+2) == 's' ){
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'd' ){
+							if( at(str,i+5) == 'g' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_posedge; i += 7;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'r':
+				switch( at(str,i+2) ){
+				case 'i':
+					if( at(str,i+3) == 'm' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 't' ){
+								if( at(str,i+6) == 'i' ){
+									if( at(str,i+7) == 'v' ){
+										if( at(str,i+8) == 'e' ){
+											res = Tok_primitive; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'o':
+					if( at(str,i+3) == 'p' ){
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'r' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'y' ){
+										res = Tok_property; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'u':
+				if( at(str,i+2) == 'l' ){
+					switch( at(str,i+3) ){
+					case 'l':
+						switch( at(str,i+4) ){
+						case '0':
+							res = Tok_pull0; i += 5;
+							break;
+						case '1':
+							res = Tok_pull1; i += 5;
+							break;
+						case 'd':
+							if( at(str,i+5) == 'o' ){
+								if( at(str,i+6) == 'w' ){
+									if( at(str,i+7) == 'n' ){
+										res = Tok_pulldown; i += 8;
+									}
+								}
+							}
+							break;
+						case 'u':
+							if( at(str,i+5) == 'p' ){
+								res = Tok_pullup; i += 6;
+							}
+							break;
+						}
+						break;
+					case 's':
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'y' ){
+										if( at(str,i+8) == 'l' ){
+											if( at(str,i+9) == 'e' ){
+												if( at(str,i+10) == '_' ){
+													if( at(str,i+11) == 'o' ){
+														if( at(str,i+12) == 'n' ){
+															switch( at(str,i+13) ){
+															case 'd':
+																if( at(str,i+14) == 'e' ){
+																	if( at(str,i+15) == 't' ){
+																		if( at(str,i+16) == 'e' ){
+																			if( at(str,i+17) == 'c' ){
+																				if( at(str,i+18) == 't' ){
+																					res = Tok_pulsestyle_ondetect; i += 19;
+																				}
+																			}
+																		}
+																	}
+																}
+																break;
+															case 'e':
+																if( at(str,i+14) == 'v' ){
+																	if( at(str,i+15) == 'e' ){
+																		if( at(str,i+16) == 'n' ){
+																			if( at(str,i+17) == 't' ){
+																				res = Tok_pulsestyle_onevent; i += 18;
+																			}
+																		}
+																	}
+																}
+																break;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+				break;
+			}
+			break;
+		case 'r':
+			switch( at(str,i+1) ){
+			case 'c':
+				if( at(str,i+2) == 'm' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 's' ){
+							res = Tok_rcmos; i += 5;
+						}
+					}
+				}
+				break;
+			case 'e':
+				switch( at(str,i+2) ){
+				case 'a':
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'm' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_realtime; i += 8;
+									}
+								}
+							}
+						} else {
+							res = Tok_real; i += 4;
+						}
+					}
+					break;
+				case 'g':
+					res = Tok_reg; i += 3;
+					break;
+				case 'j':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'c' ){
+							if( at(str,i+5) == 't' ){
+								if( at(str,i+6) == '_' ){
+									if( at(str,i+7) == 'o' ){
+										if( at(str,i+8) == 'n' ){
+											res = Tok_reject_on; i += 9;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'l':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 's' ){
+								if( at(str,i+6) == 'e' ){
+									res = Tok_release; i += 7;
+								}
+							}
+						}
+					}
+					break;
+				case 'p':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 't' ){
+								res = Tok_repeat; i += 6;
+							}
+						}
+					}
+					break;
+				case 's':
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 'r' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 't' ){
+										res = Tok_restrict; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'n':
+				if( at(str,i+2) == 'm' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 's' ){
+							res = Tok_rnmos; i += 5;
+						}
+					}
+				}
+				break;
+			case 'p':
+				if( at(str,i+2) == 'm' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 's' ){
+							res = Tok_rpmos; i += 5;
+						}
+					}
+				}
+				break;
+			case 't':
+				if( at(str,i+2) == 'r' ){
+					if( at(str,i+3) == 'a' ){
+						if( at(str,i+4) == 'n' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'f' ){
+									switch( at(str,i+7) ){
+									case '0':
+										res = Tok_rtranif0; i += 8;
+										break;
+									case '1':
+										res = Tok_rtranif1; i += 8;
+										break;
+									}
+								}
+							} else {
+								res = Tok_rtran; i += 5;
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 's':
+			switch( at(str,i+1) ){
+			case '_':
+				switch( at(str,i+2) ){
+				case 'a':
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'w' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 'y' ){
+									if( at(str,i+7) == 's' ){
+										res = Tok_s_always; i += 8;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'e':
+					if( at(str,i+3) == 'v' ){
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'u' ){
+										if( at(str,i+8) == 'a' ){
+											if( at(str,i+9) == 'l' ){
+												if( at(str,i+10) == 'l' ){
+													if( at(str,i+11) == 'y' ){
+														res = Tok_s_eventually; i += 12;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'n':
+					if( at(str,i+3) == 'e' ){
+						if( at(str,i+4) == 'x' ){
+							if( at(str,i+5) == 't' ){
+								if( at(str,i+6) == 't' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 'm' ){
+											if( at(str,i+9) == 'e' ){
+												res = Tok_s_nexttime; i += 10;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 'u':
+					if( at(str,i+3) == 'n' ){
+						if( at(str,i+4) == 't' ){
+							if( at(str,i+5) == 'i' ){
+								if( at(str,i+6) == 'l' ){
+									if( at(str,i+7) == '_' ){
+										if( at(str,i+8) == 'w' ){
+											if( at(str,i+9) == 'i' ){
+												if( at(str,i+10) == 't' ){
+													if( at(str,i+11) == 'h' ){
+														res = Tok_s_until_with; i += 12;
+													}
+												}
+											}
+										}
+									} else {
+										res = Tok_s_until; i += 7;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'c':
+				if( at(str,i+2) == 'a' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'a' ){
+							if( at(str,i+5) == 'r' ){
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'd' ){
+										res = Tok_scalared; i += 8;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'e':
+				if( at(str,i+2) == 'q' ){
+					if( at(str,i+3) == 'u' ){
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'n' ){
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 'e' ){
+										res = Tok_sequence; i += 8;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'h':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 'w' ){
+						if( at(str,i+4) == 'c' ){
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 'n' ){
+									if( at(str,i+7) == 'c' ){
+										if( at(str,i+8) == 'e' ){
+											if( at(str,i+9) == 'l' ){
+												if( at(str,i+10) == 'l' ){
+													if( at(str,i+11) == 'e' ){
+														if( at(str,i+12) == 'd' ){
+															res = Tok_showcancelled; i += 13;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'i':
+				if( at(str,i+2) == 'g' ){
+					if( at(str,i+3) == 'n' ){
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'd' ){
+								res = Tok_signed; i += 6;
+							}
+						}
+					}
+				}
+				break;
+			case 'm':
+				if( at(str,i+2) == 'a' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'l' ){
+							res = Tok_small; i += 5;
+						}
+					}
+				}
+				break;
+			case 'p':
+				if( at(str,i+2) == 'e' ){
+					if( at(str,i+3) == 'c' ){
+						switch( at(str,i+4) ){
+						case 'i':
+							if( at(str,i+5) == 'f' ){
+								if( at(str,i+6) == 'y' ){
+									res = Tok_specify; i += 7;
+								}
+							}
+							break;
+						case 'p':
+							if( at(str,i+5) == 'a' ){
+								if( at(str,i+6) == 'r' ){
+									if( at(str,i+7) == 'a' ){
+										if( at(str,i+8) == 'm' ){
+											res = Tok_specparam; i += 9;
+										}
+									}
+								}
+							}
+							break;
+						}
+					}
+				}
+				break;
+			case 't':
+				if( at(str,i+2) == 'r' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 'n' ){
+							if( at(str,i+5) == 'g' ){
+								switch( at(str,i+6) ){
+								case '0':
+									res = Tok_strong0; i += 7;
+									break;
+								case '1':
+									res = Tok_strong1; i += 7;
+									break;
+								default:
+									res = Tok_strong; i += 6;
+									break;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'u':
+				if( at(str,i+2) == 'p' ){
+					if( at(str,i+3) == 'p' ){
+						if( at(str,i+4) == 'l' ){
+							if( at(str,i+5) == 'y' ){
+								switch( at(str,i+6) ){
+								case '0':
+									res = Tok_supply0; i += 7;
+									break;
+								case '1':
+									res = Tok_supply1; i += 7;
+									break;
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'y':
+				if( at(str,i+2) == 'n' ){
+					if( at(str,i+3) == 'c' ){
+						if( at(str,i+4) == '_' ){
+							switch( at(str,i+5) ){
+							case 'a':
+								if( at(str,i+6) == 'c' ){
+									if( at(str,i+7) == 'c' ){
+										if( at(str,i+8) == 'e' ){
+											if( at(str,i+9) == 'p' ){
+												if( at(str,i+10) == 't' ){
+													if( at(str,i+11) == '_' ){
+														if( at(str,i+12) == 'o' ){
+															if( at(str,i+13) == 'n' ){
+																res = Tok_sync_accept_on; i += 14;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+								break;
+							case 'r':
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'j' ){
+										if( at(str,i+8) == 'e' ){
+											if( at(str,i+9) == 'c' ){
+												if( at(str,i+10) == 't' ){
+													if( at(str,i+11) == '_' ){
+														if( at(str,i+12) == 'o' ){
+															if( at(str,i+13) == 'n' ){
+																res = Tok_sync_reject_on; i += 14;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 't':
+			switch( at(str,i+1) ){
+			case 'a':
+				switch( at(str,i+2) ){
+				case 'b':
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'e' ){
+							res = Tok_table; i += 5;
+						}
+					}
+					break;
+				case 's':
+					if( at(str,i+3) == 'k' ){
+						res = Tok_task; i += 4;
+					}
+					break;
+				}
+				break;
+			case 'h':
+				if( at(str,i+2) == 'r' ){
+					if( at(str,i+3) == 'o' ){
+						if( at(str,i+4) == 'u' ){
+							if( at(str,i+5) == 'g' ){
+								if( at(str,i+6) == 'h' ){
+									if( at(str,i+7) == 'o' ){
+										if( at(str,i+8) == 'u' ){
+											if( at(str,i+9) == 't' ){
+												res = Tok_throughout; i += 10;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			case 'i':
+				if( at(str,i+2) == 'm' ){
+					if( at(str,i+3) == 'e' ){
+						res = Tok_time; i += 4;
+					}
+				}
+				break;
+			case 'r':
+				switch( at(str,i+2) ){
+				case 'a':
+					if( at(str,i+3) == 'n' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'f' ){
+								switch( at(str,i+6) ){
+								case '0':
+									res = Tok_tranif0; i += 7;
+									break;
+								case '1':
+									res = Tok_tranif1; i += 7;
+									break;
+								}
+							}
+						} else {
+							res = Tok_tran; i += 4;
+						}
+					}
+					break;
+				case 'i':
+					switch( at(str,i+3) ){
+					case '0':
+						res = Tok_tri0; i += 4;
+						break;
+					case '1':
+						res = Tok_tri1; i += 4;
+						break;
+					case 'a':
+						if( at(str,i+4) == 'n' ){
+							if( at(str,i+5) == 'd' ){
+								res = Tok_triand; i += 6;
+							}
+						}
+						break;
+					case 'o':
+						if( at(str,i+4) == 'r' ){
+							res = Tok_trior; i += 5;
+						}
+						break;
+					case 'r':
+						if( at(str,i+4) == 'e' ){
+							if( at(str,i+5) == 'g' ){
+								res = Tok_trireg; i += 6;
+							}
+						}
+						break;
+					default:
+						res = Tok_tri; i += 3;
+						break;
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case 'u':
+			switch( at(str,i+1) ){
+			case 'n':
+				if( at(str,i+2) == 't' ){
+					if( at(str,i+3) == 'i' ){
+						if( at(str,i+4) == 'l' ){
+							if( at(str,i+5) == '_' ){
+								if( at(str,i+6) == 'w' ){
+									if( at(str,i+7) == 'i' ){
+										if( at(str,i+8) == 't' ){
+											if( at(str,i+9) == 'h' ){
+												res = Tok_until_with; i += 10;
+											}
+										}
+									}
+								}
+							} else {
+								res = Tok_until; i += 5;
+							}
+						}
+					}
+				}
+				break;
+			case 's':
+				if( at(str,i+2) == 'e' ){
+					res = Tok_use; i += 3;
+				}
+				break;
+			case 'w':
+				if( at(str,i+2) == 'i' ){
+					if( at(str,i+3) == 'r' ){
+						if( at(str,i+4) == 'e' ){
+							res = Tok_uwire; i += 5;
+						}
+					}
+				}
+				break;
+			}
+			break;
+		case 'v':
+			if( at(str,i+1) == 'e' ){
+				if( at(str,i+2) == 'c' ){
+					if( at(str,i+3) == 't' ){
+						if( at(str,i+4) == 'o' ){
+							if( at(str,i+5) == 'r' ){
+								if( at(str,i+6) == 'e' ){
+									if( at(str,i+7) == 'd' ){
+										res = Tok_vectored; i += 8;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			break;
+		case 'w':
+			switch( at(str,i+1) ){
+			case 'a':
+				switch( at(str,i+2) ){
+				case 'i':
+					if( at(str,i+3) == 't' ){
+						res = Tok_wait; i += 4;
+					}
+					break;
+				case 'n':
+					if( at(str,i+3) == 'd' ){
+						res = Tok_wand; i += 4;
+					}
+					break;
+				}
+				break;
+			case 'e':
+				if( at(str,i+2) == 'a' ){
+					if( at(str,i+3) == 'k' ){
+						switch( at(str,i+4) ){
+						case '0':
+							res = Tok_weak0; i += 5;
+							break;
+						case '1':
+							res = Tok_weak1; i += 5;
+							break;
+						default:
+							res = Tok_weak; i += 4;
+							break;
+						}
+					}
+				}
+				break;
+			case 'h':
+				if( at(str,i+2) == 'i' ){
+					if( at(str,i+3) == 'l' ){
+						if( at(str,i+4) == 'e' ){
+							res = Tok_while; i += 5;
+						}
+					}
+				}
+				break;
+			case 'i':
+				switch( at(str,i+2) ){
+				case 'r':
+					if( at(str,i+3) == 'e' ){
+						res = Tok_wire; i += 4;
+					}
+					break;
+				case 't':
+					if( at(str,i+3) == 'h' ){
+						if( at(str,i+4) == 'i' ){
+							if( at(str,i+5) == 'n' ){
+								res = Tok_within; i += 6;
+							}
+						}
+					}
+					break;
+				}
+				break;
+			case 'o':
+				if( at(str,i+2) == 'r' ){
+					res = Tok_wor; i += 3;
+				}
+				break;
+			}
+			break;
+		case 'x':
+			switch( at(str,i+1) ){
+			case 'n':
+				if( at(str,i+2) == 'o' ){
+					if( at(str,i+3) == 'r' ){
+						res = Tok_xnor; i += 4;
+					}
+				}
+				break;
+			case 'o':
+				if( at(str,i+2) == 'r' ){
+					res = Tok_xor; i += 3;
+				}
+				break;
+			}
+			break;
+		case '{':
+			res = Tok_Lbrace; i += 1;
+			break;
+		case '|':
+			switch( at(str,i+1) ){
+			case '-':
+				if( at(str,i+2) == '>' ){
+					res = Tok_Bar2Minus; i += 3;
+				}
+				break;
+			case '=':
+				if( at(str,i+2) == '>' ){
+					res = Tok_Bar2Eq; i += 3;
+				}
+				break;
+			case '|':
+				res = Tok_2Bar; i += 2;
+				break;
+			default:
+				res = Tok_Bar; i += 1;
+				break;
+			}
+			break;
+		case '}':
+			res = Tok_Rbrace; i += 1;
+			break;
+		case '~':
+			switch( at(str,i+1) ){
+			case '&':
+				res = Tok_TildeAmp; i += 2;
+				break;
+			case '^':
+				res = Tok_TildeHat; i += 2;
+				break;
+			case '|':
+				res = Tok_TildeBar; i += 2;
+				break;
+			default:
+				res = Tok_Tilde; i += 1;
+				break;
+			}
+			break;
+		}
+		if(pos) *pos = i;
+		return res;
+	}
 }

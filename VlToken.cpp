@@ -19,6 +19,7 @@
 
 #include "VlToken.h"
 #include <QHash>
+#include <QtDebug>
 using namespace Vl;
 
 
@@ -50,6 +51,8 @@ namespace Vl
 {
     TokenType matchReservedWord(const QByteArray& str)
     {
+
+        /*
         static QHash<QByteArray,quint8> s_lookup;
         // TODO: nur temporäre Lösung
         if( s_lookup.isEmpty() )
@@ -58,6 +61,11 @@ namespace Vl
                 s_lookup.insert( tokenToString(i), i );
         }
         TokenType t = (TokenType)s_lookup.value( str, Tok_Invalid );
+        */
+        int pos = 0;
+        TokenType t = tokenTypeFromString( str, &pos );
+        if( t != Tok_Invalid && pos != str.size() )
+            t = Tok_Invalid;
         if( t == Tok_Invalid && str.startsWith( "PATHPULSE$" ) )
             t = Tok_PATHPULSE_dlr; // Fall PATHPULSE$specify_input_terminal_descriptor$specify_output_terminal_descriptor
         return t;

@@ -157,7 +157,7 @@ static bool hitsArea( const CrossRefModel::SymRef& sub, quint32 line, quint16 co
     foreach( const CrossRefModel::SymRef& subsub, sub->children() )
     {
         if( subsub->tok().d_sourcePath == source &&
-                ( line < subsub->tok().d_lineNr || line == subsub->tok().d_lineNr && col <= subsub->tok().d_colNr ) )
+                ( line < subsub->tok().d_lineNr || ( line == subsub->tok().d_lineNr && col <= subsub->tok().d_colNr ) ) )
             return true;
     }
     return false;

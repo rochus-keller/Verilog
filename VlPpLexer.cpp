@@ -525,9 +525,9 @@ Token PpLexer::nextTokenPp()
                     if( d_err == 0 )
                         return t;
                     else
-                        // Already reported
+                        // Already reported; TODO: gilt noch nicht für alle Fehler, z.B. ungültige Zeichen!
                         t = nextTokenImp();
-                }if( t.d_type == Tok_Comment && d_ignoreComments )
+                }else if( t.d_type == Tok_Comment && d_ignoreComments )
                 {
                     t = nextTokenImp();
                 }else if( t.d_type == Tok_Latt && ( d_packAttributes || d_ignoreAttrs ) )

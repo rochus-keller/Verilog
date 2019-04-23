@@ -5,7 +5,7 @@
 #define Coco_COCO_PARSER_H__
 
 #include <QStack>
-#include <VlSynTree.h>
+#include <Verilog/VlSynTree.h>
 
 
 #include "VlPpLexer.h"
