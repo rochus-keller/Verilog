@@ -1,5 +1,5 @@
-#ifndef VLFRONTEND_H
-#define VLFRONTEND_H
+#ifndef PARSER_H
+#define PARSER_H
 
 /*
 * Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
@@ -21,40 +21,38 @@
 */
 
 #include <QObject>
-#include <QHash>
-#include <QDir>
-#include <QStack>
-#include <QSet>
+#include <Verilog/VlSynTree.h>
 
 namespace Vl
 {
-    class Preprocessor;
     class PpLexer;
-    class Parser;
-    class PpSymbols;
     class Errors;
-    class Includes;
 
-    class Frontend : public QObject
+    class Parser : public QObject
     {
-        Q_OBJECT
     public:
-        explicit Frontend(QObject *parent = 0);
+        Parser(QObject* = 0);
+        ~Parser();
 
-        bool process( const QString& file );
+        bool parseFile(Vl::PpLexer*, Errors* = 0 );
+
+        QList<SynTree*> getResult(bool transfer = true)
+        {
+            QList<SynTree*> res = d_st;
+            if( transfer )
+                d_st.clear();
+            return res;
+        }
+        const QList<Vl::Token>& getSections() const { return d_sections; }
+
+        static void dumpTree( SynTree*, int level = 0 );
+    protected:
+        void clear();
 
     private:
-        struct Work
-        {
-            QString d_file;
-            Preprocessor* d_pp;
-            PpLexer* d_lex;
-            Parser* d_par;
-            Errors* d_err;
-        };
-        PpSymbols* d_ppSyms;
-        Includes* d_incs;
+        QList<SynTree*> d_st;
+        QList<Vl::Token> d_sections;
     };
 }
 
-#endif // VLFRONTEND_H
+#endif // PARSER_H
