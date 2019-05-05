@@ -1850,4 +1850,4 @@ Str ::=			// Plain String
 
 ///// Pragmas
 %namespace ::= 'Vl'
-%module ::= 'Verilog2'
+%module ::= 'Verilog'
