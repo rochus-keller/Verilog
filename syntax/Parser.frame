@@ -4,7 +4,7 @@ Copyright (c) 1990, 2004 Hanspeter Moessenboeck, University of Linz
 extended by M. Loeberbauer & A. Woess, Univ. of Linz
 ported to C++ by Csaba Balazs, University of Szeged
 with improvements by Pat Terry, Rhodes University
-modified by Rochus Keller, me@rochus-keller.ch, (c) 2018
+modified by Rochus Keller, me@rochus-keller.ch, (c) 2018-2019
 
 This program is free software; you can redistribute it and/or modify it 
 under the terms of the GNU General Public License as published by the 
@@ -39,7 +39,7 @@ Parser.h Specification
 
 -->headerdef
 
-#include "VlPpLexer.h"
+#include <Verilog/VlPpLexer.h>
 
 -->namespace_open
 
