@@ -1,5 +1,5 @@
 #/*
-#* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+#* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 #*
 #* This file is part of the Verilog parser library.
 #*
@@ -27,8 +27,7 @@ TEMPLATE = app
 
 INCLUDEPATH +=  ..
 
-SOURCES += main.cpp \
-    VlFrontend.cpp
+SOURCES += main.cpp
 
 include( Verilog.pri )
 
@@ -42,7 +41,7 @@ QMAKE_CXXFLAGS += -Wno-reorder -Wno-unused-parameter -Wno-unused-function -Wno-u
 
 #include( ../../Libraries/antlr4/antlr4.pri )
 
-HEADERS += \
-    VlFrontend.h
+HEADERS +=
+
 
 

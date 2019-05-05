@@ -1,5 +1,5 @@
 /*
-* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 *
 * This file is part of the Verilog parser library.
 *
@@ -217,6 +217,7 @@ Token PpLexer::nextTokenImp()
 {
     if( d_source.isEmpty() )
         return d_lastT; // Token(Tok_Eof);
+
 	skipWhiteSpace();
     while( d_source.top().d_colNr >= d_source.top().d_line.size() )
 	{
@@ -232,270 +233,71 @@ Token PpLexer::nextTokenImp()
 		nextLine();
 		skipWhiteSpace();
 	}
+
     Q_ASSERT( d_source.top().d_colNr < d_source.top().d_line.size() );
     while( d_source.top().d_colNr < d_source.top().d_line.size() )
 	{
         const char ch = d_source.top().d_line[d_source.top().d_colNr];
-        switch( ch )
-		{
-        case '+':
-            if( lookAhead(1) == ':' )
-                return token( Tok_PlusColon, 2 );
-            else
-                return token( Tok_Plus );
-        case '-':
-            switch( lookAhead(1) )
-            {
-            case ':':
-                return token( Tok_MinusColon, 2 );
-            case '>':
-                return token( Tok_MinusGt, 2 );
-            default:
-                return token( Tok_Minus );
-            }
-            break;
-        case '!':
-            if( lookAhead(1) == '=' )
-            {
-                if( lookAhead(2) == '=' )
-                    return token( Tok_Bang2Eq, 3 );
-                else
-                    return token( Tok_BangEq, 2 );
-            }else
-                return token( Tok_Bang );
-        case '~':
-            switch( lookAhead(1) )
-            {
-            case '|':
-                return token(Tok_TildeBar,2);
-            case '&':
-                return token(Tok_TildeAmp,2);
-            case '^':
-                return token(Tok_TildeHat,2);
-            default:
-                return token( Tok_Tilde );
-            }
-        case '^':
-            if( lookAhead(1) == '~' )
-                return token( Tok_HatTilde, 2 );
-            else
-                return token( Tok_Hat );
-        case '/':
-            if( d_filePathMode && lookAhead(1) != '/' )
-                return pathident();
-            switch( lookAhead(1) )
-            {
-            case '/':
-                return lineComment();
-            case '*':
-                return blockComment();
-            default:
-                return token( Tok_Slash );
-            }
-        case '%':
-            return token( Tok_Percent );
-        case '=':
-            if( lookAhead(1) == '=' )
-            {
-                if( lookAhead(2) == '=' )
-                    return token( Tok_3Eq, 3 );
-                else
-                    return token( Tok_2Eq, 2 );
-            }else if( lookAhead(1) == '>' )
-                return token( Tok_EqGt, 2 );
-            else
-                return token( Tok_Eq );
-        case '&':
-            if( lookAhead(1) == '&' )
-            {
-                if( lookAhead(2) == '&' )
-                    return token( Tok_3Amp, 3 );
-                else
-                    return token( Tok_2Amp, 2 );
-            }else
-                return token( Tok_Amp );
-        case '|':
-            if( d_supportSvExt )
-                switch( lookAhead(1) )
-                {
-                case '|':
-                    return token( Tok_2Bar, 2 );
-                case '-':
-                    if( lookAhead(2) == '-' )
-                        return token(Tok_Bar2Minus,3);
-                    break;
-                case '=':
-                    if( lookAhead(2) == '=' )
-                        return token(Tok_Bar2Eq,3);
-                    break;
-                }
-            else
-                if( lookAhead(1) == '|' )
-                    return token( Tok_2Bar, 2 );
-            return token( Tok_Bar );
-        case '*':
-            if( d_filePathMode )
-                return pathident();
-            switch( lookAhead(1) )
-            {
-            case '*':
-                return token( Tok_2Star, 2 );
-            case '>':
-                return token( Tok_StarGt, 2 );
-            case '/':
-                return token( Tok_Rcmt, 2 );
-            case ')':
-                if( d_lastT.d_type != Tok_Lpar )
-                    return token( Tok_Ratt, 2 );
-                // else fall through
-            default:
-                return token( Tok_Star );
-            }
-        case '<':
-            switch( lookAhead(1) )
-            {
-            case '<':
-                if( lookAhead(2) == '<' )
-                    return token( Tok_3Lt, 3 );
-                else
-                    return token( Tok_2Lt, 2 );
-            case '=':
-                return token( Tok_Leq, 2 );
-            default:
-                return token( Tok_Lt );
-            }
-        case '>':
-            switch( lookAhead(1) )
-            {
-            case '>':
-                if( lookAhead(2) == '>' )
-                    return token( Tok_3Gt, 3 );
-                else
-                    return token( Tok_2Gt, 2 );
-            case '=':
-                return token( Tok_Geq, 2 );
-            default:
-                return token( Tok_Gt );
-            }
-        case '(':
-            if( lookAhead(1) == '*' && nextAfterSpace(2) != ')' )
-                return token( Tok_Latt, 2 );
-            else
-                return token( Tok_Lpar );
-        case ')':
-            return token( Tok_Rpar );
-        case '[':
-            if( d_supportSvExt )
-                switch( lookAhead(1) )
-                {
-                case '*':
-                    if( lookAhead(2) == '*' )
-                        return token(Tok_Lbrack2Star,3);
-                    else
-                        return token(Tok_LbrackStar,2);
-                case '+':
-                    if( lookAhead(2) == '+' )
-                        return token(Tok_Lbrack2Plus,3);
-                    break;
-                case '-':
-                    if( lookAhead(2) == '-' )
-                        return token(Tok_Lbrack2Minus,3);
-                    break;
-                case '=':
-                    return token(Tok_LbrackEq,2);
-                }
-            return token( Tok_Lbrack );
-        case ']':
-            return token( Tok_Rbrack );
-        case '{':
-            return token( Tok_Lbrace );
-        case '}':
-            return token( Tok_Rbrace );
-        case ',':
-            return token( Tok_Comma );
-        case '.':
-            if( d_filePathMode )
-                return pathident();
-            else
-                return token( Tok_Dot );
-        case ';':
-            d_filePathMode = false;
-            return token( Tok_Semi );
-        case '#':
-            if( d_supportSvExt )
-            {
-                switch( lookAhead(1) )
-                {
-                case '#':
-                    if( lookAhead(2) == '[' )
-                    {
-                        if( lookAhead(3) == '*' && lookAhead(4) == ']' )
-                            return token(Tok_2HashLbrackStarRbrack,5);
-                        else if( lookAhead(3) == '+' && lookAhead(4) == ']' )
-                            return token(Tok_2HashLbrackPlusRbrack,5);
-                    }else
-                        return token(Tok_2Hash,2);
-                    break;
-                case '-':
-                    if( lookAhead(2) == '-' )
-                        return token(Tok_Hash2Minus,3);
-                    break;
-                case '=':
-                    if( lookAhead(2) == '-' )
-                        return token(Tok_Hash2Eq,3);
-                    break;
-                }
-            }
-            return token( Tok_Hash );
-        case '@':
-            return token( Tok_At );
-        case '?':
-            if( d_filePathMode )
-                return pathident();
-            else
-                return token( Tok_Qmark );
-        case ':':
-            if( d_supportSvExt )
-            {
-                switch( lookAhead(1) )
-                {
-                case '/':
-                    if( lookAhead(2) != '/' ) // might be '//'
-                        return token(Tok_ColonSlash,2);
-                    break;
-                case '=':
-                    return token(Tok_ColonEq,2);
-                }
-            }
-            return token( Tok_Colon );
-        case '\\':
+
+        if( ch == '"' )
+            return string();
+
+        if( ch == '\\')
+        {
             if( lookAhead(1) == 0 )
                 return token( Tok_LineCont );
             else
-                // Extended Identifier
                 return extident();
-        case '"':
-            return string();
         }
 
         if( ::isdigit(ch) || ch == '\'' )
-		{
-			// Numeric Literal
-			return numeric();
-        }else if( QChar::fromLatin1( ch ).isLetter() || ch == '_' || ch == '$' || ch == '`' )
-		{
+            return numeric();
+
+        if( QChar::fromLatin1( ch ).isLetter() || ch == '_' || ch == '$' || ch == '`' )
+        {
+#ifdef VL_SV12
             if( d_supportSvExt && ch == '$' && ( ::isspace(lookAhead(1)) || lookAhead(1) == 0 ) )
                 return token(Tok_Dlr);
+#endif
             if( d_filePathMode )
                 return pathident();
             // Identifier oder Reserved Word
-			return ident();
-		}else
-		{
-			// Error
-            return token( Tok_Invalid, 1, tr("unexpected character '%1'").arg(QChar::fromLatin1(ch)).toUtf8() );
-		}
-	}
+            return ident();
+        }
+
+        // else
+        int pos = d_source.top().d_colNr;
+        TokenType tt = tokenTypeFromString(d_source.top().d_line,&pos);
+
+#ifdef VL_SV12
+        if( tt == Tok_ColonSlash && lookAhead(2) == '/' )
+        {
+            tt = Tok_Colon;
+            pos--;
+        }
+#endif
+
+        if( d_filePathMode )
+        {
+            if( tt == Tok_Star || tt == Tok_2Slash || tt == Tok_Dot || tt == Tok_Qmark )
+                return pathident();
+            if( tt == Tok_Semi )
+                d_filePathMode = false;
+        }
+
+        if( tt == Tok_2Slash )
+            return lineComment();
+        if( tt == Tok_Lcmt )
+            return blockComment();
+
+        if( tt == Tok_Invalid || pos == d_source.top().d_colNr )
+            // Error
+            return token( Tok_Invalid, 1, tr("unexpected character '%1' %2").arg(QChar::fromLatin1(ch)).arg(int(ch)).toUtf8() );
+
+        // else
+        const int len = pos - d_source.top().d_colNr;
+        return token( tt, len, d_source.top().d_line.mid( d_source.top().d_colNr,len) );
+    }
 	Q_ASSERT( false );
     return Tok_Invalid;
 }
@@ -820,7 +622,7 @@ static void replaceFormalByActualArg( TokenList& inout, const QByteArray& formal
     inout = out;
 }
 
-static QDebug& operator<<(QDebug& dbg, const Vl::Token& t)
+static QDebug& operator<<(QDebug& dbg, const Token& t)
 {
     dbg << "Tok(" << t.getName() << " " << t.d_val << ")";
     return dbg;

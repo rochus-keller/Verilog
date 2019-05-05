@@ -1,8 +1,8 @@
-../../Coco/Coco ./Verilog05.atg -trace FP -o . -namespace Coco > ./coco_out.txt
+../../Coco/Coco ./Verilog.atg -trace FP -o . -namespace Vl > ./coco_out.txt
 
 
-mv ./Parser.h ../CocoParser.h
-mv ./Parser.cpp ../CocoParser.cpp
+mv ./Parser.h ../VlParser.h
+mv ./Parser.cpp ../VlParser.cpp
 
 mv ./VlSynTree.h ..
 mv ./VlSynTree.cpp ..

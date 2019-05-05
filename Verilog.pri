@@ -1,5 +1,5 @@
 #/*
-#* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+#* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 #*
 #* This file is part of the Verilog parser library.
 #*
@@ -19,33 +19,33 @@
 
 INCLUDEPATH +=  ..
 
-INCLUDEPATH += ../Verilog
-
 SOURCES += \
-    ../Verilog/VlParser.cpp \
     ../Verilog/VlPpSymbols.cpp \
     ../Verilog/VlErrors.cpp \
     ../Verilog/VlNumLex.cpp \
     ../Verilog/VlPpLexer.cpp \
     ../Verilog/VlToken.cpp \
-    ../Verilog/CocoParser.cpp \
+    ../Verilog/VlParser.cpp \
     ../Verilog/VlSynTree.cpp \
     ../Verilog/VlIncludes.cpp \
-    ../Verilog/VlCrossRefModel.cpp \
     ../Verilog/VlFileCache.cpp \
-    $$PWD/VlTokenType.cpp
+    ../Verilog/VlCrossRefModel.cpp \
+    ../Verilog/VlProjectFile.cpp \
+    ../Verilog/VlProjectConfig.cpp \
+    ../Verilog/VlTokenType.cpp
 
 HEADERS  += \
-    ../Verilog/VlParser.h \
     ../Verilog/VlPpSymbols.h \
     ../Verilog/VlErrors.h \
     ../Verilog/VlNumLex.h \
     ../Verilog/VlPpLexer.h \
     ../Verilog/VlToken.h \
-    ../Verilog/CocoParser.h \
+    ../Verilog/VlParser.h \
     ../Verilog/VlSynTree.h \
     ../Verilog/VlIncludes.h \
-    ../Verilog/VlCrossRefModel.h \
     ../Verilog/VlFileCache.h \
-    $$PWD/VlTokenType.h
+    ../Verilog/VlCrossRefModel.h \
+    ../Verilog/VlProjectFile.h \
+    ../Verilog/VlProjectConfig.h\
+    ../Verilog/VlTokenType.h
 

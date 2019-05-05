@@ -1,5 +1,5 @@
 /*
-* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 *
 * This file is part of the Verilog parser library.
 *
@@ -31,8 +31,8 @@
 #include <QBuffer>
 using namespace Vl;
 
-// #define _DUMP_AST
-// #define _DUMP_ST
+//#define _DUMP_AST
+//#define _DUMP_ST
 
 // für QtConcurrent::run braucht man extra eine separate Library mit minimalem Mehrwert
 class CrossRefModel::Worker : public QThread
@@ -59,13 +59,6 @@ CrossRefModel::CrossRefModel(QObject *parent, FileCache* fc) : QObject(parent)
     d_incs->setAutoAdd(false);
 
     d_syms = new PpSymbols(this);
-    // TEST e200
-    /*
-    d_syms->addSymbol( "DISABLE_SV_ASSERTION", "", Tok_String );
-    d_syms->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Tok_Natural_number );
-    d_syms->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Tok_Natural_number );
-    */
-
     d_errs = new Errors(this);
     d_errs->setShowWarnings(false);
 }
@@ -339,7 +332,7 @@ QStringList CrossRefModel::qualifiedNameParts(const CrossRefModel::TreePath& pat
     for( int i = path.size() - 1; i >= 0; i-- )
     {
         QByteArray name = path[i]->d_tok.d_val;
-        if( path[i]->d_tok.d_type == SynTree::R_module_or_udp_instantiation )
+        if( path[i]->d_tok.d_type == SynTree::R_module_or_udp_instantiation_ )
             name.clear();
 
         if( !name.isEmpty() && ( i != 0 || !skipFirst ) )
@@ -592,9 +585,9 @@ static bool hasScope(const SynTree* st)
     case SynTree::R_generate_block:
     case SynTree::R_seq_block:
     case SynTree::R_par_block:
-#ifdef VL_O5_ONLY
+#ifndef VL_SV12
         if( st->d_children.size() > 2 && st->d_children[1]->d_tok.d_type == Tok_Colon &&
-                st->d_children[2]->d_tok.d_type == Tok_Identifier )
+                st->d_children[2]->d_tok.d_type == Tok_Ident )
             return true;
         else
             return false;
@@ -627,20 +620,20 @@ static bool isDecl( quint16 type )
     case SynTree::R_integer_declaration:
     case SynTree::R_time_declaration:
     case SynTree::R_reg_declaration:
-    case SynTree::R_block_integer_declaration:
-    case SynTree::R_block_time_declaration:
-    case SynTree::R_block_reg_declaration:
     case SynTree::R_real_declaration:
     case SynTree::R_realtime_declaration:
-    case SynTree::R_block_real_declaration:
-    case SynTree::R_block_realtime_declaration:
     case SynTree::R_net_declaration:
     case SynTree::R_specparam_declaration:
-    case SynTree::R_module_or_udp_instantiation:
-    case SynTree::R_module_or_udp_instance:
+    case SynTree::R_module_or_udp_instantiation_:
+    case SynTree::R_module_or_udp_instance_:
     case SynTree::R_inout_declaration:
     case SynTree::R_input_declaration:
     case SynTree::R_output_declaration:
+    //case SynTree::R_block_integer_declaration:
+    //case SynTree::R_block_time_declaration:
+    //case SynTree::R_block_reg_declaration:
+    //case SynTree::R_block_real_declaration:
+    //case SynTree::R_block_realtime_declaration:
         return true;
     default:
         return false;
@@ -651,10 +644,12 @@ static bool isAssertion( quint16 type )
 {
     switch( type )
     {
-    case SynTree::R_concurrent_or_immediate_assert_statement:
-    case SynTree::R_concurrent_or_immediate_assume_statement:
-    case SynTree::R_concurrent_or_immediate_cover_statement:
+#ifdef VL_SV12
+    case SynTree::R_assert_statement_:
+    case SynTree::R_assume_statement_:
+    case SynTree::R_cover_statement_:
         return true;
+#endif
     default:
         return false;
     }
@@ -662,9 +657,7 @@ static bool isAssertion( quint16 type )
 
 static inline bool isHierarchy( quint16 type )
 {
-    return type == SynTree::R_hierarchical_identifier ||
-            type == SynTree::R_hierarchical_identifier_range ||
-            type == SynTree::R_hierarchical_identifier_range_const;
+    return type == SynTree::R_hierarchical_identifier;
 }
 
 static inline bool isBlockStructure( quint16 type )
@@ -697,16 +690,17 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
     Q_ASSERT( parentAst != 0 && superScope != 0 && !synPath.isEmpty() );
 
     Token label;
-    for( int i = 0; i < synPath.front()->d_children.size(); i++ )
+    const SynTree* parentSt = synPath.front();
+    for( int i = 0; i < parentSt->d_children.size(); i++ )
     {
-        const SynTree* child = synPath.front()->d_children[i];
+        const SynTree* curChildSt = parentSt->d_children[i];
 
-        if( hasScope(child) )
+        if( hasScope(curChildSt) )
         {
             Scope* curScope = new Scope();
             curScope->d_super = superScope;
-            curScope->d_tok = child->d_tok;
-#ifndef VL_O5_ONLY
+            curScope->d_tok = curChildSt->d_tok;
+#ifdef VL_SV12
             if( curScope->d_tok.d_val.isEmpty() &&
                     ( curScope->d_tok.d_type == SynTree::R_generate_block ||
                       curScope->d_tok.d_type == SynTree::R_seq_block ||
@@ -715,29 +709,29 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                 curScope->d_tok.d_val = ".";
             }
 #endif
-            curScope->d_tok.d_len = calcKeyWordLen(child);
+            curScope->d_tok.d_len = calcKeyWordLen(curChildSt);
             parentAst->d_children.append( SymRef(curScope) );
 
-            synPath.push_front(child);
+            synPath.push_front(curChildSt);
             fillAst( curScope, curScope, synPath, err );
             synPath.pop_front();
-        }else if( isDecl(child->d_tok.d_type) || isHierarchy(child->d_tok.d_type) ||
-                  isBlockStructure(child->d_tok.d_type) || isAssertion(child->d_tok.d_type) )
+        }else if( isDecl(curChildSt->d_tok.d_type) || isHierarchy(curChildSt->d_tok.d_type) ||
+                  isBlockStructure(curChildSt->d_tok.d_type) || isAssertion(curChildSt->d_tok.d_type) )
         {
-            Branch* curParent = new Branch();
-            curParent->d_tok = child->d_tok;
-            if( isBlockStructure(child->d_tok.d_type) )
-                curParent->d_tok.d_len = calcKeyWordLen(child);
+            Branch* branch = new Branch();
+            branch->d_tok = curChildSt->d_tok;
+            if( isBlockStructure(curChildSt->d_tok.d_type) )
+                branch->d_tok.d_len = calcKeyWordLen(curChildSt);
             else
-                curParent->d_super = parentAst;
-            parentAst->d_children.append( SymRef(curParent) );
+                branch->d_super = parentAst;
+            parentAst->d_children.append( SymRef(branch) );
 
-            if( isAssertion(child->d_tok.d_type) && label.isValid() )
+            if( isAssertion(curChildSt->d_tok.d_type) && label.isValid() )
             {
                 IdentDecl* id = new IdentDecl();
                 id->d_tok = label;
-                curParent->d_children.append(SymRef(id));
-                id->d_decl = curParent;
+                branch->d_children.append(SymRef(id));
+                id->d_decl = branch;
                 const IdentDecl*& slot = superScope->d_names[id->d_tok.d_val];
                 if( slot != 0 )
                     err->error(Errors::Semantics, id->d_tok.d_sourcePath, id->d_tok.d_lineNr,id->d_tok.d_colNr,
@@ -746,54 +740,49 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                     slot = id;
             }
 
-            synPath.push_front(child);
-            fillAst( curParent, superScope, synPath, err );
+            synPath.push_front(curChildSt);
+            fillAst( branch, superScope, synPath, err );
             synPath.pop_front();
-        }else if( child->d_tok.d_type == SynTree::R_number )
+        }else if( curChildSt->d_tok.d_type == SynTree::R_number )
         {
-            checkNumber( child, err );
-        }else if( child->d_tok.d_type > SynTree::R_First )
-        {
-            // Gehe trotzdem runter da dort noch Idents sein können
-            synPath.push_front(child);
-            fillAst( parentAst, superScope, synPath, err );
-            synPath.pop_front();
-        }else if( tokenIsBlockEnd(child->d_tok.d_type) )
+            checkNumber( curChildSt, err );
+        }else if( tokenIsBlockEnd(curChildSt->d_tok.d_type) )
         {
             // we need at least the last symbol of the production to be able to do
             // line/col based searches when the cursor is in white space
-            parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
-        }else if( child->d_tok.d_type == Tok_Rpar )
+            parentAst->d_children.append( SymRef( new Symbol(curChildSt->d_tok) ) );
+        }else if( curChildSt->d_tok.d_type == Tok_Rpar )
         {
             // we need trailing ) to be able to assign whitespace to production
-            if( parentAst->d_tok.d_type == SynTree::R_module_or_udp_instance )
-                parentAst->d_children.append( SymRef( new Symbol(child->d_tok) ) );
-        }else if( child->d_tok.d_type == Tok_Ident )
+            if( parentAst->d_tok.d_type == SynTree::R_module_or_udp_instance_ )
+                parentAst->d_children.append( SymRef( new Symbol(curChildSt->d_tok) ) );
+        }else if( curChildSt->d_tok.d_type == Tok_Ident )
         {
             Scope* scope = superScope;
             SymRefNc sym;
 
-            if( i+1 < synPath.front()->d_children.size() && synPath.front()->d_children[i+1]->d_tok.d_type == Tok_Colon )
+            if( i+1 < parentSt->d_children.size() && parentSt->d_children[i+1]->d_tok.d_type == Tok_Colon )
             {
-                label = synPath.front()->d_children[i]->d_tok;
+                // wenn der Ident unmittelbar vor einem ':' steht, ist es wahrscheinlich ein label
+                label = parentSt->d_children[i]->d_tok;
                 i++;
                 continue;
-            }else if( hasScope( synPath.front() ) )
+            }else if( hasScope( parentSt ) )
             {
                 // hier kommen nur Idents an, die sich unmittelbar unter der Scope Production befinden, also
                 // z.B. nicht unter port etc. isDecl und hasScope sind eindeutig unterscheidbar
                 sym = new IdentDecl();
                 scope = const_cast<Scope*>( superScope->d_super->toScope() );
                 //qDebug() << SynTree::rToStr(superScope->d_tok.d_type) << child->d_tok.d_val;
-                superScope->d_tok.d_val = child->d_tok.d_val; // damit R_module_declaration und R_udp_declaration gleich ihren Namen kennen
-                superScope->d_tok.d_lineNr = child->d_tok.d_lineNr;
-                superScope->d_tok.d_colNr = child->d_tok.d_colNr;
-            }else if( isHierarchy(synPath.front()->d_tok.d_type ) )
+                superScope->d_tok.d_val = curChildSt->d_tok.d_val; // damit R_module_declaration und R_udp_declaration gleich ihren Namen kennen
+                superScope->d_tok.d_lineNr = curChildSt->d_tok.d_lineNr;
+                superScope->d_tok.d_colNr = curChildSt->d_tok.d_colNr;
+            }else if( isHierarchy(parentSt->d_tok.d_type ) )
             {
                 sym = new PathIdent();
             }else
             {
-                switch( synPath.front()->d_tok.d_type )
+                switch( parentSt->d_tok.d_type )
                 {
                 case SynTree::R_port:
                     // Fall port = . port_identifier
@@ -805,7 +794,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                               && synPath[1]->d_tok.d_type == SynTree::R_port_expression );
                     if( synPath[1] == synPath[2]->d_children.first() )
                     {
-                        if( synPath[1]->d_children.first() == synPath.front() )
+                        if( synPath[1]->d_children.first() == parentSt )
                             // Fall port = port_reference
                             sym = new IdentDecl();
                         // else
@@ -815,21 +804,21 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                         // Fall port = . port_identifier ( port_expression )
                         sym = new IdentUse(); // port_expression sind Symbole innerhalb des Moduls und dort deklariert
                     break;
-                case SynTree::R_module_or_udp_instantiation:
+                case SynTree::R_module_or_udp_instantiation_:
                     // Name des Moduls
                     sym = new CellRef();
-                    parentAst->d_tok.d_val = child->d_tok.d_val; // damit der Branch gleich den Namen des refed Cell kennt
+                    parentAst->d_tok.d_val = curChildSt->d_tok.d_val; // damit der Branch gleich den Namen des refed Cell kennt
                     break;
-                case SynTree::R_module_or_udp_instance:
+                case SynTree::R_module_or_udp_instance_:
                     // Name einer Modul- oder UDP-Instanz
                     sym = new IdentDecl();
-                    parentAst->d_tok.d_val = child->d_tok.d_val; // damit die Instance gleich ihren Namen kennt
+                    parentAst->d_tok.d_val = curChildSt->d_tok.d_val; // damit die Instance gleich ihren Namen kennt
                     break;
                 case SynTree::R_name_of_gate_instance:
                     // Name einer gate_instantiation
                     sym = new IdentDecl();
                     break;
-                case SynTree::R_port_connection_or_output_terminal:
+                case SynTree::R_port_connection_or_output_terminal_:
                 case SynTree::R_named_parameter_assignment:
                     sym = new PortRef();
                     break;
@@ -846,7 +835,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                 case SynTree::R_real_type: // real_declaration, realtime_declaration
                 case SynTree::R_block_variable_type: // block_integer_declaration, block_time_declaration, block_reg_declaration
                 case SynTree::R_block_real_type: // block_real_declaration, block_realtime_declaration
-                case SynTree::R_list_of_net_decl_assignments_or_identifiers: // net_declaration
+                case SynTree::R_list_of_net_identifiers_of_decl_assignments_:
                 case SynTree::R_specparam_assignment:   // specparam_declaration
                     sym = new IdentDecl();
                     break;
@@ -858,25 +847,25 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                 case SynTree::R_inout_declaration:
                 case SynTree::R_input_declaration:
                 case SynTree::R_output_declaration:
-                    Q_ASSERT( synPath.size() > 1 );
-                    if( synPath[1]->d_tok.d_type == SynTree::R_list_of_port_declarations )
-                        sym = new IdentDecl();
-                    else
-                    {
-                        Q_ASSERT( synPath[1]->d_tok.d_type == SynTree::R_module_declaration );
-                        checkLop( superScope, child, err );
-                        // wird zu IdenUse, der dann auf Port referenzieren kann
-                    }
-                    break;
-                case SynTree::R_list_of_variable_port_identifiers: // output_declaration
-                    // list_of_port_declarations | module_declaration - output_declaration - list_of_variable_port_identifiers
                     Q_ASSERT( synPath.size() > 2 );
                     if( synPath[2]->d_tok.d_type == SynTree::R_list_of_port_declarations )
                         sym = new IdentDecl();
                     else
                     {
                         Q_ASSERT( synPath[2]->d_tok.d_type == SynTree::R_module_declaration );
-                        checkLop( superScope, child, err );
+                        checkLop( superScope, curChildSt, err );
+                        // wird zu IdenUse, der dann auf Port referenzieren kann
+                    }
+                    break;
+                case SynTree::R_list_of_variable_port_identifiers: // output_declaration
+                    // list_of_port_declarations | module_declaration - output_declaration - list_of_variable_port_identifiers
+                    Q_ASSERT( synPath.size() > 3 );
+                    if( synPath[3]->d_tok.d_type == SynTree::R_list_of_port_declarations )
+                        sym = new IdentDecl();
+                    else
+                    {
+                        Q_ASSERT( synPath[3]->d_tok.d_type == SynTree::R_module_declaration );
+                        checkLop( superScope, curChildSt, err );
                         // wird zu IdenUse, der dann auf Port referenzieren kann
                     }
                     break;
@@ -886,7 +875,7 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
             if( sym.constData() == 0 )
                 sym = new IdentUse();
 
-            sym->d_tok = child->d_tok;
+            sym->d_tok = curChildSt->d_tok;
             parentAst->d_children.append(sym);
             if( IdentDecl* id = const_cast<IdentDecl*>( sym->toIdentDecl() ) )
             {
@@ -898,6 +887,12 @@ void CrossRefModel::fillAst(Branch* parentAst, Scope* superScope, SynTreePath& s
                 else
                     slot = id;
             }
+        }else if( curChildSt->d_tok.d_type > SynTree::R_First )
+        {
+            // Gehe trotzdem runter da dort noch Idents sein können
+            synPath.push_front(curChildSt);
+            fillAst( parentAst, superScope, synPath, err );
+            synPath.pop_front();
         }
         label = Token();
     }
@@ -912,7 +907,7 @@ void CrossRefModel::checkNumber(const SynTree* number, Errors* err)
             str += child->d_tok.d_val;
     }
 
-    Vl::NumLex lex(str);
+    NumLex lex(str);
     if( !lex.parse(true) )
     {
         err->error(Errors::Syntax, number->d_tok.d_sourcePath, number->d_tok.d_lineNr,number->d_tok.d_colNr,
@@ -1064,27 +1059,37 @@ const CrossRefModel::Symbol* CrossRefModel::findFirst(const Branch* b, quint16 t
 }
 
 #ifdef _DUMP_AST
-static void dumpAst(const CrossRefModel::Symbol* l, int level)
+static void dumpAst(QTextStream& out, const CrossRefModel::Symbol* l, int level)
 {
-    QByteArray buf;
     if( l->tok().d_type == Tok_Invalid )
         level--;
     else
     {
-        QTextStream out(&buf);
         QByteArray ws;
         for( int i = 0; i < level; i++ )
             ws += "|  ";
         out << ws.data() << l->getTypeName() << " " << SynTree::rToStr(l->tok().d_type) << " ";
         if( !l->tok().d_val.isEmpty() )
             out << "'" << l->tok().d_val << "' ";
-        out << l->tok().d_lineNr << ":" << l->tok().d_colNr; //  << endl;
+        out << l->tok().d_lineNr << ":" << l->tok().d_colNr << endl;
     }
-    qDebug() << buf.constData();
     foreach( const CrossRefModel::SymRef& sub, l->children() )
-        dumpAst( sub.constData(), level+1 );
+        dumpAst( out, sub.constData(), level+1 );
+}
+static void dumpAst( const QString&  path, const CrossRefModel::Symbol* l )
+{
+    QFileInfo i(path);
+    QFile f( i.absoluteDir().absoluteFilePath(i.completeBaseName() + QLatin1String(".ast") ) );
+    if( !f.open(QIODevice::WriteOnly) )
+    {
+        qCritical() << "cannot write to" << f.fileName();
+        return;
+    }
+    QTextStream out(&f);
+    dumpAst(out,l,0);
 }
 #endif
+
 #ifdef _DUMP_ST
 static void dumpSt(QTextStream& out, const SynTree* node, int level)
 {
@@ -1183,12 +1188,17 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
 
     lex.setStream( stream, sourcePath );
 
-    Parser p;
-    const bool res = p.parseFile( &lex, errs );
+    Parser p(&lex, errs);
+
+    int errCount = errs->getErrCount();
+    p.RunParser();
+    errCount = errs->getErrCount() - errCount;
+
     if( true ) // res ) // we need a SynTree in any case even with syntax errors
     {
         SynTree root;
-        root.d_children = p.getResult(true);
+        root.d_children = p.d_root.d_children;
+        p.d_root.d_children.clear();
         ScopeRef top = createAst( &root, errs );
 //        qDebug() << "*** parsed" << sourcePath;
 //        foreach( const SymRef& sym, top->children() )
@@ -1196,7 +1206,7 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
         refs.append(top);
         idols = lex.getIdols();
         QList<int> stack;
-        foreach( Token tok, p.getSections() )
+        foreach( Token tok, p.d_sections )
         {
             if( tok.d_sourcePath != sourcePath )
                 continue;
@@ -1219,21 +1229,18 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
             }
         }
 
-#ifdef _DUMP_AST
-        qDebug() << "********** dumping" << sourcePath;
-        dumpAst(top.constData(), 0 );
-        qDebug() << "********** end dump" << sourcePath;
-#endif
 #ifdef _DUMP_ST
         dumpSt( sourcePath, &root );
 #endif
-
+#ifdef _DUMP_AST
+        dumpAst( sourcePath, top.constData() );
+#endif
 //        qDebug() << "************** name table of" << file;
 //        Scope::Names::const_iterator n;
 //        for( n = top->d_names.begin(); n != top->d_names.end(); ++n )
 //            qDebug() << n.key() << SynTree::rToStr(n.value()->d_tok.d_type) << n.value()->d_tok.d_lineNr;
     }
-    return res;
+    return errCount == 0;
 }
 
 void CrossRefModel::insertFiles(const QStringList& files, const ScopeRefList& scopes,
@@ -1358,39 +1365,6 @@ void CrossRefModel::clearFile(Scope* global, const QString& file)
     }
 }
 
-bool CrossRefModel::insertCell(const IdentDecl* decl, Scope* global, Errors* errs)
-{
-    Q_ASSERT( false ); // obsolete funktion, direkt in caller eingefügt
-
-    // Ein erheblicher Teil der Module (n=1173) unterscheidet sich im Namen vom Dateinamen
-    // Häufig nur in Gross-Kleinschreibung, häufig mit "_postfix"
-    // Der Versuch kann also nicht bestätigen, dass mehrheitlich ein Modul pro Datei und gleich heisst.
-//    if( decl->tok().d_val != QFileInfo(decl->tok().d_sourcePath).baseName() )
-//        qDebug() << "**** Module name differs from file name" << decl->tok().d_val << decl->tok().d_sourcePath;
-    Scope* scope = const_cast<Scope*>( decl->d_decl->toScope() );
-    Q_ASSERT( scope != 0 );
-    const int pos = global->d_children.indexOf( SymRef(scope) );
-    if( pos == -1 )
-        global->d_children.append( SymRef(scope) );
-    else
-        global->d_children[pos] = scope;
-    scope->d_super = global;
-    Scope::Names::const_iterator i = global->d_names.find( decl->d_tok.d_val );
-    if( i != global->d_names.end() )
-    {
-        const IdentDecl* d = i.value();
-        errs->error(Errors::Semantics, scope->d_tok.d_sourcePath, scope->d_tok.d_lineNr, scope->d_tok.d_colNr,
-                      tr("duplicate cell name '%1' already declared in %2")
-                    .arg(scope->d_tok.d_val.data())
-                    .arg( d->tok().d_sourcePath ) );
-        return false;
-    }else
-    {
-        global->d_names.insert( decl->d_tok.d_val, decl );
-        return true;
-    }
-}
-
 void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol* leaf, const Branch* parent,
                                   const Scope* curScope, const Scope* globScope, Errors* errs)
 {
@@ -1434,9 +1408,9 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
                     {
                         scope = 0;
                         Q_ASSERT( id->d_decl != 0 );
-                        if( id->d_decl->d_tok.d_type == SynTree::R_module_or_udp_instance )
+                        if( id->d_decl->d_tok.d_type == SynTree::R_module_or_udp_instance_ )
                         {
-                            Q_ASSERT( id->d_decl->d_super != 0 && id->d_decl->d_super->d_tok.d_type == SynTree::R_module_or_udp_instantiation );
+                            Q_ASSERT( id->d_decl->d_super != 0 && id->d_decl->d_super->d_tok.d_type == SynTree::R_module_or_udp_instantiation_ );
 
                             const IdentDecl* cellId = findNameInScope( globScope, id->d_decl->d_super->d_tok.d_val, false, false );
                             if( cellId != 0 )
@@ -1459,14 +1433,14 @@ void CrossRefModel::resolveIdents(Index& index, RevIndex& revIndex, const Symbol
     {
         Q_ASSERT( parent != 0 && parent->d_super != 0 );
         QByteArray moduleName;
-        if( parent->d_tok.d_type == SynTree::R_module_or_udp_instance )
+        if( parent->d_tok.d_type == SynTree::R_module_or_udp_instance_ )
         {
             // Kommt bei Parametern weiterhin vor
-            Q_ASSERT( parent->d_super->d_tok.d_type == SynTree::R_module_or_udp_instantiation );
+            Q_ASSERT( parent->d_super->d_tok.d_type == SynTree::R_module_or_udp_instantiation_ );
             moduleName = parent->d_super->d_tok.d_val;
         }else
         {
-            Q_ASSERT( parent->d_tok.d_type == SynTree::R_module_or_udp_instantiation );
+            Q_ASSERT( parent->d_tok.d_type == SynTree::R_module_or_udp_instantiation_ );
             moduleName = parent->d_tok.d_val;
         }
         const IdentDecl* cellId = findNameInScope( globScope, moduleName, false, false );

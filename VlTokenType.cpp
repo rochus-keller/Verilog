@@ -12,8 +12,8 @@ namespace Vl {
 			case Tok_2Hash: return "##";
 			case Tok_2HashLbrackStarRbrack: return "##[*]";
 			case Tok_2HashLbrackPlusRbrack: return "##[+]";
-			case Tok_Hash2Minus: return "#-#";
-			case Tok_Hash2Eq: return "#=#";
+			case Tok_HashMinusHash: return "#-#";
+			case Tok_HashEqHash: return "#=#";
 			case Tok_Dlr: return "$";
 			case Tok_Percent: return "%";
 			case Tok_Amp: return "&";
@@ -21,6 +21,7 @@ namespace Vl {
 			case Tok_3Amp: return "&&&";
 			case Tok_Lpar: return "(";
 			case Tok_Latt: return "(*";
+			case Tok_LparStarRpar: return "(*)";
 			case Tok_Rpar: return ")";
 			case Tok_Star: return "*";
 			case Tok_Ratt: return "*)";
@@ -34,8 +35,11 @@ namespace Vl {
 			case Tok_MinusColon: return "-:";
 			case Tok_MinusGt: return "->";
 			case Tok_Dot: return ".";
+			case Tok_2Dot: return "..";
+			case Tok_3Dot: return "...";
 			case Tok_Slash: return "/";
 			case Tok_Lcmt: return "/*";
+			case Tok_2Slash: return "//";
 			case Tok_Colon: return ":";
 			case Tok_ColonSlash: return ":/";
 			case Tok_ColonEq: return ":=";
@@ -56,17 +60,17 @@ namespace Vl {
 			case Tok_At: return "@";
 			case Tok_Lbrack: return "[";
 			case Tok_LbrackStar: return "[*";
-			case Tok_Lbrack2Star: return "[*]";
-			case Tok_Lbrack2Plus: return "[+]";
-			case Tok_Lbrack2Minus: return "[->";
+			case Tok_LbrackStarRbrack: return "[*]";
+			case Tok_LbrackPlusRbrack: return "[+]";
+			case Tok_LbrackMinusGt: return "[->";
 			case Tok_LbrackEq: return "[=";
 			case Tok_Rbrack: return "]";
 			case Tok_Hat: return "^";
 			case Tok_HatTilde: return "^~";
 			case Tok_Lbrace: return "{";
 			case Tok_Bar: return "|";
-			case Tok_Bar2Minus: return "|->";
-			case Tok_Bar2Eq: return "|=>";
+			case Tok_BarMinusGt: return "|->";
+			case Tok_BarEqGt: return "|=>";
 			case Tok_2Bar: return "||";
 			case Tok_Rbrace: return "}";
 			case Tok_Tilde: return "~";
@@ -268,8 +272,8 @@ namespace Vl {
 			case Tok_2Hash: return "Tok_2Hash";
 			case Tok_2HashLbrackStarRbrack: return "Tok_2HashLbrackStarRbrack";
 			case Tok_2HashLbrackPlusRbrack: return "Tok_2HashLbrackPlusRbrack";
-			case Tok_Hash2Minus: return "Tok_Hash2Minus";
-			case Tok_Hash2Eq: return "Tok_Hash2Eq";
+			case Tok_HashMinusHash: return "Tok_HashMinusHash";
+			case Tok_HashEqHash: return "Tok_HashEqHash";
 			case Tok_Dlr: return "Tok_Dlr";
 			case Tok_Percent: return "Tok_Percent";
 			case Tok_Amp: return "Tok_Amp";
@@ -277,6 +281,7 @@ namespace Vl {
 			case Tok_3Amp: return "Tok_3Amp";
 			case Tok_Lpar: return "Tok_Lpar";
 			case Tok_Latt: return "Tok_Latt";
+			case Tok_LparStarRpar: return "Tok_LparStarRpar";
 			case Tok_Rpar: return "Tok_Rpar";
 			case Tok_Star: return "Tok_Star";
 			case Tok_Ratt: return "Tok_Ratt";
@@ -290,8 +295,11 @@ namespace Vl {
 			case Tok_MinusColon: return "Tok_MinusColon";
 			case Tok_MinusGt: return "Tok_MinusGt";
 			case Tok_Dot: return "Tok_Dot";
+			case Tok_2Dot: return "Tok_2Dot";
+			case Tok_3Dot: return "Tok_3Dot";
 			case Tok_Slash: return "Tok_Slash";
 			case Tok_Lcmt: return "Tok_Lcmt";
+			case Tok_2Slash: return "Tok_2Slash";
 			case Tok_Colon: return "Tok_Colon";
 			case Tok_ColonSlash: return "Tok_ColonSlash";
 			case Tok_ColonEq: return "Tok_ColonEq";
@@ -312,17 +320,17 @@ namespace Vl {
 			case Tok_At: return "Tok_At";
 			case Tok_Lbrack: return "Tok_Lbrack";
 			case Tok_LbrackStar: return "Tok_LbrackStar";
-			case Tok_Lbrack2Star: return "Tok_Lbrack2Star";
-			case Tok_Lbrack2Plus: return "Tok_Lbrack2Plus";
-			case Tok_Lbrack2Minus: return "Tok_Lbrack2Minus";
+			case Tok_LbrackStarRbrack: return "Tok_LbrackStarRbrack";
+			case Tok_LbrackPlusRbrack: return "Tok_LbrackPlusRbrack";
+			case Tok_LbrackMinusGt: return "Tok_LbrackMinusGt";
 			case Tok_LbrackEq: return "Tok_LbrackEq";
 			case Tok_Rbrack: return "Tok_Rbrack";
 			case Tok_Hat: return "Tok_Hat";
 			case Tok_HatTilde: return "Tok_HatTilde";
 			case Tok_Lbrace: return "Tok_Lbrace";
 			case Tok_Bar: return "Tok_Bar";
-			case Tok_Bar2Minus: return "Tok_Bar2Minus";
-			case Tok_Bar2Eq: return "Tok_Bar2Eq";
+			case Tok_BarMinusGt: return "Tok_BarMinusGt";
+			case Tok_BarEqGt: return "Tok_BarEqGt";
 			case Tok_2Bar: return "Tok_2Bar";
 			case Tok_Rbrace: return "Tok_Rbrace";
 			case Tok_Tilde: return "Tok_Tilde";
@@ -563,12 +571,12 @@ namespace Vl {
 				break;
 			case '-':
 				if( at(str,i+2) == '#' ){
-					res = Tok_Hash2Minus; i += 3;
+					res = Tok_HashMinusHash; i += 3;
 				}
 				break;
 			case '=':
 				if( at(str,i+2) == '#' ){
-					res = Tok_Hash2Eq; i += 3;
+					res = Tok_HashEqHash; i += 3;
 				}
 				break;
 			default:
@@ -752,7 +760,11 @@ namespace Vl {
 			break;
 		case '(':
 			if( at(str,i+1) == '*' ){
-				res = Tok_Latt; i += 2;
+				if( at(str,i+2) == ')' ){
+					res = Tok_LparStarRpar; i += 3;
+				} else {
+					res = Tok_Latt; i += 2;
+				}
 			} else {
 				res = Tok_Lpar; i += 1;
 			}
@@ -803,13 +815,27 @@ namespace Vl {
 			}
 			break;
 		case '.':
-			res = Tok_Dot; i += 1;
+			if( at(str,i+1) == '.' ){
+				if( at(str,i+2) == '.' ){
+					res = Tok_3Dot; i += 3;
+				} else {
+					res = Tok_2Dot; i += 2;
+				}
+			} else {
+				res = Tok_Dot; i += 1;
+			}
 			break;
 		case '/':
-			if( at(str,i+1) == '*' ){
+			switch( at(str,i+1) ){
+			case '*':
 				res = Tok_Lcmt; i += 2;
-			} else {
+				break;
+			case '/':
+				res = Tok_2Slash; i += 2;
+				break;
+			default:
 				res = Tok_Slash; i += 1;
+				break;
 			}
 			break;
 		case ':':
@@ -910,19 +936,19 @@ namespace Vl {
 			switch( at(str,i+1) ){
 			case '*':
 				if( at(str,i+2) == ']' ){
-					res = Tok_Lbrack2Star; i += 3;
+					res = Tok_LbrackStarRbrack; i += 3;
 				} else {
 					res = Tok_LbrackStar; i += 2;
 				}
 				break;
 			case '+':
 				if( at(str,i+2) == ']' ){
-					res = Tok_Lbrack2Plus; i += 3;
+					res = Tok_LbrackPlusRbrack; i += 3;
 				}
 				break;
 			case '-':
 				if( at(str,i+2) == '>' ){
-					res = Tok_Lbrack2Minus; i += 3;
+					res = Tok_LbrackMinusGt; i += 3;
 				}
 				break;
 			case '=':
@@ -2594,12 +2620,12 @@ namespace Vl {
 			switch( at(str,i+1) ){
 			case '-':
 				if( at(str,i+2) == '>' ){
-					res = Tok_Bar2Minus; i += 3;
+					res = Tok_BarMinusGt; i += 3;
 				}
 				break;
 			case '=':
 				if( at(str,i+2) == '>' ){
-					res = Tok_Bar2Eq; i += 3;
+					res = Tok_BarEqGt; i += 3;
 				}
 				break;
 			case '|':

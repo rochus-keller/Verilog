@@ -1,5 +1,5 @@
 /*
-* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 *
 * This file is part of the Verilog parser library.
 *
@@ -24,14 +24,13 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QThread>
-#include "VlFrontend.h"
-#include "VlCrossRefModel.h"
-#include "VlFileCache.h"
-#include "VlPpLexer.h"
-#include "VlErrors.h"
-#include "VlParser.h"
-#include "VlPpSymbols.h"
 #include <QPlainTextEdit>
+#include "VlErrors.h"
+#include "VlPpSymbols.h"
+#include "VlParser.h"
+#include "VlPpLexer.h"
+#include "VlCrossRefModel.h"
+#include "VlProjectConfig.h"
 
 static QStringList collectFiles( const QDir& dir )
 {
@@ -89,27 +88,40 @@ static bool readFile( const QString& path, bool resOnly )
     return true;
 #else
 
-    // mit PP braucht das gesamte Testverzeichnis (2k Verilog files) 1918 ms, ohne nur 718 ms
 
-#define UseFrontend
-#ifdef UseFrontend
-    Vl::Frontend ff;
-    const bool res = ff.process(path);
-    return res;
-#else
     Vl::Errors e;
     e.setShowWarnings(false);
     Vl::PpLexer lex;
-    Vl::PpSymbols s;
+    static Vl::PpSymbols* s = 0;
+
+    if( s == 0 )
+    {
+        s = new Vl::PpSymbols();
+        // TEST e200
+        s->addSymbol( "DISABLE_SV_ASSERTION", "", Vl::Tok_Str );
+        s->addSymbol( "E203_MTVEC_TRAP_BASE", "0", Vl::Tok_Natural );
+        s->addSymbol( "E203_ITCM_DATA_WIDTH_IS_32", "1", Vl::Tok_Natural );
+        // TEST oh
+        s->addSymbol( "CFG_ASIC", "1", Vl::Tok_Natural );
+        s->addSymbol( "CFG_PLATFORM", "", Vl::Tok_Str );
+    }
+
     lex.setIgnoreAttrs(false);
     lex.setPackAttrs(false);
     lex.setSendMacroUsage(true);
     lex.setErrors(&e);
-    lex.setSyms(&s);
+    lex.setSyms(s);
     lex.setStream( path, true );
-    Vl::Parser p;
-    return p.parseFile( &lex, &e );
-#endif
+    Vl::Parser p(&lex,&e);
+    p.RunParser();
+
+    if( e.getErrCount() )
+    {
+        qDebug() << "*****" << e.getErrCount() << "errors in" << path;
+        return false;
+    }
+    return true;
+
 #endif
 }
 
@@ -163,49 +175,46 @@ int main(int argc, char *argv[])
 
     QElapsedTimer t;
     t.start();
-    int count = 0, succ = 0;
+    QStringList files;
+    Vl::ProjectConfig config;
     if( info.isDir() )
     {
-        const QStringList files = collectFiles( info.absoluteFilePath() );
-        count = files.size();
-        if( isProject )
+        files = collectFiles( info.absoluteFilePath() );
+    }else if( info.suffix() == "vlpro" )
+    {
+        if( !config.loadFromFile( info.absoluteFilePath() ) )
+        {
+            qCritical() << "error reading vlpro file";
+            return -1;
+        }else
+            isProject = true;
+    }else
+        files << info.absoluteFilePath();
+    int succ = 0;
+    if( isProject )
+    {
+        Vl::CrossRefModel m;
+        if( config.getPath().isEmpty() )
         {
             qDebug() << "*****" << "parsing" << files.size() << "files";
-//#define _USE_CODEMODEL
-#ifdef _USE_CODEMODEL
-            Vl::CodeModel m;
-            m.readProject(files);
-#else
-            Vl::FileCache c;
-            Vl::CrossRefModel m(0,&c);
             m.updateFiles(files, true);
-            dumpErrors(m.getErrs());
-#endif
         }else
-            foreach( const QString& f, files )
-            {
-                if( readFile(f, true) )
-                    succ++;
-            }
+        {
+            qDebug() << "*****" << "parsing" << config.getSrcFiles().size() + config.getLibFiles().size() << "files";
+            config.setup( &m, true );
+        }
+        dumpErrors(m.getErrs());
     }else
     {
-        count = 1;
-        if( isProject )
+        foreach( const QString& f, files )
         {
-#ifdef _USE_CODEMODEL
-            Vl::CodeModel m;
-            m.readProject( QStringList() << info.absoluteFilePath() );
-#else
-            Vl::CrossRefModel m;
-            m.updateFiles( QStringList() << info.absoluteFilePath(),true );
-            dumpErrors(m.getErrs());
-#endif
-        }else
-            if( readFile( info.absoluteFilePath(), false) )
+            if( readFile(f, false ) )
                 succ++;
+        }
     }
+
     if( !isProject )
-        qDebug() << "Elapsed time [ms]:" << t.elapsed() << "Success:" << succ << "/" << count;
+        qDebug() << "Elapsed time [ms]:" << t.elapsed() << "Success:" << succ << "/" << files.size();
 
     return 0 ; // a.exec(); // TEST
 }

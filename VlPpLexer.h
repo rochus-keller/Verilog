@@ -2,7 +2,7 @@
 #define VLPPLEXER_H
 
 /*
-* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 *
 * This file is part of the Verilog parser library.
 *
@@ -34,7 +34,7 @@ namespace Vl
     class Includes;
     class FileCache;
 
-	class PpLexer : public QObject
+    class PpLexer : public QObject
 	{
         // this class is reentrant
 	public:

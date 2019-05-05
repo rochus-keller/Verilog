@@ -51,17 +51,6 @@ namespace Vl
 {
     TokenType matchReservedWord(const QByteArray& str)
     {
-
-        /*
-        static QHash<QByteArray,quint8> s_lookup;
-        // TODO: nur temporäre Lösung
-        if( s_lookup.isEmpty() )
-        {
-            for( int i = TT_Keywords + 1; i < TT_Specials; i++ )
-                s_lookup.insert( tokenToString(i), i );
-        }
-        TokenType t = (TokenType)s_lookup.value( str, Tok_Invalid );
-        */
         int pos = 0;
         TokenType t = tokenTypeFromString( str, &pos );
         if( t != Tok_Invalid && pos != str.size() )
@@ -308,6 +297,7 @@ namespace Vl
 
     bool tokenIsSvReservedWord(quint8 t)
     {
+#ifdef VL_SV12
         switch( t )
         {
         case Tok_logic:
@@ -342,6 +332,7 @@ namespace Vl
             // TODO: erweitern
             return true;
         }
+#endif
         return false;
     }
 

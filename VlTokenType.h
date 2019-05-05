@@ -5,6 +5,8 @@
 
 #include <QByteArray>
 
+#define VL_SV12
+
 namespace Vl {
 	enum TokenType {
 		Tok_Invalid = 0,
@@ -17,8 +19,8 @@ namespace Vl {
 		Tok_2Hash,
 		Tok_2HashLbrackStarRbrack,
 		Tok_2HashLbrackPlusRbrack,
-		Tok_Hash2Minus,
-		Tok_Hash2Eq,
+		Tok_HashMinusHash,
+		Tok_HashEqHash,
 		Tok_Dlr,
 		Tok_Percent,
 		Tok_Amp,
@@ -26,6 +28,7 @@ namespace Vl {
 		Tok_3Amp,
 		Tok_Lpar,
 		Tok_Latt,
+		Tok_LparStarRpar,
 		Tok_Rpar,
 		Tok_Star,
 		Tok_Ratt,
@@ -39,8 +42,11 @@ namespace Vl {
 		Tok_MinusColon,
 		Tok_MinusGt,
 		Tok_Dot,
+		Tok_2Dot,
+		Tok_3Dot,
 		Tok_Slash,
 		Tok_Lcmt,
+		Tok_2Slash,
 		Tok_Colon,
 		Tok_ColonSlash,
 		Tok_ColonEq,
@@ -61,17 +67,17 @@ namespace Vl {
 		Tok_At,
 		Tok_Lbrack,
 		Tok_LbrackStar,
-		Tok_Lbrack2Star,
-		Tok_Lbrack2Plus,
-		Tok_Lbrack2Minus,
+		Tok_LbrackStarRbrack,
+		Tok_LbrackPlusRbrack,
+		Tok_LbrackMinusGt,
 		Tok_LbrackEq,
 		Tok_Rbrack,
 		Tok_Hat,
 		Tok_HatTilde,
 		Tok_Lbrace,
 		Tok_Bar,
-		Tok_Bar2Minus,
-		Tok_Bar2Eq,
+		Tok_BarMinusGt,
+		Tok_BarEqGt,
 		Tok_2Bar,
 		Tok_Rbrace,
 		Tok_Tilde,

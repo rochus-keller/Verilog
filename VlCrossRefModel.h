@@ -2,7 +2,7 @@
 #define VLCROSSREFMODEL_H
 
 /*
-* Copyright 2018 Rochus Keller <mailto:me@rochus-keller.ch>
+* Copyright 2018-2019 Rochus Keller <mailto:me@rochus-keller.ch>
 *
 * This file is part of the Verilog parser library.
 *
@@ -174,9 +174,9 @@ namespace Vl
         void clear();
 
         PpSymbols* getSyms() const { return d_syms; }
-        Includes* getIncs() const { return d_incs; }
-        Errors* getErrs() const { return d_errs; }
-        FileCache* getFcache() const { return d_fcache; }
+        Vl::Includes* getIncs() const { return d_incs; }
+        Vl::Errors* getErrs() const { return d_errs; }
+        Vl::FileCache* getFcache() const { return d_fcache; }
 
         bool isEmpty() const;
 
@@ -213,20 +213,19 @@ namespace Vl
         typedef QExplicitlySharedDataPointer<Scope> ScopeRefNc;
         typedef QExplicitlySharedDataPointer<Symbol> SymRefNc;
 
-        static ScopeRefNc createAst( const SynTree*, Errors* ); // returns a global scope
-        static void fillAst( Branch* parentAst, Scope* superScope, SynTreePath& synPath, Errors* );
-        static void checkNumber( const SynTree*, Errors* );
-        static bool checkLop(Scope* superScope, const SynTree* id, Errors* );
+        static ScopeRefNc createAst( const SynTree*, Vl::Errors* ); // returns a global scope
+        static void fillAst( Branch* parentAst, Scope* superScope, SynTreePath& synPath, Vl::Errors* );
+        static void checkNumber( const SynTree*, Vl::Errors* );
+        static bool checkLop(Scope* superScope, const SynTree* id, Vl::Errors* );
         static const Symbol* findFirst(const Branch*, quint16 type);
 
         static int parseFiles(const QStringList& files, ScopeRefList&, IfDefOutLists&, SectionLists&,
-                                Errors* errs, PpSymbols* syms, Includes* incs , FileCache* fcache, QAtomicInt* );
+                                Vl::Errors* errs, PpSymbols* syms, Vl::Includes* incs , Vl::FileCache* fcache, QAtomicInt* );
         static bool parseStream(QIODevice* stream, const QString& sourcePath, ScopeRefList&, IfDefOutLists&, SectionList&,
-                              Errors* errs, PpSymbols* syms, Includes* incs , FileCache* fcache);
-        void insertFiles(const QStringList& files, const ScopeRefList&, const IfDefOutLists&, const SectionLists&, Errors* errs , bool lock = true); // write lock
+                              Vl::Errors* errs, PpSymbols* syms, Vl::Includes* incs , Vl::FileCache* fcache);
+        void insertFiles(const QStringList& files, const ScopeRefList&, const IfDefOutLists&, const SectionLists&, Vl::Errors* errs , bool lock = true); // write lock
         static void clearFile(Scope*, const QString& file);
-        static bool insertCell(const IdentDecl* decl, Scope*, Errors* );
-        static void resolveIdents( Index&, RevIndex&, const Symbol*, const Branch*, const Scope*, const Scope*, Errors* );
+        static void resolveIdents( Index&, RevIndex&, const Symbol*, const Branch*, const Scope*, const Scope*, Vl::Errors* );
         static const IdentDecl* findNameInScope( const Scope*, const QByteArray& name, bool recursiv = true, bool ports = false );
         static quint16 calcTextLenOfDecl( const SynTree* );
         static quint16 calcKeyWordLen( const SynTree* );
@@ -235,10 +234,10 @@ namespace Vl
     protected slots:
         void onWorkFinished();
     private:
-        Errors* d_errs;
+        Vl::Errors* d_errs;
         PpSymbols* d_syms;
-        Includes* d_incs;
-        FileCache* d_fcache;
+        Vl::Includes* d_incs;
+        Vl::FileCache* d_fcache;
 
         Scope d_global;
         IfDefOutLists d_idols;
