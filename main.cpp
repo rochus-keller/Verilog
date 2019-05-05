@@ -113,6 +113,26 @@ static bool readFile( const QString& path, bool resOnly )
 #endif
 }
 
+static void dumpErrors( Vl::Errors* errs )
+{
+    if( errs->getErrCount() == 0 )
+    {
+        qDebug() << "***** no errors";
+        return;
+    } // else
+
+    Vl::Errors::EntriesByFile lbf = errs->getErrors();
+    Vl::Errors::EntriesByFile::const_iterator i;
+    for( i = lbf.begin(); i != lbf.end(); ++i )
+    {
+        foreach( const Vl::Errors::Entry& e, i.value() )
+        {
+            qDebug() << QFileInfo(i.key()).fileName() << e.d_line << e.d_col << e.d_msg;
+        }
+    }
+    qDebug() << "*****" << errs->getErrCount() << "errors and" << errs->getWrnCount() << "warnings";
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -150,6 +170,7 @@ int main(int argc, char *argv[])
         count = files.size();
         if( isProject )
         {
+            qDebug() << "*****" << "parsing" << files.size() << "files";
 //#define _USE_CODEMODEL
 #ifdef _USE_CODEMODEL
             Vl::CodeModel m;
@@ -158,6 +179,7 @@ int main(int argc, char *argv[])
             Vl::FileCache c;
             Vl::CrossRefModel m(0,&c);
             m.updateFiles(files, true);
+            dumpErrors(m.getErrs());
 #endif
         }else
             foreach( const QString& f, files )
@@ -176,6 +198,7 @@ int main(int argc, char *argv[])
 #else
             Vl::CrossRefModel m;
             m.updateFiles( QStringList() << info.absoluteFilePath(),true );
+            dumpErrors(m.getErrs());
 #endif
         }else
             if( readFile( info.absoluteFilePath(), false) )

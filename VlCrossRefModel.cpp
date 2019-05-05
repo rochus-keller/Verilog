@@ -32,6 +32,7 @@
 using namespace Vl;
 
 // #define _DUMP_AST
+// #define _DUMP_ST
 
 // für QtConcurrent::run braucht man extra eine separate Library mit minimalem Mehrwert
 class CrossRefModel::Worker : public QThread
@@ -1063,17 +1064,68 @@ const CrossRefModel::Symbol* CrossRefModel::findFirst(const Branch* b, quint16 t
 }
 
 #ifdef _DUMP_AST
-#include <typeinfo>
-#include <cxxabi.h>
 static void dumpAst(const CrossRefModel::Symbol* l, int level)
 {
-    int status;
-    char * demangled = abi::__cxa_demangle(typeid(*l).name(),0,0,&status);
-    qDebug() << QByteArray(level*3,' ').data() << SynTree::rToStr(l->tok().d_type) << l->tok().d_lineNr
-             << l->tok().d_colNr << l->tok().d_len << l->tok().d_val << "\t\t" << demangled+19;
-    free(demangled);
+    QByteArray buf;
+    if( l->tok().d_type == Tok_Invalid )
+        level--;
+    else
+    {
+        QTextStream out(&buf);
+        QByteArray ws;
+        for( int i = 0; i < level; i++ )
+            ws += "|  ";
+        out << ws.data() << l->getTypeName() << " " << SynTree::rToStr(l->tok().d_type) << " ";
+        if( !l->tok().d_val.isEmpty() )
+            out << "'" << l->tok().d_val << "' ";
+        out << l->tok().d_lineNr << ":" << l->tok().d_colNr; //  << endl;
+    }
+    qDebug() << buf.constData();
     foreach( const CrossRefModel::SymRef& sub, l->children() )
         dumpAst( sub.constData(), level+1 );
+}
+#endif
+#ifdef _DUMP_ST
+static void dumpSt(QTextStream& out, const SynTree* node, int level)
+{
+    QByteArray str;
+    if( node->d_tok.d_type == Tok_Invalid )
+        level--;
+    else if( node->d_tok.d_type < SynTree::R_First )
+    {
+        if( tokenTypeIsKeyword( node->d_tok.d_type ) )
+            str = tokenTypeString(node->d_tok.d_type);
+        else if( node->d_tok.d_type > TT_Specials )
+            str = QByteArray("\"") + node->d_tok.d_val + QByteArray("\"");
+        else
+            str = QByteArray("\"") + tokenTypeString(node->d_tok.d_type) + QByteArray("\"");
+
+    }else
+        str = SynTree::rToStr( node->d_tok.d_type );
+    if( !str.isEmpty() )
+    {
+        str += QByteArray("\t") + QByteArray::number(node->d_tok.d_lineNr) +
+                ":" + QByteArray::number(node->d_tok.d_colNr);
+        QByteArray ws;
+        for( int i = 0; i < level; i++ )
+            ws += "|  ";
+        str = ws + str;
+        out << str.data() << endl;
+    }
+    foreach( SynTree* sub, node->d_children )
+        dumpSt( out, sub, level + 1 );
+}
+static void dumpSt( const QString&  path, const SynTree* node )
+{
+    QFileInfo i(path);
+    QFile f( i.absoluteDir().absoluteFilePath(i.completeBaseName() + QLatin1String(".st") ) );
+    if( !f.open(QIODevice::WriteOnly) )
+    {
+        qCritical() << "cannot write to" << f.fileName();
+        return;
+    }
+    QTextStream out(&f);
+    dumpSt(out,node,0);
 }
 #endif
 
@@ -1168,10 +1220,14 @@ bool CrossRefModel::parseStream(QIODevice* stream, const QString& sourcePath, Cr
         }
 
 #ifdef _DUMP_AST
-        qDebug() << "********** dumping" << top->tok().d_sourcePath;
+        qDebug() << "********** dumping" << sourcePath;
         dumpAst(top.constData(), 0 );
-        qDebug() << "********** end dump" << top->tok().d_sourcePath;
+        qDebug() << "********** end dump" << sourcePath;
 #endif
+#ifdef _DUMP_ST
+        dumpSt( sourcePath, &root );
+#endif
+
 //        qDebug() << "************** name table of" << file;
 //        Scope::Names::const_iterator n;
 //        for( n = top->d_names.begin(); n != top->d_names.end(); ++n )

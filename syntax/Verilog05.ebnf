@@ -733,7 +733,7 @@ generate_block ::=
 
 generate_block_or_null* ::= 
 	generate_block 
-	| module_or_generate_item
+	| module_or_generate_item // von generate_block hierher verschoben
 	| ';' 
 
 

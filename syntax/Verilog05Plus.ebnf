@@ -65,7 +65,7 @@ library_description- ::=
 
 library_declaration ::= 
 	library library_identifier file_path_spec { ',' file_path_spec }
-	[ '-' incdir file_path_spec { ',' file_path_spec } ] ';' 
+		[ '-' incdir file_path_spec { ',' file_path_spec } ] ';' 
 
 include_statement ::= 
 	include file_path_spec ';' 

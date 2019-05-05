@@ -21,7 +21,7 @@
 */
 
 #include <QString>
-#include <VlTokenType.h>
+#include <Verilog/VlTokenType.h>
 
 namespace Vl
 {
