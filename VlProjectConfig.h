@@ -36,6 +36,7 @@ namespace Vl
         bool loadFromFile( const QString& path );
         const QStringList& getSrcFiles() const { return d_srcFiles; }
         const QStringList& getLibFiles() const { return d_libFiles; }
+        const QStringList& getOtherFiles() const { return d_otherFiles; }
         QStringList getConfig( const QString& key ) const { return d_config.value(key); }
         QStringList getIncDirs() const { return d_incDirs; }
         QString getTopMod() const;
@@ -48,7 +49,7 @@ namespace Vl
         static void findFilesInDir(const QString& dir, const QStringList& filter, QStringList& files , bool recursive);
     private:
         QString d_path;
-        QStringList d_srcFiles, d_libFiles, d_incDirs;
+        QStringList d_srcFiles, d_libFiles, d_incDirs, d_otherFiles;
         QMap<QString, QStringList> d_config;
     };
 }

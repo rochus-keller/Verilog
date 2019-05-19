@@ -134,6 +134,31 @@ bool ProjectConfig::loadFromFile(const QString& path)
 
     d_srcFiles = srcFiles;
 
+    files.clear();
+    QStringList otherFiles = d_config.value("OTHER_FILES");
+    lastDir = QDir::current();
+    foreach( const QString& f, otherFiles )
+    {
+        QFileInfo info(f);
+        if( info.isDir() )
+        {
+            if( info.isRelative() )
+                lastDir = QDir::current().absoluteFilePath(f);
+            else
+                lastDir = info.absoluteDir();
+        }else
+        {
+            if( info.isRelative() )
+                files.insert( lastDir.absoluteFilePath(f) );
+            else
+                files.insert(f);
+        }
+    }
+    otherFiles = files.toList();
+    otherFiles.sort();
+
+    d_otherFiles = otherFiles;
+
     QDir::setCurrent(oldCur);
     return true;
 }

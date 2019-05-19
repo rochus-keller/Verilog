@@ -764,7 +764,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_bufif0: case _T_bufif1: case _T_notif0: case _T_notif1: {
 			enable_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_highz1 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -797,7 +797,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_and: case _T_nand: case _T_nor: case _T_or: case _T_xnor: case _T_xor: {
 			n_input_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_highz1 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -815,7 +815,7 @@ void Parser::gate_instantiation() {
 		}
 		case _T_buf: case _T_not: {
 			n_output_gatetype();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_highz1 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_Hash) {
@@ -861,7 +861,7 @@ void Parser::gate_instantiation() {
 		case _T_pulldown: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				pulldown_strength();
 			}
 			pull_gate_instance();
@@ -877,7 +877,7 @@ void Parser::gate_instantiation() {
 		case _T_pullup: {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_weak0 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				pullup_strength();
 			}
 			pull_gate_instance();
@@ -912,7 +912,7 @@ void Parser::concurrent_assertion_statement() {
 void Parser::module_or_udp_instantiation_() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_module_or_udp_instantiation_, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		identifier();
-		if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_strong0 ) ) {
+		if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_highz1 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 			drive_strength();
 		}
 		if (la->kind == _T_Hash) {
@@ -982,7 +982,7 @@ void Parser::net_declaration() {
 		Vl::SynTree* n = new Vl::SynTree( Vl::SynTree::R_net_declaration, d_next ); d_stack.top()->d_children.append(n); d_stack.push(n); 
 		if (StartOf(9)) {
 			net_type();
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_pull1 || peek(2) == _T_weak1 || peek(2) == _T_supply0 || peek(2) == _T_pull0 || peek(2) == _T_supply1 || peek(2) == _T_highz1 || peek(2) == _T_strong0 ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_strong1 || peek(2) == _T_supply0 || peek(2) == _T_weak1 || peek(2) == _T_strong0 || peek(2) == _T_pull1 || peek(2) == _T_highz0 || peek(2) == _T_weak0 || peek(2) == _T_highz1 || peek(2) == _T_supply1 || peek(2) == _T_pull0 ) ) {
 				drive_strength();
 			}
 			if (la->kind == _T_scalared || la->kind == _T_vectored) {
@@ -1010,7 +1010,7 @@ void Parser::net_declaration() {
 		} else if (la->kind == _T_trireg) {
 			Get();
 			addTerminal(); 
-			if (peek(1) == _T_Lpar && ( peek(2) == _T_large || peek(2) == _T_small || peek(2) == _T_medium ) ) {
+			if (peek(1) == _T_Lpar && ( peek(2) == _T_medium || peek(2) == _T_small || peek(2) == _T_large ) ) {
 				charge_strength();
 			}
 			if (la->kind == _T_scalared || la->kind == _T_vectored) {
@@ -3076,6 +3076,18 @@ void Parser::if_generate_construct() {
 		Expect(_T_Rpar,__FUNCTION__);
 		addTerminal(); 
 		generate_block_or_null();
+		while (peek(1) == _T_else && peek(2) == _T_if ) {
+			Expect(_T_else,__FUNCTION__);
+			addTerminal(); 
+			Expect(_T_if,__FUNCTION__);
+			addTerminal(); 
+			Expect(_T_Lpar,__FUNCTION__);
+			addTerminal(); 
+			constant_expression();
+			Expect(_T_Rpar,__FUNCTION__);
+			addTerminal(); 
+			generate_block_or_null();
+		}
 		if (la->kind == _T_else) {
 			Get();
 			addTerminal(); 
@@ -3603,8 +3615,8 @@ void Parser::par_block() {
 				block_item_declaration();
 			}
 		}
-		while (StartOf(24)) {
-			statement();
+		while (StartOf(35)) {
+			statement_or_null();
 		}
 		Expect(_T_join,__FUNCTION__);
 		addTerminal(); 

@@ -664,6 +664,7 @@ conditional_generate_construct ::=
 
 if_generate_construct ::= 
 	if '(' constant_expression ')' generate_block_or_null 
+	{ \LL:2\ else if '(' constant_expression ')' generate_block_or_null } // not original; added to assimilate to conditional_statement; is this correct?
 	[ else generate_block_or_null ] 
 
 case_generate_construct ::= 
@@ -816,7 +817,9 @@ variable_assignment ::= variable_lvalue '=' expression
 // A.6.3 Parallel and sequential blocks 
 
 par_block ::= fork [ ':' block_identifier { block_item_declaration } ] 
-	{ statement } join 
+	// { statement } join 
+	// DEVIATION: allow the same here as in seq_block for uniformity reasons
+	{ statement_or_null } join 
 
 seq_block ::= begin [ ':' block_identifier { block_item_declaration } ] 
 	// { statement } end 
